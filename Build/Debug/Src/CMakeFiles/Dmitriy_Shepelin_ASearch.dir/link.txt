@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\Dmitriy_Shepelin_ASearch.dir/objects.a
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-W\mingw64\bin\ar.exe cr CMakeFiles\Dmitriy_Shepelin_ASearch.dir/objects.a @CMakeFiles\Dmitriy_Shepelin_ASearch.dir\objects1.rsp
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-W\mingw64\bin\G__~1.EXE  -std=c++11 -O2 -Wall -Wextra -static -static-libgcc -static-libstdc++ -g -Wl,--whole-archive CMakeFiles\Dmitriy_Shepelin_ASearch.dir/objects.a -Wl,--no-whole-archive -o Dmitriy_Shepelin_ASearch.exe -Wl,--out-implib,libDmitriy_Shepelin_ASearch.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Dmitriy_Shepelin_ASearch.dir\linklibs.rsp

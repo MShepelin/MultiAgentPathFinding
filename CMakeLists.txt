@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
-set(PROJECT_NAME "YourFirstName_YourLastName_ASearch")
+set(PROJECT_NAME "Dmitriy_Shepelin_ASearch")
 project(${PROJECT_NAME})
 
 

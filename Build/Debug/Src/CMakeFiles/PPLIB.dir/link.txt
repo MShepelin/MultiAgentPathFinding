@@ -1,0 +1,2 @@
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-W\mingw64\bin\ar.exe qc libPPLIB.a CMakeFiles/PPLIB.dir/config.cpp.obj CMakeFiles/PPLIB.dir/environmentoptions.cpp.obj CMakeFiles/PPLIB.dir/map.cpp.obj CMakeFiles/PPLIB.dir/mission.cpp.obj CMakeFiles/PPLIB.dir/search.cpp.obj CMakeFiles/PPLIB.dir/tinyxml2.cpp.obj CMakeFiles/PPLIB.dir/xmllogger.cpp.obj
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-W\mingw64\bin\ranlib.exe libPPLIB.a
