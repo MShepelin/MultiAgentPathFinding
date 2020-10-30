@@ -2,4 +2,4 @@
 
 This project is under construction
 
-It is being made in the second semester of HSE Faculty of Computer Science.
+It is being made in the second year of HSE Faculty of Computer Science.
