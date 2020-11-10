@@ -1,1 +1,2 @@
-.vs/MultiAgentPathFinding
+.vs
+!.vs/launch.vs.json
