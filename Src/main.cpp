@@ -2,11 +2,6 @@
 
 int main(int argc, char* argv[])
 {
-    if(argc < 2) {
-        std::cout<<"Error! Pathfinding task file (XML) is not specified!"<<std::endl;
-        return 0;
-    }
-
     Mission mission(argv[1]);
 
     std::cout<<argv[1]<<std::endl;
@@ -44,4 +39,3 @@ int main(int argc, char* argv[])
     std::system("pause");
     return 0;
 }
-
