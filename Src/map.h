@@ -39,7 +39,7 @@ class Map
         int getMapHeight() const;
         int getMapWidth() const;
         double getCellSize() const;
-
+        void getTask(int* buffer) const;
 };
 
 #endif

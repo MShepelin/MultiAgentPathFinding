@@ -1,5 +1,8 @@
 #include "search.h"
 
+const double ch = 1;
+const double cd = std::sqrt(2);
+
 NodesBinaryHeap::NodesBinaryHeap()
 {
     nodes = { nullptr };
@@ -86,19 +89,32 @@ Node* NodesBinaryHeap::popMin()
     return result;
 }
 
+
 Search::Search()
 {
-//set defaults here
+    //set defaults here
 }
 
 Search::~Search() {}
 
-
 SearchResult Search::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options)
 {
-    int maxSize = std::max(map.getMapHeight(), map.getMapHeight());
-    //need to implement
+    // options expected to be false everywhere
 
+    // Initialise search parametres.
+    int maxSize = std::max(map.getMapHeight(), map.getMapHeight());
+    int task[4];
+    map.getTask(task);
+
+    // Create node to start and node to search.
+    open[encode(task[0], task[1], maxSize)] = { task[0], task[1], 0 };
+    setHeuristic(open[encode(task[0], task[1], maxSize)]);
+
+    open[encode(task[1], task[2], maxSize)] = { task[2], task[3], 0, 0 };
+    targetNode = &open[encode(task[1], task[2], maxSize)];
+
+    //need to implement
+    SearchResult sresult;
     /*sresult.pathfound = ;
     sresult.nodescreated =  ;
     sresult.numberofsteps = ;
@@ -106,6 +122,26 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     sresult.hppath = &hppath; //Here is a constant pointer
     sresult.lppath = &lppath;*/
     return sresult;
+}
+
+void Search::setHeuristic(Node& nodeToEdit)
+{
+    if (nodeToEdit.H >= 0)
+    {
+        return;
+    }
+
+    nodeToEdit.H = 0;
+}
+
+int Search::encode(int x, int y, int maxValue)
+{
+    return x + y * maxValue;
+}
+
+void Search::expandNode(Node* node)
+{
+
 }
 
 /*void Search::makePrimaryPath(Node curNode)

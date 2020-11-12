@@ -338,3 +338,11 @@ double Map::getCellSize() const
 {
       return cellSize;
 }
+
+void Map::getTask(int* buffer) const
+{
+    buffer[0] = start_i;
+    buffer[1] = start_j;
+    buffer[2] = goal_i;
+    buffer[3] = goal_j;
+}

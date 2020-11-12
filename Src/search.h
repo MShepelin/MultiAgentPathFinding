@@ -28,6 +28,7 @@ public:
     Node* popMin();
 };
 
+
 class Search
 {
     public:
@@ -39,10 +40,17 @@ class Search
         //CODE HERE
 
         //Hint 1. You definetely need class variables for OPEN and CLOSE
+        Node* targetNode;
+
+        NodesBinaryHeap openHeap;
+        std::unordered_map<int, Node> close;
+        std::unordered_map<int, Node> open;
+        
 
         //Hint 2. It's a good idea to define a heuristic calculation function, that will simply return 0
         //for non-heuristic search methods like Dijkstra
         
+        virtual void setHeuristic(Node& nodeToEdit);
 
         //Hint 3. It's a good idea to define function that given a node (and other stuff needed)
         //will return it's sucessors, e.g. unordered list of nodes
@@ -56,5 +64,9 @@ class Search
         std::list<Node>                 lppath, hppath; //
 
         //CODE HERE to define other members of the class
+        
+        int encode(int x, int y, int maxValue);
+
+        virtual void expandNode(Node* node);
 };
 #endif
