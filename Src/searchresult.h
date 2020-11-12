@@ -44,7 +44,6 @@ struct SearchResult
             numberofsteps = 0;
             time = 0;
         }
-
 };
 
 #endif

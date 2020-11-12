@@ -10,6 +10,12 @@
       "args": [
         "C:/Users/shepe/CProjects/MultiAgentPathFinding/Examples/example.xml"
       ]
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "testbench.exe (Tests\\testbench.exe)",
+      "name": "testbench.exe (Tests\\testbench.exe)"
     }
   ]
 }
