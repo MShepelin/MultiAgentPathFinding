@@ -14,13 +14,12 @@ class NodesBinaryHeap
 {
 private:
     std::vector<Node*> nodes;
-    int maxSize_;
 
-    void moveUp(int nodeIndex);
-    void moveDown(int nodeIndex);
+    void moveUp(size_t nodeIndex);
+    void moveDown(size_t nodeIndex);
 
 public:
-    NodesBinaryHeap(int maxSize);
+    NodesBinaryHeap();
 
     void insert(Node& newNode);
 

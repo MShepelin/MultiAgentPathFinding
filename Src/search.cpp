@@ -1,11 +1,11 @@
 #include "search.h"
 
-NodesBinaryHeap::NodesBinaryHeap(int maxSize) : maxSize_(maxSize)
+NodesBinaryHeap::NodesBinaryHeap()
 {
-    return;
+    nodes = { nullptr };
 }
 
-void NodesBinaryHeap::moveUp(int nodeIndex)
+void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
     if (nodeIndex >= nodes.size())
     {
@@ -13,7 +13,7 @@ void NodesBinaryHeap::moveUp(int nodeIndex)
         return;
     }
 
-    while (nodeIndex && nodes[nodeIndex / 2] > nodes[nodeIndex])
+    while (nodeIndex > 1 && *nodes[nodeIndex / 2] > *nodes[nodeIndex])
     {
         std::swap(nodes[nodeIndex], nodes[nodeIndex / 2]);
         std::swap(nodes[nodeIndex]->heapIndex, nodes[nodeIndex / 2]->heapIndex);
@@ -21,7 +21,7 @@ void NodesBinaryHeap::moveUp(int nodeIndex)
     }
 }
 
-void NodesBinaryHeap::moveDown(int nodeIndex)
+void NodesBinaryHeap::moveDown(size_t nodeIndex)
 {
     if (nodeIndex >= nodes.size())
     {
@@ -29,17 +29,17 @@ void NodesBinaryHeap::moveDown(int nodeIndex)
         return;
     }
 
-    int minNodeIndex = nodeIndex;
+    size_t minNodeIndex = nodeIndex;
     do
     {
         nodeIndex = minNodeIndex;
 
-        if (nodeIndex * 2 + 1 < nodes.size() && nodes[minNodeIndex] > nodes[nodeIndex * 2 + 1])
+        if (nodeIndex * 2 + 1 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2 + 1])
         {
             minNodeIndex = nodeIndex * 2 + 1;
         }
 
-        if (nodeIndex * 2 < nodes.size() && nodes[minNodeIndex] > nodes[nodeIndex * 2])
+        if (nodeIndex * 2 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2])
         {
             minNodeIndex = nodeIndex * 2;
         }
@@ -61,27 +61,29 @@ void NodesBinaryHeap::insert(Node& newNode)
 
 void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
 {
-    if (newGValue > nodeToChange.g)
+    if (newGValue >= nodeToChange.g)
     {
         // throw something
         return;
     }
 
     nodeToChange.g = newGValue;
-    moveDown(nodeToChange.heapIndex);
+    moveUp(nodeToChange.heapIndex);
 }
 
 Node* NodesBinaryHeap::popMin()
 {
-    if (!nodes.size())
+    if (nodes.size() == 1)
     {
         return nullptr;
     }
 
-    Node* result = nodes[0];
-    std::swap(nodes[0], nodes[nodes.size() - 1]);
+    Node* result = nodes[1];
+    std::swap(nodes[1], nodes[nodes.size() - 1]);
     nodes.pop_back();
-    moveDown(0);
+    moveDown(1);
+
+    return result;
 }
 
 Search::Search()
