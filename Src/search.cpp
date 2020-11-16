@@ -1,4 +1,6 @@
 #include "search.h"
+#define FIRST_MEET_EXIT
+#define ENC(x, y) encode(x, y, maxSize)
 
 const double ch = 1;
 const double cd = std::sqrt(2);
@@ -106,15 +108,60 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     int task[4];
     map.getTask(task);
 
-    // Create node to start and node to search.
-    open[encode(task[0], task[1], maxSize)] = { task[0], task[1], 0 };
-    setHeuristic(open[encode(task[0], task[1], maxSize)]);
+    // Create node to start.
+    open[ENC(task[0], task[1])] = { task[0], task[1], 0 };
+    setHeuristic(open[ENC(task[0], task[1])]);
+    openHeap.insert(open[ENC(task[0], task[1])]);
 
-    open[encode(task[1], task[2], maxSize)] = { task[2], task[3], 0, 0 };
-    targetNode = &open[encode(task[1], task[2], maxSize)];
+    // Create node to search.
+    open[ENC(task[1], task[2])] = { task[2], task[3], 0, 0 };
+    targetNode = &open[ENC(task[1], task[2])];
+
+    // Search loop
+    while (open.size())
+    {
+        Node* nodeToExpand = openHeap.popMin();
+        close[ENC(nodeToExpand->i, nodeToExpand->j)] = std::move(open[ENC(nodeToExpand->i, nodeToExpand->j)]);
+
+#ifdef FIRST_MEET_EXIT
+        if (nodeToExpand == targetNode) {
+            break;
+        }
+#endif
+
+        // Expand Node.
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                // Don't use diagonal
+                if (i && j)
+                {
+                    continue;
+                }
+
+                if (map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) && map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+                {
+                    if (open.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) != open.end() && 
+                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)].g > nodeToExpand->g + ch)
+                    {
+                        openHeap.decreaseGValue(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)], nodeToExpand->g + ch);
+                    }
+                    else if (close.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == close.end())
+                    {
+                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
+                        setHeuristic(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)]);
+                        openHeap.insert(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)]);
+                    }
+                }
+            }
+        }
+    }
+
+    // Back propagation
 
     //need to implement
-    SearchResult sresult;
+
     /*sresult.pathfound = ;
     sresult.nodescreated =  ;
     sresult.numberofsteps = ;
@@ -141,7 +188,7 @@ int Search::encode(int x, int y, int maxValue)
 
 void Search::expandNode(Node* node)
 {
-
+    
 }
 
 /*void Search::makePrimaryPath(Node curNode)
