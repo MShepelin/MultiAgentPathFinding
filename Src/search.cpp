@@ -222,40 +222,70 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
     {
         for (int j = -1; j <= 1; j++)
         {
-            // Don't use diagonal for now.
-            if (i && j)
+            if (!map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
             {
                 continue;
             }
 
-            // Check if considered node exists and is traversable.
-            if (map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) && map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
-            {
-                Node* potentialNode;
-                if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
-                {
-                    // Create new node.
-                    generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
-                    potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                    setHeuristic(*potentialNode);
-                    openHeap.insert(*potentialNode);
+            double cValue = ch;
 
-                    // Set parential node.
+            // Check if the current step goes through the diagonal.
+            if (i && j)
+            {
+                cValue = cd;
+                if (!currentOptions.allowdiagonal)
+                {
+                    continue;
+                }
+
+                // Count untraversable cells on the diagonal path.
+                char count = 0;
+                if (!map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j))
+                {
+                    count++;
+                }
+
+                if (!map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j))
+                {
+                    count++;
+                }
+
+                // Check if the path through the diagonal is possible.
+                if (count > 0 && !currentOptions.cutcorners)
+                {
+                    continue;
+                }
+                if (count == 2 && !currentOptions.allowsqueeze)
+                {
+                    continue;
+                }
+            }
+
+            // Check if the considered node exists and is traversable.
+            Node* potentialNode;
+            if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
+            {
+                // Create a new node.
+                generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue };
+                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                setHeuristic(*potentialNode);
+                openHeap.insert(*potentialNode);
+
+                // Set the parential node.
+                potentialNode->parent = nodeToExpand;
+            }
+            else
+            {
+                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + cValue)
+                {
+                    openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + cValue);
+
+                    // Change the parential node to the one which is expanded.
                     potentialNode->parent = nodeToExpand;
                 }
-                else
-                {
-                    potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                    if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + ch)
-                    {
-                        openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + ch);
 
-                        // Change parential node to the one, which is expanded.
-                        potentialNode->parent = nodeToExpand;
-                    }
-
-                    // If potential new node is in close list, we never reopen it.
-                }
+                // If the potential node is in the close list, we never reopen/reexpand it.
             }
         }
     }
