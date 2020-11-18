@@ -39,6 +39,7 @@ class Search
         SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
 
     protected:
+        int maxSize;
         int task[4]; // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j;
         EnvironmentOptions currentOptions;
         NodesBinaryHeap openHeap;
@@ -50,5 +51,7 @@ class Search
         int encode(int x, int y, int maxValue);
 
         virtual void setHeuristic(Node& nodeToEdit);
+
+        void expandNode(Node* nodeToExpand, const Map &map);
 };
 #endif

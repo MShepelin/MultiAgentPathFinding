@@ -112,7 +112,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
     // Initialise search parametres.
     currentOptions = options;
-    int maxSize = std::max(map.getMapHeight(), map.getMapHeight());
+    maxSize = std::max(map.getMapHeight(), map.getMapHeight());
     map.getTask(task);
 
     // Create node to start.
@@ -140,47 +140,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 #endif
 
         // Expand the node.
-        for (int i = -1; i <= 1; i++)
-        {
-            for (int j = -1; j <= 1; j++)
-            {
-                // Don't use diagonal for now.
-                if (i && j)
-                {
-                    continue;
-                }
-
-                // Check if considered node exists and is traversable.
-                if (map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) && map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
-                {
-                    Node* potentialNode;
-                    if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
-                    {
-                        // Create new node.
-                        generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
-                        potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                        setHeuristic(*potentialNode);
-                        openHeap.insert(*potentialNode);
-
-                        // Set parential node.
-                        potentialNode->parent = nodeToExpand;
-                    }
-                    else
-                    {
-                        potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                        if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + ch)
-                        {
-                            openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + ch);
-
-                            // Change parential node to the one, which is expanded.
-                            potentialNode->parent = nodeToExpand;
-                        }
-
-                        // If potential new node is in close list, we never reopen it.
-                    }
-                }
-            }
-        }
+        expandNode(nodeToExpand, map);
 
         // Remove expanded node from maps.
         nodeToExpand->isInClose = true;
@@ -254,4 +214,49 @@ void Search::setHeuristic(Node& nodeToEdit)
 int Search::encode(int x, int y, int maxValue)
 {
     return x + y * maxValue;
+}
+
+void Search::expandNode(Node* nodeToExpand, const Map &map)
+{
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            // Don't use diagonal for now.
+            if (i && j)
+            {
+                continue;
+            }
+
+            // Check if considered node exists and is traversable.
+            if (map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) && map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+            {
+                Node* potentialNode;
+                if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
+                {
+                    // Create new node.
+                    generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
+                    potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                    setHeuristic(*potentialNode);
+                    openHeap.insert(*potentialNode);
+
+                    // Set parential node.
+                    potentialNode->parent = nodeToExpand;
+                }
+                else
+                {
+                    potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                    if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + ch)
+                    {
+                        openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + ch);
+
+                        // Change parential node to the one, which is expanded.
+                        potentialNode->parent = nodeToExpand;
+                    }
+
+                    // If potential new node is in close list, we never reopen it.
+                }
+            }
+        }
+    }
 }
