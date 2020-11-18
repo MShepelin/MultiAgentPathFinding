@@ -39,6 +39,8 @@ class Search
         SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
 
     protected:
+        int task[4]; // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j;
+        EnvironmentOptions currentOptions;
         NodesBinaryHeap openHeap;
         std::unordered_map<int, Node> generatedNodes;
         

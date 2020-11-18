@@ -1,6 +1,6 @@
 #include "search.h"
 #include <chrono> 
-//#define FIRST_MEET_EXIT
+#define FIRST_MEET_EXIT
 #define ENC(x, y) encode(x, y, maxSize)
 
 const double ch = 1;
@@ -111,8 +111,8 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     //++++ check if the target mathes the start node
 
     // Initialise search parametres.
+    currentOptions = options;
     int maxSize = std::max(map.getMapHeight(), map.getMapHeight());
-    int task[4];
     map.getTask(task);
 
     // Create node to start.
@@ -216,14 +216,39 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 }
 
 void Search::setHeuristic(Node& nodeToEdit)
-{ 
+{
     if (nodeToEdit.H >= 0)
     {
         // Not to change already calculated heuristic.
         return;
     }
 
-    nodeToEdit.H = 0;
+    double dx = abs(nodeToEdit.i - task[2]);
+    double dy = abs(nodeToEdit.j - task[3]);
+
+    switch (currentOptions.metrictype)
+    {
+    case CN_SP_MT_DIAG:
+        nodeToEdit.H = ch*abs(dx - dy) + cd*std::min(dx, dy);
+        break;
+
+    case CN_SP_MT_MANH:
+        nodeToEdit.H = ch * (dx + dy);
+        break;
+
+    case CN_SP_MT_EUCL:
+        nodeToEdit.H = ch * std::sqrt(dx*dx + dy * dy);
+        break;
+
+    case CN_SP_MT_CHEB:
+        nodeToEdit.H = std::max(dx, dy);
+        break;
+
+    default:
+        nodeToEdit.H = 0;
+        break;
+
+    }
 }
 
 int Search::encode(int x, int y, int maxValue)
