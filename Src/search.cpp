@@ -94,7 +94,7 @@ Node* NodesBinaryHeap::popMin()
 
 unsigned int NodesBinaryHeap::size()
 {
-    return nodes.size();
+    return nodes.size() - 1;
 }
 
 
@@ -117,9 +117,9 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
     // Create node to start.
     generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
-    setHeuristic(generatedNodes[ENC(task[0], task[1])]);
-    openHeap.insert(generatedNodes[ENC(task[0], task[1])]);
     Node* startNode = &generatedNodes[ENC(task[0], task[1])];
+    setHeuristic(*startNode);
+    openHeap.insert(*startNode);
 
     // Create node to search.
     generatedNodes[ENC(task[2], task[3])] = { task[2], task[3], 0, 0 };
@@ -191,7 +191,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     }
 
     // Back propagation
-    if (!targetNode->parent)
+    if (targetNode->parent)
     {
         sresult.pathfound = true;
         sresult.pathlength = targetNode->g;
@@ -211,7 +211,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     // Count result data.
     sresult.nodescreated = generatedNodes.size();
 
-    std::chrono::duration<double> duration = start - std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     sresult.time = duration.count();
 
     return sresult;

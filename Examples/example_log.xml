@@ -52,7 +52,7 @@
     </options>
     <log>
         <mapfilename>C:/Users/shepe/CProjects/MultiAgentPathFinding/Examples/example.xml</mapfilename>
-        <summary numberofsteps="0" nodescreated="0" length="0" length_scaled="0" time="0.000000"/>
+        <summary numberofsteps="536" nodescreated="537" length="0" length_scaled="0" time="0.014810"/>
         <path>Path NOT found!</path>
         <lplevel/>
         <hplevel/>
