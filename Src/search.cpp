@@ -1,5 +1,5 @@
 #include "search.h"
-#include <chrono> 
+#include <chrono>
 #define FIRST_MEET_EXIT
 #define ENC(x, y) encode(x, y, maxSize)
 
@@ -105,15 +105,15 @@ Search::Search()
 
 Search::~Search() {}
 
-SearchResult Search::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options)
+SearchResult Search::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options, const Config& config)
 {
-    //!!!! options expected to be false everywhere
-    //++++ check if the target mathes the start node
-
     // Initialise search parametres.
     currentOptions = options;
     maxSize = std::max(map.getMapHeight(), map.getMapHeight());
     map.getTask(task);
+
+    // Set algorithm type.
+    isAStar = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
 
     // Create node to start.
     generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
@@ -180,6 +180,12 @@ void Search::setHeuristic(Node& nodeToEdit)
     if (nodeToEdit.H >= 0)
     {
         // Not to change already calculated heuristic.
+        return;
+    }
+
+    if (isAStar)
+    {
+        nodeToEdit.H = 0;
         return;
     }
 

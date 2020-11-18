@@ -9,6 +9,7 @@
 #include <limits>
 #include <chrono>
 #include <unordered_map>
+#include "config.h"
 
 class NodesBinaryHeap
 {
@@ -36,18 +37,24 @@ class Search
     public:
         Search();
         ~Search(void);
-        SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
+        SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options, const Config& config);
 
     protected:
+        // Search parametres.
+        bool isAStar;
         int maxSize;
         int task[4]; // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j;
         EnvironmentOptions currentOptions;
+
+        // Search resources.
         NodesBinaryHeap openHeap;
         std::unordered_map<int, Node> generatedNodes;
         
+        // Results.
         SearchResult sresult; 
         std::list<Node> lppath, hppath;
 
+    protected:
         int encode(int x, int y, int maxValue);
 
         virtual void setHeuristic(Node& nodeToEdit);

@@ -5,7 +5,7 @@
         <height>25</height>
         <cellsize>24</cellsize>
         <startx>12</startx>
-        <starty>23</starty>
+        <starty>20</starty>
         <finishx>12</finishx>
         <finishy>7</finishy>
         <grid>
@@ -38,7 +38,7 @@
     </map>
     <algorithm>
         <searchtype>astar</searchtype>
-        <metrictype>euqlidean</metrictype>
+        <metrictype>diagonal</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
         <allowdiagonal>true</allowdiagonal>
