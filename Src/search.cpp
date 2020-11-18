@@ -121,10 +121,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     setHeuristic(*startNode);
     openHeap.insert(*startNode);
 
-    // Create node to search.
-    generatedNodes[ENC(task[2], task[3])] = { task[2], task[3], 0, 0 };
-    Node* targetNode = &generatedNodes[ENC(task[2], task[3])];
-
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -138,7 +134,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         Node* nodeToExpand = openHeap.popMin();
 
 #ifdef FIRST_MEET_EXIT
-        if (nodeToExpand == targetNode) {
+        if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
             break;
         }
 #endif
@@ -191,18 +187,20 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     }
 
     // Back propagation
-    if (targetNode->parent)
+    if (generatedNodes.find(ENC(task[2], task[3])) != generatedNodes.end())
     {
+        Node* targetNode = &generatedNodes[ENC(task[2], task[3])];
+
         sresult.pathfound = true;
         sresult.pathlength = targetNode->g;
 
         Node* currentNode = targetNode;
-        do
+        while (currentNode)
         {
             // For now, nodes are copied to lppath, not moved.
             lppath.push_front(*currentNode);
             currentNode = currentNode->parent;
-        } while (currentNode != startNode);
+        }
 
         sresult.hppath = &lppath; // For now, hppath isn't created
         sresult.lppath = &lppath;

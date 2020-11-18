@@ -4,8 +4,8 @@
         <width>25</width>
         <height>25</height>
         <cellsize>24</cellsize>
-        <startx>12</startx>
-        <starty>20</starty>
+        <startx>0</startx>
+        <starty>0</starty>
         <finishx>12</finishx>
         <finishy>7</finishy>
         <grid>
