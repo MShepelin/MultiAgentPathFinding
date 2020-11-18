@@ -26,6 +26,8 @@ public:
     void decreaseGValue(Node& nodeToChange, double newGValue);
 
     Node* popMin();
+
+    unsigned int size();
 };
 
 
@@ -37,36 +39,14 @@ class Search
         SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
 
     protected:
-        //CODE HERE
-
-        //Hint 1. You definetely need class variables for OPEN and CLOSE
-        Node* targetNode;
-
         NodesBinaryHeap openHeap;
-        std::unordered_map<int, Node> close;
-        std::unordered_map<int, Node> open;
+        std::unordered_map<int, Node> generatedNodes;
         
+        SearchResult sresult; 
+        std::list<Node> lppath, hppath;
 
-        //Hint 2. It's a good idea to define a heuristic calculation function, that will simply return 0
-        //for non-heuristic search methods like Dijkstra
-        
-        virtual void setHeuristic(Node& nodeToEdit);
-
-        //Hint 3. It's a good idea to define function that given a node (and other stuff needed)
-        //will return it's sucessors, e.g. unordered list of nodes
-
-        //Hint 4. working with OPEN and CLOSE is the core
-        //so think of the data structures that needed to be used, about the wrap-up classes (if needed)
-        //Start with very simple (and ineffective) structures like list or vector and make it work first
-        //and only then begin enhancement!
-
-        SearchResult                    sresult; //This will store the search result
-        std::list<Node>                 lppath, hppath; //
-
-        //CODE HERE to define other members of the class
-        
         int encode(int x, int y, int maxValue);
 
-        virtual void expandNode(Node* node);
+        virtual void setHeuristic(Node& nodeToEdit);
 };
 #endif

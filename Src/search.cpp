@@ -92,6 +92,11 @@ Node* NodesBinaryHeap::popMin()
     return result;
 }
 
+unsigned int NodesBinaryHeap::size()
+{
+    return nodes.size();
+}
+
 
 Search::Search()
 {
@@ -111,20 +116,21 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     map.getTask(task);
 
     // Create node to start.
-    open[ENC(task[0], task[1])] = { task[0], task[1], 0 };
-    setHeuristic(open[ENC(task[0], task[1])]);
-    openHeap.insert(open[ENC(task[0], task[1])]);
+    generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
+    setHeuristic(generatedNodes[ENC(task[0], task[1])]);
+    openHeap.insert(generatedNodes[ENC(task[0], task[1])]);
+    Node* startNode = &generatedNodes[ENC(task[0], task[1])];
 
     // Create node to search.
-    open[ENC(task[2], task[3])] = { task[2], task[3], 0, 0 };
-    targetNode = &open[ENC(task[2], task[3])];
+    generatedNodes[ENC(task[2], task[3])] = { task[2], task[3], 0, 0 };
+    Node* targetNode = &generatedNodes[ENC(task[2], task[3])];
 
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
 
     // Search in loop.
     sresult = SearchResult();
-    while (open.size())
+    while (openHeap.size())
     {
         sresult.numberofsteps++;
 
@@ -151,48 +157,59 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
                 // Check if considered node exists and is traversable.
                 if (map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) && map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
                 {
-                    if (open.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) != open.end() && 
-                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)].g > nodeToExpand->g + ch)
-                    {
-                        openHeap.decreaseGValue(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)], nodeToExpand->g + ch);
-
-                        // Change parential node to the one, which is expanded.
-                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)].parent = &open[ENC(nodeToExpand->i, nodeToExpand->j)];
-                    }
-                    else if (close.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == close.end())
+                    Node* potentialNode;
+                    if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
                     {
                         // Create new node.
-                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
-                        setHeuristic(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)]);
-                        openHeap.insert(open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)]);
+                        generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + ch };
+                        potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                        setHeuristic(*potentialNode);
+                        openHeap.insert(*potentialNode);
 
                         // Set parential node.
-                        open[ENC(nodeToExpand->i + i, nodeToExpand->j + j)].parent = &open[ENC(nodeToExpand->i, nodeToExpand->j)];
+                        potentialNode->parent = nodeToExpand;
                     }
+                    else
+                    {
+                        potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
+                        if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + ch)
+                        {
+                            openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + ch);
 
-                    // If potential new node is in close list, we never reopen it.
+                            // Change parential node to the one, which is expanded.
+                            potentialNode->parent = nodeToExpand;
+                        }
+
+                        // If potential new node is in close list, we never reopen it.
+                    }
                 }
             }
         }
 
         // Remove expanded node from maps.
-        close[ENC(nodeToExpand->i, nodeToExpand->j)] = std::move(open[ENC(nodeToExpand->i, nodeToExpand->j)]);
-        open.erase(ENC(nodeToExpand->i, nodeToExpand->j));
+        nodeToExpand->isInClose = true;
     }
 
     // Back propagation
     if (!targetNode->parent)
     {
         sresult.pathfound = true;
-        sresult.hppath = &hppath;
-        sresult.lppath = &lppath;
         sresult.pathlength = targetNode->g;
 
-        // to-do
+        Node* currentNode = targetNode;
+        do
+        {
+            // For now, nodes are copied to lppath, not moved.
+            lppath.push_front(*currentNode);
+            currentNode = currentNode->parent;
+        } while (currentNode != startNode);
+
+        sresult.hppath = &lppath; // For now, hppath isn't created
+        sresult.lppath = &lppath;
     }
 
     // Count result data.
-    sresult.nodescreated = close.size() + open.size();
+    sresult.nodescreated = generatedNodes.size();
 
     std::chrono::duration<double> duration = start - std::chrono::high_resolution_clock::now();
     sresult.time = duration.count();
@@ -201,9 +218,10 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 }
 
 void Search::setHeuristic(Node& nodeToEdit)
-{
+{ 
     if (nodeToEdit.H >= 0)
     {
+        // Not to change already calculated heuristic.
         return;
     }
 
@@ -214,18 +232,3 @@ int Search::encode(int x, int y, int maxValue)
 {
     return x + y * maxValue;
 }
-
-void Search::expandNode(Node* node)
-{
-    
-}
-
-/*void Search::makePrimaryPath(Node curNode)
-{
-    //need to implement
-}*/
-
-/*void Search::makeSecondaryPath()
-{
-    //need to implement
-}*/

@@ -11,6 +11,7 @@ struct Node
     double  g = -1, H = -1; //f-, g- and h-values of the search node
     Node    *parent = nullptr; //backpointer to the predecessor node (e.g. the node which g-value was used to set the g-velue of the current node)
     size_t heapIndex;
+    bool isInClose = false;
 
     bool operator>(Node& nodeToCompare) const
     {
