@@ -4,8 +4,8 @@
         <width>25</width>
         <height>25</height>
         <cellsize>24</cellsize>
-        <startx>0</startx>
-        <starty>0</starty>
+        <startx>12</startx>
+        <starty>23</starty>
         <finishx>12</finishx>
         <finishy>7</finishy>
         <grid>
@@ -38,12 +38,12 @@
     </map>
     <algorithm>
         <searchtype>astar</searchtype>
-        <metrictype>diagonal</metrictype>
+        <metrictype>euqlidean</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
-        <allowdiagonal>false</allowdiagonal>
-        <cutcorners>false</cutcorners>
-        <allowsqueeze>false</allowsqueeze>
+        <allowdiagonal>true</allowdiagonal>
+        <cutcorners>true</cutcorners>
+        <allowsqueeze>true</allowsqueeze>
     </algorithm>
     <options>
         <loglevel>1</loglevel>
