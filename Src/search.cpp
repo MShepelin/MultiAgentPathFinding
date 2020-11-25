@@ -113,7 +113,17 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     map.getTask(task);
 
     // Set algorithm type.
-    isAStar = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
+    isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
+
+    // Start the counter.
+    auto start = std::chrono::high_resolution_clock::now();
+
+    sresult = SearchResult();
+    if (!map.CellIsTraversable(task[0], task[1]))
+    {
+        // Default constructor of SearchResult will already have correct parameters.
+        return sresult;
+    }
 
     // Create node to start.
     generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
@@ -121,11 +131,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     setHeuristic(*startNode);
     openHeap.insert(*startNode);
 
-    // Start the counter.
-    auto start = std::chrono::high_resolution_clock::now();
-
     // Search in loop.
-    sresult = SearchResult();
     while (openHeap.size())
     {
         sresult.numberofsteps++;
@@ -134,7 +140,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         Node* nodeToExpand = openHeap.popMin();
 
 #ifdef FIRST_MEET_EXIT
-        if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
+        if (!isDijk && nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
             break;
         }
 #endif
@@ -183,7 +189,7 @@ void Search::setHeuristic(Node& nodeToEdit)
         return;
     }
 
-    if (isAStar)
+    if (isDijk)
     {
         nodeToEdit.H = 0;
         return;

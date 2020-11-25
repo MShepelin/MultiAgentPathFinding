@@ -41,7 +41,7 @@ class Search
 
     protected:
         // Search parametres.
-        bool isAStar;
+        bool isDijk;
         int maxSize;
         int task[4]; // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j;
         EnvironmentOptions currentOptions;
