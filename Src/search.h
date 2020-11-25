@@ -22,11 +22,9 @@ private:
 public:
     NodesBinaryHeap();
 
-    void insert(Node& newNode);
-
-    void decreaseGValue(Node& nodeToChange, double newGValue);
-
     Node* popMin();
+    void insert(Node& newNode);
+    void decreaseGValue(Node& nodeToChange, double newGValue);
 
     unsigned int size();
 };
@@ -40,19 +38,19 @@ class Search
         SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options, const Config& config);
 
     protected:
-        // Search parametres.
-        bool isDijk;
-        int maxSize;
-        int task[4]; // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j;
-        EnvironmentOptions currentOptions;
-
-        // Search resources.
         NodesBinaryHeap openHeap;
         std::unordered_map<int, Node> generatedNodes;
-        
-        // Results.
-        SearchResult sresult; 
         std::list<Node> lppath, hppath;
+        SearchResult sresult;
+
+        EnvironmentOptions currentOptions;
+        double heuristicWeight;
+        int task[4];
+        // task describes locations of start and finish:
+        // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j
+        int maxSize;
+        // maxSize is the maximum size of the considered grid
+        bool isDijk;
 
     protected:
         int encode(int x, int y, int maxValue);

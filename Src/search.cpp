@@ -1,5 +1,7 @@
+#pragma once
 #include "search.h"
 #include <chrono>
+#include <algorithm>
 #define FIRST_MEET_EXIT
 #define ENC(x, y) encode(x, y, maxSize)
 
@@ -15,7 +17,7 @@ void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
     if (nodeIndex >= nodes.size())
     {
-        // throw something
+        // Incorrect input
         return;
     }
 
@@ -31,7 +33,7 @@ void NodesBinaryHeap::moveDown(size_t nodeIndex)
 {
     if (nodeIndex >= nodes.size())
     {
-        // throw something
+        // Incorrect input
         return;
     }
 
@@ -61,7 +63,7 @@ void NodesBinaryHeap::moveDown(size_t nodeIndex)
 void NodesBinaryHeap::insert(Node& newNode)
 {
     newNode.heapIndex = nodes.size();
-    nodes.push_back(&newNode);
+    nodes.emplace_back(&newNode);
     moveUp(newNode.heapIndex);
 }
 
@@ -69,7 +71,7 @@ void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
 {
     if (newGValue >= nodeToChange.g)
     {
-        // throw something
+        // Incorrect newGValue
         return;
     }
 
@@ -100,7 +102,10 @@ unsigned int NodesBinaryHeap::size()
 
 Search::Search()
 {
-    //set defaults here
+    heuristicWeight = 0;
+    isDijk = false;
+    maxSize = 0;
+    std::fill(task, task + 4, 0);
 }
 
 Search::~Search() {}
@@ -112,8 +117,9 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     maxSize = std::max(map.getMapHeight(), map.getMapHeight());
     map.getTask(task);
 
-    // Set algorithm type.
+    // Set algorithm configurations.
     isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
+    heuristicWeight = config.SearchParams[CN_SP_HW];
 
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
@@ -176,7 +182,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     sresult.nodescreated = generatedNodes.size();
 
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
-    sresult.time = duration.count();
+    sresult.time = duration.count(); // in seconds
 
     return sresult;
 }
@@ -219,12 +225,15 @@ void Search::setHeuristic(Node& nodeToEdit)
     default:
         nodeToEdit.H = 0;
         break;
-
     }
+
+    nodeToEdit.H *= heuristicWeight;
 }
 
 int Search::encode(int x, int y, int maxValue)
 {
+    // Hash table requires a hashable type, so std::pair won't suit.
+    // This encoding provides one-to-one correspondence between two coordinates and int.
     return x + y * maxValue;
 }
 
@@ -234,7 +243,10 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
     {
         for (int j = -1; j <= 1; j++)
         {
-            if (!map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+            // Check possibility of movement
+            if ((!i && !j) || 
+                !map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || 
+                !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
             {
                 continue;
             }
@@ -251,23 +263,11 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
                 }
 
                 // Count untraversable cells on the diagonal path.
-                char count = 0;
-                if (!map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j))
-                {
-                    count++;
-                }
-
-                if (!map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j))
-                {
-                    count++;
-                }
+                char count = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
+                    !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
 
                 // Check if the path through the diagonal is possible.
-                if (count > 0 && !currentOptions.cutcorners)
-                {
-                    continue;
-                }
-                if (count == 2 && !currentOptions.allowsqueeze)
+                if ( (count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze) )
                 {
                     continue;
                 }
@@ -302,3 +302,6 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
         }
     }
 }
+
+#undef ENC(x, y)
+#undef FIRST_MEET_EXIT
