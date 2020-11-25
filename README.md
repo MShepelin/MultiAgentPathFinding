@@ -1,19 +1,17 @@
 # MultiAgentPathFinding
 
-The aim of the MultiAgentPathFinding repository is to create realisations of different path planning algorithms with flexible environment options, such as metric type and possible directions of movement. The project is made in the second year of HSE Faculty of Computer Science.
+The aim of the MultiAgentPathFinding repository is to create realizations of different path planning algorithms with flexible environment options, such as metric type and possible directions of movement. The project is made in the second year of HSE Faculty of Computer Science.
 
 ### Build on Linux and Mac
 
+You can choose "Debug" or "Release" build.
+
 ```bash
-cd PathPlanningProject
-cd Build
-cd Release
+cd MultiAgentPathFinding/Build/Release
 cmake ../../ -DCMAKE_BUILD_TYPE="Release"
 make
 make install
 ```
-
-"Release" can be changed to "Debug".
 
 To run use:
 
@@ -24,12 +22,10 @@ Dmitriy_Shepelin_ASearch ../../Examples/example.xml
 
 ### Build on Windows
 
-PATH should contain cmake and migw32-make.
+PATH must contain cmake and migw32-make.
 
 ```bash
-cd PathPlanningProject
-cd Build
-cd Release
+cd MultiAgentPathFinding/Build/Release
 cmake ../../ -DCMAKE_BUILD_TYPE="Release" -G "MinGW Makefiles"
 mingw32-make
 mingw32-make install
@@ -75,4 +71,12 @@ The output of the program is the same file with the "_log" suffix. It will show 
 - *numberofsteps* is the number of nodes which the algorithm worked with (expanded and examined) in the path planning loop.
 -  *path* draws a path from start to finish if it was found *.
 - *lplevel* and *hplevel* describe the path and short and long versions respectively.
+
+### Mentors
+
+A big thanks to the mentors on this project!
+
+[**Konstantin Yakovlev**](http://kyakovlev.me/ru/home/)
+
+[**Stepan Dergachev**](https://github.com/haiot4105)
 
