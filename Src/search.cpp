@@ -140,7 +140,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         Node* nodeToExpand = openHeap.popMin();
 
 #ifdef FIRST_MEET_EXIT
-        if (!isDijk && nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
+        if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
             break;
         }
 #endif

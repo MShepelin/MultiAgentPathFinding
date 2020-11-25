@@ -2,7 +2,7 @@
 
 The aim of the MultiAgentPathFinding repository is to create realisations of different path planning algorithms with flexible environment options, such as metric type and possible directions of movement. The project is made in the second year of HSE Faculty of Computer Science.
 
-#### Build on Linux and Mac
+### Build on Linux and Mac
 
 ```bash
 cd PathPlanningProject
@@ -22,7 +22,7 @@ cd ../../Bin/{Debug|Release}/
 Dmitriy_Shepelin_ASearch ../../Examples/example.xml
 ```
 
-#### Build on Windows
+### Build on Windows
 
 PATH should contain cmake and migw32-make.
 
@@ -44,19 +44,35 @@ cd ../../Bin/{Debug|Release}/
 Dmitriy_Shepelin_ASearch.exe ../../Examples/example.xml
 ```
 
-#### Debug with Visual Studio
+### Debug with Visual Studio
 
 You can use VS interaction with CMake to build, run and debug this project. To use command-line arguments you can edit *args* in *configurations* field of *.vs/launch.vs.json*.
 
-#### Options
+### Input and output
 
-A path is constructed on a 2D plane with traversable and non-traversable cells. Each task is given as an XML file (the format is shown in Examples/example.xml). To emulate different environments you can set up options that the program can use.
+A path is constructed on a 2D plane with traversable and non-traversable cells. Each task is given as an XML file. The format is shown in *Examples/example.xml*. This file is expected to have these fields:
 
-##### Algorithm settings
+- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations.
+- *algorithm* describes options of path planning:
+  - *searchtype* can be "dijkstra" or "astar" to use Dijkstra or A* algorithm respectively;
+  - *metrictype* describes heuristic to use (if A* is chosen):
+    - diagonal — diagonal metric;
+    - manhattan — Manhattan distance;
+    - euclidean — Euclidean distance;
+    - chebyshev — Chebyshev distance;
+  - *hweight* is a multiplicator for heuristic;
+  - *allowdiagonal* is true or false and allows the algorithm to consider paths through diagonals;
+  - *cutcorners* is true or false and allows to use diagonals which intersect with one non-traversable cell on the way.
+  - allowsqueeze is true or false and allows to use diagonal if it intersects two two non-traversable cells.
 
-Use "dijkstra" or "astar" in searchtype to use Dijkstra or A* algorithm repectively.
+The output of the program is the same file with the "_log" suffix. It will show information about the search in the *log* field.
 
-##### Movements settings
-
-
+- *mapfilename* shows the original path to the file with task description.
+- *summary time* is number of seconds which the program ran.
+- *length_scaled* is the length of the found path with the map's *cellsize* multiplicator.
+- *length* is the same but without multiplicator.
+- *nodescreated* is the number of cells which the algorithm considered and created nodes for.
+- *numberofsteps* is the number of nodes which the algorithm worked with (expanded and examined) in the path planning loop.
+-  *path* draws a path from start to finish if it was found *.
+- *lplevel* and *hplevel* describe the path and short and long versions respectively.
 
