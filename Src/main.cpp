@@ -2,6 +2,12 @@
 
 int main(int argc, char* argv[])
 {
+    if (argc < 2)
+    {
+        std::cout << "A map must be chosen!" << std::endl;
+        return 0;
+    }
+
     Mission mission(argv[1]);
 
     std::cout<<argv[1]<<std::endl;
