@@ -19,12 +19,6 @@
       "args": [
         "C:/Users/shepe/CProjects/MultiAgentPathFinding/TestData/A_test.xml"
       ]
-    },
-    {
-      "type": "default",
-      "project": "CMakeLists.txt",
-      "projectTarget": "Dmitriy_Shepelin_ASearch.exe (Install) (C:\\Users\\shepe\\CProjects\\MultiAgentPathFinding\\Bin\\Debug\\Dmitriy_Shepelin_ASearch.exe)",
-      "name": "Dmitriy_Shepelin_ASearch.exe (Install) (C:\\Users\\shepe\\CProjects\\MultiAgentPathFinding\\Bin\\Debug\\Dmitriy_Shepelin_ASearch.exe)"
     }
   ]
 }
