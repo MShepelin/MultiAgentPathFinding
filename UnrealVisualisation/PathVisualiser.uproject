@@ -1,0 +1,19 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{9CA0AF3D-40A2-3DBD-E9DA-6582BCBBC295}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "PathVisualiser",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"TargetPlatforms": [
+		"WindowsNoEditor",
+		"WindowsNoEditorWin32",
+		"LinuxNoEditor",
+		"LinuxAArch64NoEditor"
+	]
+}

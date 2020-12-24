@@ -1,0 +1,584 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Invalid|Win32">
+      <Configuration>Invalid</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Invalid|x64">
+      <Configuration>Invalid</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Program|Win32">
+      <Configuration>Debug_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Program|x64">
+      <Configuration>Debug_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Debug_Program|Win32">
+      <Configuration>Mac_Debug_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Debug_Program|x64">
+      <Configuration>Mac_Debug_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugGame_Program|Win32">
+      <Configuration>DebugGame_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugGame_Program|x64">
+      <Configuration>DebugGame_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_DebugGame_Program|Win32">
+      <Configuration>Mac_DebugGame_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_DebugGame_Program|x64">
+      <Configuration>Mac_DebugGame_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Development_Program|Win32">
+      <Configuration>Development_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Development_Program|x64">
+      <Configuration>Development_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Development_Program|Win32">
+      <Configuration>Mac_Development_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Development_Program|x64">
+      <Configuration>Mac_Development_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Shipping_Program|Win32">
+      <Configuration>Shipping_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Shipping_Program|x64">
+      <Configuration>Shipping_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Shipping_Program|Win32">
+      <Configuration>Mac_Shipping_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Shipping_Program|x64">
+      <Configuration>Mac_Shipping_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Test_Program|Win32">
+      <Configuration>Test_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Test_Program|x64">
+      <Configuration>Test_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Test_Program|Win32">
+      <Configuration>Mac_Test_Program</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Mac_Test_Program|x64">
+      <Configuration>Mac_Test_Program</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{688948B4-5FAE-4D5C-A1A4-4906503307DF}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <RootNamespace>DatasmithSketchUp2017</RootNamespace>
+    <PlatformToolset>v141</PlatformToolset>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <TargetRuntime>Native</TargetRuntime>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectCapability Include="MLProject" />
+    <PropertyPageSchema Include="$(LOCALAPPDATA)\Microsoft\VisualStudio\MagicLeap\debugger.xaml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Invalid|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Invalid|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Program|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Program|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Invalid|Win32'">
+    <NMakeBuildCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeCleanCommandLine>
+    <NMakeOutput>Invalid Output</NMakeOutput>
+    <OutDir>C:\UnrealEngine\Engine\Intermediate\Build\Unused\</OutDir>
+    <IntDir>C:\UnrealEngine\Engine\Intermediate\Build\Unused\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Invalid|x64'">
+    <NMakeBuildCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo The selected platform/configuration is not valid for this target.</NMakeCleanCommandLine>
+    <NMakeOutput>Invalid Output</NMakeOutput>
+    <OutDir>C:\UnrealEngine\Engine\Intermediate\Build\Unused\</OutDir>
+    <IntDir>C:\UnrealEngine\Engine\Intermediate\Build\Unused\</IntDir>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win32 Debug -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win32 Debug -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win32 Debug -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win32\SketchUp\2017\DatasmithSketchUp2017-Win32-Debug.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Program|x64'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win64 Debug -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win64 Debug -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win64 Debug -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win64\SketchUp\2017\DatasmithSketchUp2017-Win64-Debug.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Mac Debug -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Mac Debug -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Mac Debug -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Mac\SketchUp\2017\DatasmithSketchUp2017-Mac-Debug</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win32 DebugGame -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win32 DebugGame -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win32 DebugGame -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win32\SketchUp\2017\DatasmithSketchUp2017-Win32-DebugGame.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Program|x64'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win64 DebugGame -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win64 DebugGame -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win64 DebugGame -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win64\SketchUp\2017\DatasmithSketchUp2017-Win64-DebugGame.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Mac DebugGame -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Mac DebugGame -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Mac DebugGame -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Mac\SketchUp\2017\DatasmithSketchUp2017-Mac-DebugGame</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win32 Development -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win32 Development -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win32 Development -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win32\SketchUp\2017\DatasmithSketchUp2017.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Program|x64'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win64 Development -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win64 Development -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win64 Development -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win64\SketchUp\2017\DatasmithSketchUp2017.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Mac Development -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Mac Development -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Mac Development -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Mac\SketchUp\2017\DatasmithSketchUp2017</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win32 Shipping -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win32 Shipping -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win32 Shipping -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win32\SketchUp\2017\DatasmithSketchUp2017-Win32-Shipping.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Program|x64'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win64 Shipping -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win64 Shipping -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win64 Shipping -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win64\SketchUp\2017\DatasmithSketchUp2017-Win64-Shipping.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Mac Shipping -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Mac Shipping -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Mac Shipping -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Mac\SketchUp\2017\DatasmithSketchUp2017-Mac-Shipping</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win32 Test -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win32 Test -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win32 Test -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win32\SketchUp\2017\DatasmithSketchUp2017-Win32-Test.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Program|x64'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Win64 Test -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Win64 Test -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Win64 Test -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Win64\SketchUp\2017\DatasmithSketchUp2017-Win64-Test.exe</NMakeOutput>
+  </PropertyGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Program|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Program|Win32'">
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <LibraryWPath />
+    <SourcePath />
+    <ExcludePath />
+    <OutDir>$(ProjectDir)..\Build\Unused\</OutDir>
+    <IntDir>$(ProjectDir)..\Build\Unused\</IntDir>
+    <NMakeBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Build.bat DatasmithSketchUp2017 Mac Test -WaitMutex -FromMsBuild</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Rebuild.bat DatasmithSketchUp2017 Mac Test -WaitMutex -FromMsBuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>C:\UnrealEngine\Engine\Build\BatchFiles\Clean.bat DatasmithSketchUp2017 Mac Test -WaitMutex -FromMsBuild</NMakeCleanCommandLine>
+    <NMakeOutput>C:\UnrealEngine\Engine\Binaries\Mac\SketchUp\2017\DatasmithSketchUp2017-Mac-Test</NMakeOutput>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>$(IncludePath);C:\UnrealEngine\Engine\Source;C:\UnrealEngine\Engine\Source\Runtime\Launch\Public;C:\UnrealEngine\Engine\Source\Runtime\Launch\Private;C:\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter;C:\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\Core;C:\UnrealEngine\Engine\Source\Runtime;C:\UnrealEngine\Engine\Source\Runtime\TraceLog\Public;C:\UnrealEngine\Engine\Source\Runtime\Core\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\TraceLog;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\DatasmithExporter;C:\UnrealEngine\Engine\Source\Developer\Datasmith;C:\UnrealEngine\Engine\Source\Developer\Datasmith\DatasmithExporter\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\DatasmithCore;C:\UnrealEngine\Engine\Source\Runtime\Datasmith;C:\UnrealEngine\Engine\Source\Runtime\Datasmith\DatasmithCore\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\CoreUObject;C:\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\RawMesh;C:\UnrealEngine\Engine\Source\Runtime\RawMesh\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\MeshDescription;C:\UnrealEngine\Engine\Source\Runtime\MeshDescription\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\StaticMeshDescription;C:\UnrealEngine\Engine\Source\Runtime\StaticMeshDescription\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\Projects;C:\UnrealEngine\Engine\Source\Runtime\Projects\Public;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\Json;C:\UnrealEngine\Engine\Source\Runtime\Json\Public;C:\UnrealEngine\Engine\Source\ThirdParty;C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Inc\DatasmithSketchUp2017;C:\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.2\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\winrt;;</IncludePath>
+    <NMakeForcedIncludes>$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath>$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <AdditionalOptions>/std:c++14</AdditionalOptions>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUp2017.Target.cs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUp2017.Build.cs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUp2018.Build.cs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUp2019.Build.cs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUp2020.Build.cs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\DatasmithSketchUpExporter.def"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomActions.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomExitDialog.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomInstallDirDlg.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomLicenseAgreementDlg.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomWelcomeDialog.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\CustomWixUI_InstallDir.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\GenericUiBrandDialog.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Installer.wixproj"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\SketchUpExporter.wxs"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Localization\en-us.wxl"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Banner.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\default_small_banner.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Dialog.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Epic_Games_logo.png"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Exporter Plugin End User License Agreement.docx"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Exporter Plugin End User License Agreement.rtf"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Microsoft_VC140_CRT_x64.msm"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Microsoft_VC140_OpenMP_x64.msm"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\UnrealEngine.ico"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Epic_Games_logo.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Background\28190.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Background\28402.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Background\28674.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Background\30668.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\Background\30725.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\General\banner.bmp"/>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Installer\Resources\Images\General\unreal-logo.jpg"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpAFXDialogs.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpCamera.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpCamera.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpComponent.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpComponent.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpDialogs.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpDialogs.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporter.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporter.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporterDLL.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporterDLL.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporterInterface.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpExporterInterface.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMaterial.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMaterial.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMesh.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMesh.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMetadata.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpMetadata.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpOptions.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpOptions.h"/>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpSDKBegins.h"/>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpSDKCeases.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpString.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpString.h"/>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpSummary.cpp">
+      <AdditionalIncludeDirectories>$(NMakeIncludeSearchPath);C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0;C:\UnrealEngine\Engine\Source\ThirdParty\openexr\Deploy\OpenEXR-2.3.0\OpenEXR\include;</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(NMakeForcedIncludes);C:\UnrealEngine\Engine\Intermediate\Build\Win64\DatasmithSketchUp2017\Development\DatasmithSketchUp2017\Definitions.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Private\DatasmithSketchUpSummary.h"/>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\Enterprise\Datasmith\DatasmithSketchUpExporter\Resources\Windows\resource.h"/>
+  </ItemGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <PropertyGroup>
+    <CleanDependsOn> $(CleanDependsOn); </CleanDependsOn>
+    <CppCleanDependsOn></CppCleanDependsOn>
+  </PropertyGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

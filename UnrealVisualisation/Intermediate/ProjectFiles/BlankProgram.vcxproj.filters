@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\BlankProgram\BlankProgram.Target.cs" />
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\BlankProgram\BlankProgram.Build.cs" />
+    <Filter Include="Private">
+      <UniqueIdentifier>{E1DE7E2F-AAA5-4D5E-82C4-C7D2DF31778F}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\BlankProgram\Private\BlankProgram.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\BlankProgram\Private\BlankProgram.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{7862A2A3-209C-4151-92B1-7A1DC8E2FA97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Windows">
+      <UniqueIdentifier>{5FCCAE2E-2965-46FB-8DE7-A2A678EE30B1}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\..\..\..\..\UnrealEngine\Engine\Source\Programs\BlankProgram\Resources\Windows\BlankProgram.ico">
+      <Filter>Resources\Windows</Filter>
+    </None>
+  </ItemGroup>
+</Project>

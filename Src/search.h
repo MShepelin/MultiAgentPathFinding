@@ -14,7 +14,9 @@
 class NodesBinaryHeap
 {
 private:
-    std::vector<Node*> nodes;
+    std::vector<Node> nodes;
+    //std::unordered_map<long long, std::pair<int, int>> locationToParent;
+    std::unordered_map<long long, size_t> keyToIndex;
 
     void moveUp(size_t nodeIndex);
     void moveDown(size_t nodeIndex);
@@ -22,11 +24,12 @@ private:
 public:
     NodesBinaryHeap();
 
-    Node* popMin();
-    void insert(Node& newNode);
-    void decreaseGValue(Node& nodeToChange, double newGValue);
+    Node popMin();
+    void insert(Node& node);
+    void decreaseGValue(long long key, double newGValue, Node* newParent);
+    Node* getNode(long long key);
 
-    unsigned int size();
+    size_t size();
 };
 
 
@@ -39,7 +42,9 @@ class Search
 
     protected:
         NodesBinaryHeap openHeap;
-        std::unordered_map<int, Node> generatedNodes;
+        std::unordered_map<long long, Node> close;
+
+        //std::unordered_map<int, Node> generatedNodes;
         std::list<Node> lppath, hppath;
         SearchResult sresult;
 
@@ -48,15 +53,14 @@ class Search
         int task[4];
         // task describes locations of start and finish:
         // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j
-        int maxSize;
+
         // maxSize is the maximum size of the considered grid
+        int maxSize;
         bool isDijk;
 
     protected:
-        int encode(int x, int y, int maxValue);
-
         virtual void setHeuristic(Node& nodeToEdit);
 
-        void expandNode(Node* nodeToExpand, const Map &map);
+        void expandNode(Node& nodeToExpand, const Map &map);
 };
 #endif

@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-PathVisualiser.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\shepe\Unreal Projects\PathVisualiser\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\PathVisualiser.cpp.obj"
+"C:\Users\shepe\Unreal Projects\PathVisualiser\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\PathVisualiserGameModeBase.cpp.obj"
+"C:\Users\shepe\Unreal Projects\PathVisualiser\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\PathVisualiser.init.gen.cpp.obj"
+"C:\Users\shepe\Unreal Projects\PathVisualiser\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\PathVisualiserGameModeBase.gen.cpp.obj"
+"C:\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Development\Default.rc2.res"
+/OUT:"C:\Users\shepe\Unreal Projects\PathVisualiser\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\UE4Editor-PathVisualiser.lib"
+/INCLUDE:IMPLEMENT_MODULE_PathVisualiser

@@ -2,103 +2,93 @@
 #include "search.h"
 #include <chrono>
 #include <algorithm>
-#define FIRST_MEET_EXIT
-#define ENC(x, y) encode(x, y, maxSize)
+#define ENCODE_GRID_POSITION(x, y) (x) + (y) * (long long) maxSize
 
 const double ch = 1;
 const double cd = std::sqrt(2);
 
 NodesBinaryHeap::NodesBinaryHeap()
 {
-    nodes = { nullptr };
+    nodes = { Node() };
 }
 
 void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
-    if (nodeIndex >= nodes.size())
+    for (; nodeIndex > 1 && nodes[nodeIndex >> 1] > nodes[nodeIndex]; nodeIndex >>= 1)
     {
-        // Incorrect input
-        return;
-    }
-
-    while (nodeIndex > 1 && *nodes[nodeIndex / 2] > *nodes[nodeIndex])
-    {
-        std::swap(nodes[nodeIndex], nodes[nodeIndex / 2]);
-        std::swap(nodes[nodeIndex]->heapIndex, nodes[nodeIndex / 2]->heapIndex);
-        nodeIndex /= 2;
+        std::swap(keyToIndex[nodes[nodeIndex].key], keyToIndex[nodes[nodeIndex >> 1].key]);
+        std::swap(nodes[nodeIndex], nodes[nodeIndex >> 1]);
     }
 }
 
 void NodesBinaryHeap::moveDown(size_t nodeIndex)
 {
-    if (nodeIndex >= nodes.size())
+    for (size_t minChildIndex = nodeIndex << 1; minChildIndex < nodes.size(); minChildIndex = nodeIndex << 1)
     {
-        // Incorrect input
-        return;
+        if (minChildIndex + 1 < nodes.size() && nodes[minChildIndex] > nodes[minChildIndex + 1])
+            ++minChildIndex;
+
+        Node& currentNode = nodes[nodeIndex];
+        Node& minChild = nodes[minChildIndex];
+        if (!(currentNode > minChild))
+            break;
+
+        std::swap(keyToIndex[nodes[nodeIndex].key], keyToIndex[nodes[nodeIndex >> 1].key]);
+        std::swap(nodes[nodeIndex], nodes[minChildIndex]);
+        nodeIndex = minChildIndex;
     }
-
-    size_t minNodeIndex = nodeIndex;
-    do
-    {
-        nodeIndex = minNodeIndex;
-
-        if (nodeIndex * 2 + 1 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2 + 1])
-        {
-            minNodeIndex = nodeIndex * 2 + 1;
-        }
-
-        if (nodeIndex * 2 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2])
-        {
-            minNodeIndex = nodeIndex * 2;
-        }
-
-        if (minNodeIndex != nodeIndex)
-        {
-            std::swap(nodes[nodeIndex], nodes[minNodeIndex]);
-            std::swap(nodes[nodeIndex]->heapIndex, nodes[minNodeIndex]->heapIndex);
-        }
-    } while (minNodeIndex != nodeIndex);
 }
 
 void NodesBinaryHeap::insert(Node& newNode)
 {
-    newNode.heapIndex = nodes.size();
-    nodes.emplace_back(&newNode);
-    moveUp(newNode.heapIndex);
+    // Prepare node to extract data from it.
+    size_t nodeIndex = nodes.size();
+    keyToIndex.insert({ newNode.key, nodeIndex });
+    nodes.emplace_back(newNode);
+    moveUp(nodeIndex);
 }
 
-void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
+void NodesBinaryHeap::decreaseGValue(long long key, double newGValue, Node* newParent)
 {
-    if (newGValue >= nodeToChange.g)
-    {
-        // Incorrect newGValue
-        return;
-    }
+    size_t nodeIndex = keyToIndex[key];
 
-    nodeToChange.g = newGValue;
-    moveUp(nodeToChange.heapIndex);
+    nodes[nodeIndex].g = newGValue;
+    nodes[nodeIndex].parent = newParent;
+    moveUp(nodeIndex);
 }
 
-Node* NodesBinaryHeap::popMin()
+Node NodesBinaryHeap::popMin()
 {
+    /*
     if (nodes.size() == 1)
     {
-        return nullptr;
-    }
+        // error
+        return Node();
+    }*/
 
-    Node* result = nodes[1];
+    Node result = nodes[1];
     std::swap(nodes[1], nodes[nodes.size() - 1]);
+    keyToIndex[nodes[1].key] = 1;
     nodes.pop_back();
     moveDown(1);
 
     return result;
 }
 
-unsigned int NodesBinaryHeap::size()
+size_t NodesBinaryHeap::size()
 {
     return nodes.size() - 1;
 }
 
+Node* NodesBinaryHeap::getNode(long long key)
+{
+    auto iterator = keyToIndex.find(key);
+    if (iterator == keyToIndex.end())
+    {
+        return nullptr;
+    }
+    return &nodes[keyToIndex[iterator->second]];
+}
 
 Search::Search()
 {
@@ -127,46 +117,43 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     sresult = SearchResult();
     if (!map.CellIsTraversable(task[0], task[1]))
     {
-        // Default constructor of SearchResult will already have correct parameters.
+        // Default constructor of SearchResult will set correct parameters.
         return sresult;
     }
 
     // Create node to start.
-    generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
-    Node* startNode = &generatedNodes[ENC(task[0], task[1])];
-    setHeuristic(*startNode);
-    openHeap.insert(*startNode);
+    Node startNode = { task[0], task[1], 0 };
+    startNode.key = ENCODE_GRID_POSITION(task[0], task[1]);
+    setHeuristic(startNode);
+    openHeap.insert(startNode);
 
-    // Search in loop.
+    // Try to expand a node.
+    Node nodeToExpand;
     while (openHeap.size())
     {
-        sresult.numberofsteps++;
+        nodeToExpand = openHeap.popMin();
+        ++sresult.numberofsteps;
 
-        // Remove expanded node from the heap.
-        Node* nodeToExpand = openHeap.popMin();
-
-#ifdef FIRST_MEET_EXIT
-        if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
+        if (nodeToExpand.i == task[2] && nodeToExpand.j == task[3]) {
             break;
         }
-#endif
+
+        // Add to the "close" list.
+        close.insert({ ENCODE_GRID_POSITION(task[2], task[3]), nodeToExpand });
 
         // Expand the node.
-        expandNode(nodeToExpand, map);
-
-        // Remove expanded node from maps.
-        nodeToExpand->isInClose = true;
+        expandNode(close[ENCODE_GRID_POSITION(task[2], task[3])], map);
     }
 
     // Back propagation
-    if (generatedNodes.find(ENC(task[2], task[3])) != generatedNodes.end())
+    if (close.find(ENCODE_GRID_POSITION(task[2], task[3])) != close.end())
     {
-        Node* targetNode = &generatedNodes[ENC(task[2], task[3])];
+        Node& targetNode = close[ENCODE_GRID_POSITION(task[2], task[3])];
 
         sresult.pathfound = true;
-        sresult.pathlength = targetNode->g;
+        sresult.pathlength = targetNode.g;
 
-        Node* currentNode = targetNode;
+        Node* currentNode = &targetNode;
         while (currentNode)
         {
             // For now, nodes are copied to lppath, not moved.
@@ -177,9 +164,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         sresult.hppath = &lppath; // For now, hppath isn't created
         sresult.lppath = &lppath;
     }
-
-    // Count result data.
-    sresult.nodescreated = generatedNodes.size();
 
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     sresult.time = duration.count(); // in seconds
@@ -230,23 +214,20 @@ void Search::setHeuristic(Node& nodeToEdit)
     nodeToEdit.H *= heuristicWeight;
 }
 
-int Search::encode(int x, int y, int maxValue)
+void Search::expandNode(Node& nodeToExpand, const Map &map)
 {
-    // Hash table requires a hashable type, so std::pair won't suit.
-    // This encoding provides one-to-one correspondence between two coordinates and int.
-    return x + y * maxValue;
-}
+    int nodeI = nodeToExpand.i;
+    int nodeJ = nodeToExpand.j;
+    double nodeGValue = nodeToExpand.g;
 
-void Search::expandNode(Node* nodeToExpand, const Map &map)
-{
-    for (int i = -1; i <= 1; i++)
+    for (int i = -1; i <= 1; ++i)
     {
-        for (int j = -1; j <= 1; j++)
+        for (int j = -1; j <= 1; ++j)
         {
             // Check possibility of movement
-            if ((!i && !j) || 
-                !map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || 
-                !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+            if (!(i || j) || 
+                !map.CellOnGrid(nodeI + i, nodeJ + j) ||
+                !map.CellIsTraversable(nodeI + i, nodeJ + j))
             {
                 continue;
             }
@@ -256,52 +237,42 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
             // Check if the current step goes through the diagonal.
             if (i && j)
             {
-                cValue = cd;
                 if (!currentOptions.allowdiagonal)
-                {
                     continue;
-                }
+
+                cValue = cd;
 
                 // Count untraversable cells on the diagonal path.
-                char count = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
-                    !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
+                char count = !map.CellIsTraversable(nodeI, nodeJ + j) + \
+                    !map.CellIsTraversable(nodeI + i, nodeJ);
 
                 // Check if the path through the diagonal is possible.
-                if ( (count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze) )
-                {
+                if ( (count && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze) )
                     continue;
-                }
             }
 
-            // Check if the considered node exists and is traversable.
-            Node* potentialNode;
-            if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
+            // Check if "close" or "open" list contains considered node.
+            long long nodeKey = ENCODE_GRID_POSITION(nodeI + i, nodeJ + j);
+            Node* potentialNode = openHeap.getNode(nodeKey);
+            if (potentialNode)
+            {
+                if (potentialNode->g > nodeGValue + cValue)
+                    openHeap.decreaseGValue(nodeKey, nodeGValue + cValue, &nodeToExpand);
+            }
+            else if (close.find(nodeKey) == close.end())
             {
                 // Create a new node.
-                generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue };
-                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                setHeuristic(*potentialNode);
-                openHeap.insert(*potentialNode);
-
-                // Set the parential node.
-                potentialNode->parent = nodeToExpand;
+                ++sresult.nodescreated;
+                Node newNode = { nodeI + i, nodeJ + j, nodeGValue + cValue };
+                newNode.parent = &nodeToExpand;
+                newNode.key = ENCODE_GRID_POSITION(nodeI + i, nodeJ + j);
+                setHeuristic(newNode);
+                openHeap.insert(newNode);
             }
-            else
-            {
-                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + cValue)
-                {
-                    openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + cValue);
 
-                    // Change the parential node to the one which is expanded.
-                    potentialNode->parent = nodeToExpand;
-                }
-
-                // If the potential node is in the close list, we never reopen/reexpand it.
-            }
+            // If the potential node is in the close list, we never reopen/reexpand it.
         }
     }
 }
 
-#undef ENC(x, y)
-#undef FIRST_MEET_EXIT
+#undef ENCODE_GRID_POSITION(x, y)

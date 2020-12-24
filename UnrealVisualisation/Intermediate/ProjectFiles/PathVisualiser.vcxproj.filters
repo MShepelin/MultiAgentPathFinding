@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\PathVisualiser.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{DBBDC11A-8372-4DC3-A9C0-8304FF6F23B5}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\PathVisualiser.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\PathVisualiserEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{060BFD69-692A-4C05-854A-4FCF034CFCFB}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\PathVisualiser">
+      <UniqueIdentifier>{B5DE3FB4-D539-46D8-B6EA-25ABF5F8D275}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\PathVisualiser\PathVisualiser.Build.cs">
+      <Filter>Source\PathVisualiser</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\PathVisualiser\PathVisualiser.cpp">
+      <Filter>Source\PathVisualiser</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PathVisualiser\PathVisualiser.h">
+      <Filter>Source\PathVisualiser</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PathVisualiser\PathVisualiserGameModeBase.cpp">
+      <Filter>Source\PathVisualiser</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PathVisualiser\PathVisualiserGameModeBase.h">
+      <Filter>Source\PathVisualiser</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
