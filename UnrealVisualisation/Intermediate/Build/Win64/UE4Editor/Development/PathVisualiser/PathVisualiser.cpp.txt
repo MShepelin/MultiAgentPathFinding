@@ -1,2 +1,0 @@
-C:\Users\shepe\CProjects\MultiAgentPathFinding\UnrealVisualisation\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\Definitions.PathVisualiser.h
-c:\users\shepe\cprojects\multiagentpathfinding\unrealvisualisation\source\pathvisualiser\PathVisualiser.h

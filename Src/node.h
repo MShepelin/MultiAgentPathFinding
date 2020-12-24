@@ -8,9 +8,10 @@
 struct Node
 {
     int     i, j; //grid cell coordinates
-    double  g = -1, H = -1; //g- and h-values of the search node, if H == -1 Node is considered to be in a "close" list
+    double  g = -1, H = -1; //f-, g- and h-values of the search node
     Node    *parent = nullptr; //backpointer to the predecessor node (e.g. the node which g-value was used to set the g-velue of the current node)
-    long long key;
+    size_t heapIndex;
+    bool isInClose = false;
 
     bool operator>(Node& nodeToCompare) const
     {

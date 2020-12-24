@@ -1,0 +1,24 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "Dmitriy_Shepelin_ASearch.exe (Src\\Dmitriy_Shepelin_ASearch.exe)",
+      "name": "Dmitriy_Shepelin_ASearch.exe (Src\\Dmitriy_Shepelin_ASearch.exe)",
+      "args": [
+        "C:/Users/shepe/CProjects/MultiAgentPathFinding/Examples/example.xml"
+      ]
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "testbench.exe (Tests\\testbench.exe)",
+      "name": "testbench.exe (Tests\\testbench.exe)",
+      "args": [
+        "C:/Users/shepe/CProjects/MultiAgentPathFinding/TestData/A_test.xml"
+      ]
+    }
+  ]
+}

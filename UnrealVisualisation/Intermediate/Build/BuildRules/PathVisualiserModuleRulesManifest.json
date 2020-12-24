@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\Users\\shepe\\CProjects\\MultiAgentPathFinding\\UnrealVisualisation\\Source\\PathVisualiser\\PathVisualiser.Build.cs",
-		"C:\\Users\\shepe\\CProjects\\MultiAgentPathFinding\\UnrealVisualisation\\Source\\PathVisualiser.Target.cs",
-		"C:\\Users\\shepe\\CProjects\\MultiAgentPathFinding\\UnrealVisualisation\\Source\\PathVisualiserEditor.Target.cs"
-	],
-	"EngineVersion": "4.25.1"
-}

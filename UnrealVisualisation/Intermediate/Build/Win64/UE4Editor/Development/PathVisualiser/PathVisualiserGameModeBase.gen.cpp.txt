@@ -1,9 +1,0 @@
-C:\Users\shepe\CProjects\MultiAgentPathFinding\UnrealVisualisation\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\Definitions.PathVisualiser.h
-C:\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-C:\Users\shepe\CProjects\MultiAgentPathFinding\UnrealVisualisation\Source\PathVisualiser/PathVisualiserGameModeBase.h
-C:\UnrealEngine\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
-C:\UnrealEngine\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
-C:\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
-C:\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
-c:\users\shepe\cprojects\multiagentpathfinding\unrealvisualisation\intermediate\build\win64\ue4editor\inc\pathvisualiser\PathVisualiserGameModeBase.generated.h

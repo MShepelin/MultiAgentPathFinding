@@ -8,7 +8,7 @@ You can choose "Debug" or "Release" build.
 
 ```bash
 cd MultiAgentPathFinding/Build/Release
-cmake ../../ -DCMAKE_BUILD_TYPE="Release" -G "Unix Makefiles"
+cmake ../../ -DCMAKE_BUILD_TYPE="Release"
 make
 make install
 ```
@@ -40,11 +40,15 @@ cd ../../Bin/{Debug|Release}/
 Dmitriy_Shepelin_ASearch.exe ../../Examples/example.xml
 ```
 
+### Debug with Visual Studio
+
+You can use VS interaction with CMake to build, run and debug this project. To use command-line arguments you can edit *args* in *configurations* field of *.vs/launch.vs.json*.
+
 ### Input and output
 
 A path is constructed on a 2D plane with traversable and non-traversable cells. Each task is given as an XML file. The format is shown in *Examples/example.xml*. This file is expected to have these fields:
 
-- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations. Positions on the grid start with coordinates (0, 0) in the left upper corner.
+- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations.
 - *algorithm* describes options of path planning:
   - *searchtype* can be "dijkstra" or "astar" to use Dijkstra or A* algorithm respectively;
   - *metrictype* describes heuristic to use (if A* is chosen):
@@ -55,7 +59,7 @@ A path is constructed on a 2D plane with traversable and non-traversable cells. 
   - *hweight* is a multiplicator for heuristic;
   - *allowdiagonal* is true or false and allows the algorithm to consider paths through diagonals;
   - *cutcorners* is true or false and allows to use diagonals which intersect with one non-traversable cell on the way.
-  - *allowsqueeze* is true or false and allows to use diagonal if it intersects two two non-traversable cells.
+  - allowsqueeze is true or false and allows to use diagonal if it intersects two two non-traversable cells.
 
 The output of the program is the same file with the "_log" suffix. It will show information about the search in the *log* field.
 

@@ -1,3 +1,0 @@
-C:\Users\shepe\CProjects\MultiAgentPathFinding\UnrealVisualisation\Intermediate\Build\Win64\UE4Editor\Development\PathVisualiser\Definitions.PathVisualiser.h
-C:\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h

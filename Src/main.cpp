@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
     if (argc < 2)
     {
         std::cout << "A map must be chosen!" << std::endl;
-        return 1;
+        return 0;
     }
 
     Mission mission(argv[1]);
@@ -42,5 +42,9 @@ int main(int argc, char* argv[])
         }
     }
 
+#ifdef _WIN32
+    std::system("pause");
+#endif // _WIN32
+    
     return 0;
 }
