@@ -40,15 +40,11 @@ cd ../../Bin/{Debug|Release}/
 Dmitriy_Shepelin_ASearch.exe ../../Examples/example.xml
 ```
 
-### Debug with Visual Studio
-
-You can use VS interaction with CMake to build, run and debug this project. To use command-line arguments you can edit *args* in *configurations* field of *.vs/launch.vs.json*.
-
 ### Input and output
 
 A path is constructed on a 2D plane with traversable and non-traversable cells. Each task is given as an XML file. The format is shown in *Examples/example.xml*. This file is expected to have these fields:
 
-- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations.
+- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations. Positions start in the left upper corner with coordinates (0, 0).
 - *algorithm* describes options of path planning:
   - *searchtype* can be "dijkstra" or "astar" to use Dijkstra or A* algorithm respectively;
   - *metrictype* describes heuristic to use (if A* is chosen):

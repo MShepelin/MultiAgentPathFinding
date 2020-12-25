@@ -15,49 +15,40 @@ NodesBinaryHeap::NodesBinaryHeap()
 
 void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
-    if (nodeIndex >= nodes.size())
+    for (size_t parentIndex = nodeIndex >> 1; parentIndex && *nodes[parentIndex] > *nodes[nodeIndex]; nodeIndex >>= 1, parentIndex >>= 1)
     {
-        // Incorrect input
-        return;
-    }
-
-    while (nodeIndex > 1 && *nodes[nodeIndex / 2] > *nodes[nodeIndex])
-    {
-        std::swap(nodes[nodeIndex], nodes[nodeIndex / 2]);
-        std::swap(nodes[nodeIndex]->heapIndex, nodes[nodeIndex / 2]->heapIndex);
-        nodeIndex /= 2;
+        std::swap(nodes[parentIndex]->heapIndex, nodes[nodeIndex]->heapIndex);
+        std::swap(nodes[parentIndex], nodes[nodeIndex]);
     }
 }
 
 void NodesBinaryHeap::moveDown(size_t nodeIndex)
 {
-    if (nodeIndex >= nodes.size())
+    for (size_t minChildIndex = nodeIndex << 1; minChildIndex + 1 < nodes.size(); minChildIndex = nodeIndex << 1)
     {
-        // Incorrect input
-        return;
+        if (*nodes[minChildIndex] > *nodes[minChildIndex + 1])
+            ++minChildIndex;
+
+        Node& currentNode = *nodes[nodeIndex];
+        Node& minChild = *nodes[minChildIndex];
+        if (!(currentNode > minChild))
+            break;
+
+        std::swap(currentNode.heapIndex, minChild.heapIndex);
+        std::swap(nodes[nodeIndex], nodes[minChildIndex]);
+        nodeIndex = minChildIndex;
     }
-
-    size_t minNodeIndex = nodeIndex;
-    do
+    if ((nodeIndex << 1) < nodes.size())
     {
-        nodeIndex = minNodeIndex;
+        Node& currentNode = *nodes[nodeIndex];
+        Node& minChild = *nodes[nodeIndex << 1];
 
-        if (nodeIndex * 2 + 1 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2 + 1])
+        if (currentNode > minChild)
         {
-            minNodeIndex = nodeIndex * 2 + 1;
+            std::swap(currentNode.heapIndex, minChild.heapIndex);
+            std::swap(nodes[nodeIndex], nodes[nodeIndex << 1]);
         }
-
-        if (nodeIndex * 2 < nodes.size() && *nodes[minNodeIndex] > *nodes[nodeIndex * 2])
-        {
-            minNodeIndex = nodeIndex * 2;
-        }
-
-        if (minNodeIndex != nodeIndex)
-        {
-            std::swap(nodes[nodeIndex], nodes[minNodeIndex]);
-            std::swap(nodes[nodeIndex]->heapIndex, nodes[minNodeIndex]->heapIndex);
-        }
-    } while (minNodeIndex != nodeIndex);
+    }
 }
 
 void NodesBinaryHeap::insert(Node& newNode)
@@ -69,12 +60,6 @@ void NodesBinaryHeap::insert(Node& newNode)
 
 void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
 {
-    if (newGValue >= nodeToChange.g)
-    {
-        // Incorrect newGValue
-        return;
-    }
-
     nodeToChange.g = newGValue;
     moveUp(nodeToChange.heapIndex);
 }
@@ -239,12 +224,12 @@ int Search::encode(int x, int y, int maxValue)
 
 void Search::expandNode(Node* nodeToExpand, const Map &map)
 {
-    for (int i = -1; i <= 1; i++)
+    for (int i = -1; i <= 1; ++i)
     {
-        for (int j = -1; j <= 1; j++)
+        for (int j = -1; j <= 1; ++j)
         {
             // Check possibility of movement
-            if ((!i && !j) || 
+            if (!(i || j) || 
                 !map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || 
                 !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
             {
@@ -274,27 +259,28 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
             }
 
             // Check if the considered node exists and is traversable.
-            Node* potentialNode;
-            if (generatedNodes.find(ENC(nodeToExpand->i + i, nodeToExpand->j + j)) == generatedNodes.end())
+            int nodeKey = ENC(nodeToExpand->i + i, nodeToExpand->j + j);
+            auto potentialNode = generatedNodes.find(nodeKey);
+            if (potentialNode == generatedNodes.end())
             {
                 // Create a new node.
-                generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)] = Node{ nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue };
-                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                setHeuristic(*potentialNode);
-                openHeap.insert(*potentialNode);
+                auto insertResult = generatedNodes.insert({nodeKey, { nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue }});
+                Node& insertedNode = insertResult.first->second;
+                //++++ check if insertion fails
+                setHeuristic(insertedNode);
+                openHeap.insert(insertedNode);
 
                 // Set the parential node.
-                potentialNode->parent = nodeToExpand;
+                insertedNode.parent = nodeToExpand;
             }
             else
             {
-                potentialNode = &generatedNodes[ENC(nodeToExpand->i + i, nodeToExpand->j + j)];
-                if (!potentialNode->isInClose && potentialNode->g > nodeToExpand->g + cValue)
+                if (!potentialNode->second.isInClose && potentialNode->second.g > nodeToExpand->g + cValue)
                 {
-                    openHeap.decreaseGValue(*potentialNode, nodeToExpand->g + cValue);
+                    openHeap.decreaseGValue(potentialNode->second, nodeToExpand->g + cValue);
 
                     // Change the parential node to the one which is expanded.
-                    potentialNode->parent = nodeToExpand;
+                    potentialNode->second.parent = nodeToExpand;
                 }
 
                 // If the potential node is in the close list, we never reopen/reexpand it.
