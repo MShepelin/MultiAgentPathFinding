@@ -14,7 +14,7 @@ NodesBinaryHeap::NodesBinaryHeap()
 
 void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
-    for (size_t parentIndex = nodeIndex >> 1; parentIndex && *nodes[parentIndex] > *nodes[nodeIndex]; nodeIndex >>= 1, parentIndex >>= 1)
+    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && (*nodes[parentIndex] > *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex = (nodeIndex >> 1))
     {
         std::swap(nodes[parentIndex]->heapIndex, nodes[nodeIndex]->heapIndex);
         std::swap(nodes[parentIndex], nodes[nodeIndex]);
@@ -37,6 +37,7 @@ void NodesBinaryHeap::moveDown(size_t nodeIndex)
         std::swap(nodes[nodeIndex], nodes[minChildIndex]);
         nodeIndex = minChildIndex;
     }
+
     if ((nodeIndex << 1) < nodes.size())
     {
         Node& currentNode = *nodes[nodeIndex];
@@ -65,7 +66,7 @@ void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
 
 Node* NodesBinaryHeap::popMin()
 {
-    if (nodes.size() == 1)
+    if (nodes.size() <= 1)
     {
         return nullptr;
     }
@@ -73,6 +74,10 @@ Node* NodesBinaryHeap::popMin()
     Node* result = nodes[1];
     std::swap(nodes[1], nodes[nodes.size() - 1]);
     nodes.pop_back();
+    if (nodes.size() >= 2)
+    {
+        nodes[1]->heapIndex = 1;
+    }
     moveDown(1);
 
     return result;
@@ -136,7 +141,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         // Expand the node.
         expandNode(nodeToExpand, map);
 
-        // Remove expanded node from maps.
+        // Mark expanded node as a node in the "close" list.
         nodeToExpand->H = -1;
     }
 
@@ -240,11 +245,11 @@ void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int 
         }
 
         // Count untraversable cells on the diagonal path.
-        bool firstCellIsWall = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j);
-        bool secondCellIsWall = !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
+        char count = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
+            !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
 
         // Check if the path through the diagonal is possible.
-        if (((firstCellIsWall || secondCellIsWall) && !currentOptions.cutcorners) || (firstCellIsWall && secondCellIsWall && !currentOptions.allowsqueeze))
+        if ((count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze))
         {
             return;
         }
@@ -275,7 +280,6 @@ void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int 
             // Change the parential node to the one which is expanded.
             potentialNode->second.parent = nodeToExpand;
         }
-
         // If the potential node is in the close list, we never reopen/reexpand it.
     }
 }
