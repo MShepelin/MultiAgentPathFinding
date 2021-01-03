@@ -3,6 +3,7 @@
 #include <chrono>
 #include <algorithm>
 #define ENC(x, y) encode(x, y, maxSize)
+#define EXPEXTED_OPEN_NODES 32
 
 const double ch = 1;
 const double cd = std::sqrt(2);
@@ -10,11 +11,12 @@ const double cd = std::sqrt(2);
 NodesBinaryHeap::NodesBinaryHeap()
 {
     nodes = { nullptr };
+    nodes.reserve(EXPEXTED_OPEN_NODES);
 }
 
 void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
-    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && (*nodes[parentIndex] > *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex = (nodeIndex >> 1))
+    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && (*nodes[parentIndex] > *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex >>= 1)
     {
         std::swap(nodes[parentIndex]->heapIndex, nodes[nodeIndex]->heapIndex);
         std::swap(nodes[parentIndex], nodes[nodeIndex]);
@@ -161,7 +163,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             currentNode = currentNode->parent;
         }
 
-        sresult.hppath = &lppath; // For now, hppath isn't created
+        sresult.hppath = &hppath; // For now, hppath isn't created
         sresult.lppath = &lppath;
     }
 
@@ -170,6 +172,37 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     sresult.time = duration.count(); // in seconds
+
+    if (sresult.pathfound)
+    {
+        // Create hppath
+        int previousDirection[2] = { 0, 0 };
+        int currentDirection[2] = { 0, 0 };
+
+        auto pathIterator = lppath.begin();
+        hppath.push_back(*pathIterator);
+        Node lastNode = *(pathIterator++);
+
+        while (lppath.end() != pathIterator)
+        {
+            currentDirection[0] = pathIterator->i - lastNode.i;
+            currentDirection[1] = pathIterator->j - lastNode.j;
+
+            if (currentDirection[0] == previousDirection[0] && currentDirection[1] == previousDirection[1])
+            {
+                hppath.back() = *pathIterator;
+            }
+            else
+            {
+                hppath.emplace_back(*pathIterator);
+            }
+
+            previousDirection[0] = currentDirection[0];
+            previousDirection[1] = currentDirection[1];
+            lastNode = *pathIterator;
+            pathIterator++;
+        }
+    } 
 
     return sresult;
 }
@@ -297,3 +330,4 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
 }
 
 #undef ENC(x, y)
+#undef EXPEXTED_OPEN_NODES
