@@ -2,7 +2,6 @@
 #include "search.h"
 #include <chrono>
 #include <algorithm>
-#define FIRST_MEET_EXIT
 #define ENC(x, y) encode(x, y, maxSize)
 
 const double ch = 1;
@@ -79,9 +78,9 @@ Node* NodesBinaryHeap::popMin()
     return result;
 }
 
-unsigned int NodesBinaryHeap::size()
+size_t NodesBinaryHeap::size()
 {
-    return nodes.size() - 1;
+    return nodes.size() ? nodes.size() - 1 : 0;
 }
 
 
@@ -130,17 +129,15 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         // Remove expanded node from the heap.
         Node* nodeToExpand = openHeap.popMin();
 
-#ifdef FIRST_MEET_EXIT
         if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
             break;
         }
-#endif
 
         // Expand the node.
         expandNode(nodeToExpand, map);
 
         // Remove expanded node from maps.
-        nodeToExpand->isInClose = true;
+        nodeToExpand->H = -1;
     }
 
     // Back propagation
@@ -222,72 +219,77 @@ int Search::encode(int x, int y, int maxValue)
     return x + y * maxValue;
 }
 
-void Search::expandNode(Node* nodeToExpand, const Map &map)
+void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int j)
 {
-    for (int i = -1; i <= 1; ++i)
+    // Check possibility of movement
+    if (!map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
+        !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
     {
-        for (int j = -1; j <= 1; ++j)
+        return;
+    }
+
+    double cValue = ch;
+
+    // Check if the current step goes through the diagonal.
+    if (i && j)
+    {
+        cValue = cd;
+        if (!currentOptions.allowdiagonal)
         {
-            // Check possibility of movement
-            if (!(i || j) || 
-                !map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) || 
-                !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
-            {
-                continue;
-            }
-
-            double cValue = ch;
-
-            // Check if the current step goes through the diagonal.
-            if (i && j)
-            {
-                cValue = cd;
-                if (!currentOptions.allowdiagonal)
-                {
-                    continue;
-                }
-
-                // Count untraversable cells on the diagonal path.
-                char count = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
-                    !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
-
-                // Check if the path through the diagonal is possible.
-                if ( (count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze) )
-                {
-                    continue;
-                }
-            }
-
-            // Check if the considered node exists and is traversable.
-            int nodeKey = ENC(nodeToExpand->i + i, nodeToExpand->j + j);
-            auto potentialNode = generatedNodes.find(nodeKey);
-            if (potentialNode == generatedNodes.end())
-            {
-                // Create a new node.
-                auto insertResult = generatedNodes.insert({nodeKey, { nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue }});
-                Node& insertedNode = insertResult.first->second;
-                //++++ check if insertion fails
-                setHeuristic(insertedNode);
-                openHeap.insert(insertedNode);
-
-                // Set the parential node.
-                insertedNode.parent = nodeToExpand;
-            }
-            else
-            {
-                if (!potentialNode->second.isInClose && potentialNode->second.g > nodeToExpand->g + cValue)
-                {
-                    openHeap.decreaseGValue(potentialNode->second, nodeToExpand->g + cValue);
-
-                    // Change the parential node to the one which is expanded.
-                    potentialNode->second.parent = nodeToExpand;
-                }
-
-                // If the potential node is in the close list, we never reopen/reexpand it.
-            }
+            return;
         }
+
+        // Count untraversable cells on the diagonal path.
+        bool firstCellIsWall = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j);
+        bool secondCellIsWall = !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
+
+        // Check if the path through the diagonal is possible.
+        if (((firstCellIsWall || secondCellIsWall) && !currentOptions.cutcorners) || (firstCellIsWall && secondCellIsWall && !currentOptions.allowsqueeze))
+        {
+            return;
+        }
+    }
+
+    // Check if the considered node exists and is traversable.
+    int nodeKey = ENC(nodeToExpand->i + i, nodeToExpand->j + j);
+    auto potentialNode = generatedNodes.find(nodeKey);
+    if (potentialNode == generatedNodes.end())
+    {
+        // Create a new node.
+        auto insertResult = generatedNodes.insert({ nodeKey, { nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue } });
+        Node& insertedNode = insertResult.first->second;
+
+        //++++ check if insertion fails
+        setHeuristic(insertedNode);
+        openHeap.insert(insertedNode);
+
+        // Set the parential node.
+        insertedNode.parent = nodeToExpand;
+    }
+    else
+    {
+        if (potentialNode->second.H >= 0 && potentialNode->second.g > nodeToExpand->g + cValue)
+        {
+            openHeap.decreaseGValue(potentialNode->second, nodeToExpand->g + cValue);
+
+            // Change the parential node to the one which is expanded.
+            potentialNode->second.parent = nodeToExpand;
+        }
+
+        // If the potential node is in the close list, we never reopen/reexpand it.
     }
 }
 
+void Search::expandNode(Node* nodeToExpand, const Map &map)
+{
+    expandNodeDirection(nodeToExpand, map, -1, -1);
+    expandNodeDirection(nodeToExpand, map, -1, 0);
+    expandNodeDirection(nodeToExpand, map, -1, 1);
+    expandNodeDirection(nodeToExpand, map, 0, -1);
+    expandNodeDirection(nodeToExpand, map, 0, 1);
+    expandNodeDirection(nodeToExpand, map, 1, -1);
+    expandNodeDirection(nodeToExpand, map, 1, 0);
+    expandNodeDirection(nodeToExpand, map, 1, 1);
+}
+
 #undef ENC(x, y)
-#undef FIRST_MEET_EXIT

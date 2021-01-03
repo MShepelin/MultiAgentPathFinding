@@ -26,7 +26,7 @@ public:
     void insert(Node& newNode);
     void decreaseGValue(Node& nodeToChange, double newGValue);
 
-    unsigned int size();
+    size_t size();
 };
 
 
@@ -58,5 +58,7 @@ class Search
         virtual void setHeuristic(Node& nodeToEdit);
 
         void expandNode(Node* nodeToExpand, const Map &map);
+
+        void expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int j);
 };
 #endif
