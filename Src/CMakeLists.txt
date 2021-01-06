@@ -1,3 +1,4 @@
+add_compile_definitions(CONSOLE_BUILD)
 
 set(HEADERS         config.h
                     environmentoptions.h
