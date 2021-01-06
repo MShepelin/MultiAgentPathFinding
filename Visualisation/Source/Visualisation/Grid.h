@@ -11,7 +11,10 @@ class VISUALISATION_API AGrid : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+    UPROPERTY(EditAnywhere)
+    FString PathToTask = "";
+
 	// Sets default values for this actor's properties
 	AGrid();
 
@@ -23,5 +26,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    void PrepareMap(char *Path);
+    UFUNCTION(BlueprintCallable)
+    void PrepareMap();
 };

@@ -26,43 +26,23 @@ void AGrid::Tick(float DeltaTime)
 
 }
 
-void AGrid::PrepareMap(char *Path)
+void AGrid::PrepareMap()
 {
-    Mission mission(Path);
-    //mission.call(true);
+    Mission mission(TCHAR_TO_ANSI(*PathToTask));
+
+    if (!mission.getMap() || !mission.getConfig() || !mission.createLog()) {
+        return;
+    }
+
+    mission.createEnvironmentOptions();
+    mission.createSearch();
+
+    UE_LOG(LogTemp, Warning, TEXT("Search created"));
 
     /*
-    std::cout << Path << std::endl;
-    std::cout << "Parsing the map from XML:" << std::endl;
+    mission.startSearch();
 
-    if (!mission.getMap()) {
-        std::cout << "Incorrect map! Program halted!" << std::endl;
-    }
-    else {
-        std::cout << "Map OK!" << std::endl << "Parsing configurations (algorithm, log) from XML:" << std::endl;
-        if (!mission.getConfig())
-            std::cout << "Incorrect configurations! Program halted!" << std::endl;
-        else {
-            std::cout << "Configurations OK!" << std::endl << "Creating log channel:" << std::endl;
-
-            if (!mission.createLog())
-                std::cout << "Log chanel has not been created! Program halted!" << std::endl;
-            else {
-                std::cout << "Log OK!" << std::endl << "Start searching the path:" << std::endl;
-
-                mission.createEnvironmentOptions();
-                mission.createSearch();
-
-                /*
-                mission.startSearch();
-
-                std::cout << "Search is finished!" << std::endl;
-
-                mission.printSearchResultsToConsole();
-                mission.saveSearchResultsToLog();
-
-                std::cout << "Results are saved (if chosen) via created log channel." << std::endl;
-            }
-        }
-    }*/
+    mission.printSearchResultsToConsole();
+    mission.saveSearchResultsToLog();
+    */
 }
