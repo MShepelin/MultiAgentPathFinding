@@ -28,7 +28,7 @@ class Map
 
     public:
         Map();
-        Map(const Map& orig);
+        //Map(const Map& orig);
         ~Map();
 
         bool getMap(const char *FileName);

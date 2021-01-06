@@ -3,11 +3,23 @@
 	"EngineAssociation": "{9CA0AF3D-40A2-3DBD-E9DA-6582BCBBC295}",
 	"Category": "",
 	"Description": "",
-	"Modules": [
-		{
-			"Name": "Visualisation",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		}
-	]
+  "Modules": [
+    {
+      "Name": "Visualisation",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "Engine",
+        "SearchAlgorithm"
+      ]
+    },
+    {
+      "Name": "SearchAlgorithm",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "Engine"
+      ]
+    }
+  ]
 }

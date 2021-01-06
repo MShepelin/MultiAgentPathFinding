@@ -55,7 +55,7 @@ class Search
     protected:
         int encode(int x, int y, int maxValue);
 
-        virtual void setHeuristic(Node& nodeToEdit);
+        void setHeuristic(Node& nodeToEdit);
 
         void expandNode(Node* nodeToExpand, const Map &map);
 

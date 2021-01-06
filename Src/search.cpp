@@ -329,5 +329,5 @@ void Search::expandNode(Node* nodeToExpand, const Map &map)
     expandNodeDirection(nodeToExpand, map, 1, 1);
 }
 
-#undef ENC(x, y)
+#undef ENC
 #undef EXPEXTED_OPEN_NODES

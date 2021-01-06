@@ -16,7 +16,11 @@
 //Hint: Create Mission object in the main() function and then use it 1) to retreive all the data from input XML
 //2) run the search 3) flush the results to output XML
 
-class Mission
+#ifndef SEARCHALGORITHM_API
+#define SEARCHALGORITHM_API
+#endif
+
+class SEARCHALGORITHM_API Mission
 {
     public:
         Mission();

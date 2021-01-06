@@ -9,6 +9,6 @@ public class VisualisationTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "Visualisation" } );
+		ExtraModuleNames.AddRange( new string[] { "Visualisation", "SearchAlgorithm" } );
 	}
 }
