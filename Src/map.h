@@ -17,7 +17,11 @@
 //Think of it as an "independent" piece of data that is managed by outer (non-search related) proccesses.
 //Search algorithm should create it own object/structures needed to run the search on that map.
 
-class Map
+#ifndef SEARCHALGORITHM_API
+#define SEARCHALGORITHM_API // Empty macro
+#endif
+
+class SEARCHALGORITHM_API Map
 {
     private:
         int     height, width;

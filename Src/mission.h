@@ -17,7 +17,7 @@
 //2) run the search 3) flush the results to output XML
 
 #ifndef SEARCHALGORITHM_API
-#define SEARCHALGORITHM_API
+#define SEARCHALGORITHM_API // Empty macro
 #endif
 
 class SEARCHALGORITHM_API Mission
@@ -28,6 +28,7 @@ class SEARCHALGORITHM_API Mission
         ~Mission();
 
         bool getMap();
+        Map getMapObject() const;
         bool getConfig();
         bool createLog();
         void createSearch();

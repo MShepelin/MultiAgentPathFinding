@@ -31,7 +31,7 @@ bool Mission::getConfig()
 
 bool Mission::createLog()
 {
-    if (logger != nullptr) delete logger;
+    if (logger) delete logger;
     logger = new XmlLogger(config.LogParams[CN_LP_LEVEL]);
     return logger->getLog(fileName, config.LogParams);
 }
@@ -46,7 +46,7 @@ void Mission::createEnvironmentOptions()
 
 void Mission::createSearch()
 {
-//might be helpful in case numerous algorithms are added
+    //might be helpful in case numerous algorithms are added
 }
 
 void Mission::startSearch()
@@ -86,3 +86,8 @@ SearchResult Mission::getSearchResult()
     return sr;
 }
 
+
+Map Mission::getMapObject() const
+{
+    return map;
+}
