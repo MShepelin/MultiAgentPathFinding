@@ -39,14 +39,12 @@ void AGrid::PrepareMap()
         UE_LOG(LogTemp, Warning, TEXT("Fail!"));
         return;
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("Search created"));
     
     Walls->ClearInstances();
     Floor->ClearInstances();
 
     Map CurrentMap = mission.getMapObject();
-    /*
+    
     Height = CurrentMap.getMapHeight();
     Width = CurrentMap.getMapWidth();
 
@@ -65,7 +63,7 @@ void AGrid::PrepareMap()
     mission.createEnvironmentOptions();
     mission.createSearch();
 
-    UE_LOG(LogTemp, Warning, TEXT("Search created"));
+    UE_LOG(LogTemp, Warning, TEXT("Search created, size %d x %d"), Height, Width);
 
     /*
     mission.startSearch();

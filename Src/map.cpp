@@ -13,6 +13,28 @@ Map::Map()
     cellSize = 1;
 }
 
+Map::Map(const Map& orig)
+{
+    height = orig.getMapHeight();
+    width = orig.getMapWidth();
+    orig.getTask(&start_i);
+    cellSize = orig.getCellSize();
+
+#ifdef check
+    check(height > 0 && width > 0);
+#endif
+
+    Grid = new int *[height];
+    for (int i = 0; i < height; ++i)
+    {
+        Grid[i] = new int[width];
+        for (int j = 0; j < height; ++j)
+        {
+            Grid[i][j] = orig.getValue(i, j);
+        }
+    }
+}
+
 Map::~Map()
 {
     if (Grid) {
