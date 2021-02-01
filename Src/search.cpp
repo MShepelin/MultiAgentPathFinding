@@ -100,11 +100,11 @@ bool NodesBinaryHeap::compare(const Node& first, const Node& second)
 {
     double fFirst = first.g + first.H;
     double fSecond = second.g + second.H;
-
+    
     if (fFirst == fSecond)
     {
-        return isBreakTieGMax == (first.g > second.g);
-    };
+        return isBreakTieGMax == (first.g < second.g);
+    }
 
     return fFirst > fSecond;
 }
@@ -221,8 +221,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             lastNode = *pathIterator;
             pathIterator++;
         }
-    } 
-
+    }
     return sresult;
 }
 
