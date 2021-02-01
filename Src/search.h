@@ -15,6 +15,7 @@ class NodesBinaryHeap
 {
 private:
     std::vector<Node*> nodes;
+    bool isBreakTieGMax;
 
     void moveUp(size_t nodeIndex);
     void moveDown(size_t nodeIndex);
@@ -22,11 +23,18 @@ private:
 public:
     NodesBinaryHeap();
 
+    // Returns true if the first node has greater order than the second one
+    bool compare(const Node& first, const Node& second);
+
     Node* popMin();
+
     void insert(Node& newNode);
+
     void decreaseGValue(Node& nodeToChange, double newGValue);
 
     size_t size();
+
+    void setBreakTie(bool breakTieGMax);
 };
 
 
@@ -53,7 +61,7 @@ class Search
         bool isDijk;
 
     protected:
-        int encode(int x, int y, int maxValue);
+        static int encode(int x, int y, int maxValue);
 
         void setHeuristic(Node& nodeToEdit);
 

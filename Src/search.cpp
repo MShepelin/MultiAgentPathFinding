@@ -11,12 +11,13 @@ const double cd = std::sqrt(2);
 NodesBinaryHeap::NodesBinaryHeap()
 {
     nodes = { nullptr };
+    isBreakTieGMax = true;
     nodes.reserve(EXPEXTED_OPEN_NODES);
 }
 
 void NodesBinaryHeap::moveUp(size_t nodeIndex)
 {
-    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && (*nodes[parentIndex] > *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex >>= 1)
+    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && compare(*nodes[parentIndex], *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex >>= 1)
     {
         std::swap(nodes[parentIndex]->heapIndex, nodes[nodeIndex]->heapIndex);
         std::swap(nodes[parentIndex], nodes[nodeIndex]);
@@ -27,12 +28,12 @@ void NodesBinaryHeap::moveDown(size_t nodeIndex)
 {
     for (size_t minChildIndex = nodeIndex << 1; minChildIndex + 1 < nodes.size(); minChildIndex = nodeIndex << 1)
     {
-        if (*nodes[minChildIndex] > *nodes[minChildIndex + 1])
+        if (compare(*nodes[minChildIndex], *nodes[minChildIndex + 1]))
             ++minChildIndex;
 
         Node& currentNode = *nodes[nodeIndex];
         Node& minChild = *nodes[minChildIndex];
-        if (!(currentNode > minChild))
+        if (!compare(currentNode, minChild))
             break;
 
         std::swap(currentNode.heapIndex, minChild.heapIndex);
@@ -45,7 +46,7 @@ void NodesBinaryHeap::moveDown(size_t nodeIndex)
         Node& currentNode = *nodes[nodeIndex];
         Node& minChild = *nodes[nodeIndex << 1];
 
-        if (currentNode > minChild)
+        if (compare(currentNode, minChild))
         {
             std::swap(currentNode.heapIndex, minChild.heapIndex);
             std::swap(nodes[nodeIndex], nodes[nodeIndex << 1]);
@@ -90,6 +91,23 @@ size_t NodesBinaryHeap::size()
     return nodes.size() ? nodes.size() - 1 : 0;
 }
 
+void NodesBinaryHeap::setBreakTie(bool breakTieGMax)
+{
+    isBreakTieGMax = breakTieGMax;
+}
+
+bool NodesBinaryHeap::compare(const Node& first, const Node& second)
+{
+    double fFirst = first.g + first.H;
+    double fSecond = second.g + second.H;
+
+    if (fFirst == fSecond)
+    {
+        return isBreakTieGMax == (first.g > second.g);
+    };
+
+    return fFirst > fSecond;
+}
 
 Search::Search()
 {
@@ -111,6 +129,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     // Set algorithm configurations.
     isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
     heuristicWeight = config.SearchParams[CN_SP_HW];
+    openHeap.setBreakTie(config.SearchParams[CN_SP_BT] == CN_SP_BT_GMAX);
 
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
