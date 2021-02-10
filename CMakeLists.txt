@@ -16,5 +16,8 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 enable_testing()
 
-add_subdirectory(Src)
-add_subdirectory(Tests)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/googletest")
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src")
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Tests")

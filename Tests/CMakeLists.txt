@@ -1,8 +1,20 @@
-include_directories(../Src)
+get_target_property(PPLIB_SOURCE_DIR PPLIB SOURCE_DIR) 
+message(STATUS "I found this ${PPLIB_SOURCE_DIR}")
+include_directories(${PPLIB_SOURCE_DIR})
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 add_executable(testbench testbench.cpp)
 
-target_link_libraries(testbench PPLIB)
+target_link_libraries(
+	testbench 
+	PRIVATE PPLIB
+	PRIVATE gtest 
+	PRIVATE gtest_main
+)
+
+if (MSVC)
+	set(gtest_force_shared_crt ON)
+endif()
 
 add_test(NAME Test1 COMMAND testbench ${CMAKE_SOURCE_DIR}/TestData/0_test.xml)
 add_test(NAME Test2 COMMAND testbench ${CMAKE_SOURCE_DIR}/TestData/1_test.xml)

@@ -1,6 +1,7 @@
 #include "mission.h"
 #include "tinyxml2.h"
 #include <cassert>
+#include <gtest/gtest.h>
 
 #define EPS 1e-5
 
