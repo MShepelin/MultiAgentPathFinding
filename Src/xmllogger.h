@@ -1,5 +1,5 @@
-#ifndef XMLLOGGER_H
-#define	XMLLOGGER_H
+#pragma once
+
 #include "tinyxml2.h"
 #include "ilogger.h"
 
@@ -18,7 +18,7 @@ public:
 
     void saveLog();
 
-    void writeToLogMap(const Map &Map, const std::list<Node> &path);
+    void writeToLogMap(const XMLMap &Map, const std::list<Node> &path);
 
     //void writeToLogOpenClose(const typename &open, const typename &close);
 
@@ -34,6 +34,3 @@ private:
     std::string LogFileName;
     tinyxml2::XMLDocument doc;
 };
-
-#endif
-

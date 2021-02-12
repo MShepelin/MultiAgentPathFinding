@@ -119,12 +119,12 @@ Search::Search()
 
 Search::~Search() {}
 
-SearchResult Search::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options, const Config& config)
+SearchResult Search::startSearch(ILogger *Logger, const XMLMap &map, const EnvironmentOptions &options, const Config& config)
 {
     // Initialise search parametres.
     currentOptions = options;
-    maxSize = std::max(map.getMapHeight(), map.getMapHeight());
-    map.getTask(task);
+    maxSize = std::max(map.GetHeight(), map.GetHeight());
+    map.GetTask(task);
 
     // Set algorithm configurations.
     isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
@@ -135,7 +135,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     auto start = std::chrono::high_resolution_clock::now();
 
     sresult = SearchResult();
-    if (!map.CellIsTraversable(task[0], task[1]))
+    if (!map.IsCellTraversable(task[0], task[1]))
     {
         // Default constructor of SearchResult will already have correct parameters.
         return sresult;
@@ -275,11 +275,11 @@ int Search::encode(int x, int y, int maxValue)
     return x + y * maxValue;
 }
 
-void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int j)
+void Search::expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, int j)
 {
     // Check possibility of movement
-    if (!map.CellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
-        !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+    if (!map.IsCellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
+        !map.IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
     {
         return;
     }
@@ -296,8 +296,8 @@ void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int 
         }
 
         // Count untraversable cells on the diagonal path.
-        char count = !map.CellIsTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
-            !map.CellIsTraversable(nodeToExpand->i + i, nodeToExpand->j);
+        char count = !map.IsCellTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
+            !map.IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j);
 
         // Check if the path through the diagonal is possible.
         if ((count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze))
@@ -335,7 +335,7 @@ void Search::expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int 
     }
 }
 
-void Search::expandNode(Node* nodeToExpand, const Map &map)
+void Search::expandNode(Node* nodeToExpand, const XMLMap &map)
 {
     expandNodeDirection(nodeToExpand, map, -1, -1);
     expandNodeDirection(nodeToExpand, map, -1, 0);

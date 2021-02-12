@@ -19,9 +19,9 @@ Mission::~Mission()
         delete logger;
 }
 
-bool Mission::getMap()
+bool Mission::prepareMap()
 {
-    return map.getMap(fileName);
+    return map.PrepareMap(fileName);
 }
 
 bool Mission::getConfig()
@@ -31,7 +31,11 @@ bool Mission::getConfig()
 
 bool Mission::createLog()
 {
-    if (logger) delete logger;
+    if (logger)
+    {
+        delete logger;
+    }
+
     logger = new XmlLogger(config.LogParams[CN_LP_LEVEL]);
     return logger->getLog(fileName, config.LogParams);
 }
@@ -64,14 +68,14 @@ void Mission::printSearchResultsToConsole()
     std::cout << "nodescreated=" << sr.nodescreated << std::endl;
     if (sr.pathfound) {
         std::cout << "pathlength=" << sr.pathlength << std::endl;
-        std::cout << "pathlength_scaled=" << sr.pathlength * map.getCellSize() << std::endl;
+        std::cout << "pathlength_scaled=" << sr.pathlength * map.GetCellSize() << std::endl;
     }
     std::cout << "time=" << sr.time << std::endl;
 }
 
 void Mission::saveSearchResultsToLog()
 {
-    logger->writeToLogSummary(sr.numberofsteps, sr.nodescreated, sr.pathlength, sr.time, map.getCellSize());
+    logger->writeToLogSummary(sr.numberofsteps, sr.nodescreated, sr.pathlength, sr.time, map.GetCellSize());
     if (sr.pathfound) {
         logger->writeToLogPath(*sr.lppath);
         logger->writeToLogHPpath(*sr.hppath);
@@ -87,7 +91,7 @@ SearchResult Mission::getSearchResult()
 }
 
 
-Map Mission::getMapObject() const
+XMLMap Mission::getMap() const
 {
     return map;
 }

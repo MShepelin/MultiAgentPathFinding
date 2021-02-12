@@ -1,6 +1,5 @@
 #include "mission.h"
 
-#ifdef CONSOLE_BUILD
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -14,7 +13,7 @@ int main(int argc, char* argv[])
     std::cout<<argv[1]<<std::endl;
     std::cout<<"Parsing the map from XML:"<<std::endl;
 
-    if(!mission.getMap()) {
+    if(!mission.prepareMap()) {
         std::cout<<"Incorrect map! Program halted!"<<std::endl;
     }
     else {
@@ -45,4 +44,3 @@ int main(int argc, char* argv[])
     
     return 0;
 }
-#endif

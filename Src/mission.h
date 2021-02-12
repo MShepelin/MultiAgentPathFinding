@@ -1,7 +1,6 @@
-#ifndef MISSION_H
-#define	MISSION_H
+#pragma once
 
-#include "map.h"
+#include "xml_map.h"
 #include "config.h"
 #include "search.h"
 #include "ilogger.h"
@@ -10,25 +9,15 @@
 #include "search.h"
 #include "xmllogger.h"
 
-//That's the wrap up class that first creates all the needed objects (Map, Search etc.)
-//and then runs the search and then cleans everything up.
-
-//Hint: Create Mission object in the main() function and then use it 1) to retreive all the data from input XML
-//2) run the search 3) flush the results to output XML
-
-#ifndef SEARCHALGORITHM_API
-#define SEARCHALGORITHM_API // Empty macro
-#endif
-
-class SEARCHALGORITHM_API Mission
+class Mission
 {
     public:
         Mission();
         Mission (const char* fileName);
         ~Mission();
 
-        bool getMap();
-        Map getMapObject() const;
+        bool prepareMap();
+        XMLMap getMap() const;
         bool getConfig();
         bool createLog();
         void createSearch();
@@ -39,7 +28,7 @@ class SEARCHALGORITHM_API Mission
         SearchResult getSearchResult();
         
     private:
-        Map                     map;
+        XMLMap                     map;
         Config                  config;
         EnvironmentOptions      options;
         Search                  search;
@@ -47,6 +36,3 @@ class SEARCHALGORITHM_API Mission
         const char*             fileName;
         SearchResult            sr;
 };
-
-#endif
-

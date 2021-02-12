@@ -1,5 +1,5 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+#pragma once
+
 #include "ilogger.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
@@ -43,7 +43,7 @@ class Search
     public:
         Search();
         ~Search(void);
-        SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options, const Config& config);
+        SearchResult startSearch(ILogger *Logger, const XMLMap &Map, const EnvironmentOptions &options, const Config& config);
 
     protected:
         NodesBinaryHeap openHeap;
@@ -65,8 +65,7 @@ class Search
 
         void setHeuristic(Node& nodeToEdit);
 
-        void expandNode(Node* nodeToExpand, const Map &map);
+        void expandNode(Node* nodeToExpand, const XMLMap &map);
 
-        void expandNodeDirection(Node* nodeToExpand, const Map &map, int i, int j);
+        void expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, int j);
 };
-#endif

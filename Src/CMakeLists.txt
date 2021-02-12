@@ -1,10 +1,8 @@
-add_compile_definitions(CONSOLE_BUILD)
-
-set(HEADERS         config.h
+set(HEADERS_PP      config.h
                     environmentoptions.h
                     gl_const.h
                     ilogger.h
-                    map.h
+                    xml_map.h
                     mission.h
                     node.h
                     search.h
@@ -12,17 +10,31 @@ set(HEADERS         config.h
                     tinyxml2.h
                     xmllogger.h)
 
-set(SOURCES         config.cpp
+set(SOURCES_PP      config.cpp
                     environmentoptions.cpp
-                    map.cpp
+                    xml_map.cpp
                     mission.cpp
                     search.cpp
                     tinyxml2.cpp
                     xmllogger.cpp)
 
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} main.cpp)
+set(HEADERS_MAPF    tasker.h
+					mapf_interface.h
+					agents.h
+                    map.h
+					scenaries.h)
 
-add_library(PPLIB ${HEADERS} ${SOURCES})
+set(SOURCES_MAPF    tasker.cpp
+                    map.cpp
+					scenaries.cpp)
+
+add_executable(${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
+
+add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} mapf_main.cpp)
+
+add_library(PPLIB ${HEADERS_PP} ${SOURCES_PP})
+
+add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
 
 install(TARGETS ${PROJECT_NAME} 
         CONFIGURATIONS Debug

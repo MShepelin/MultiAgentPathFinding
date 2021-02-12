@@ -88,7 +88,7 @@ void XmlLogger::saveLog()
     doc.SaveFile(LogFileName.c_str());
 }
 
-void XmlLogger::writeToLogMap(const Map &map, const std::list<Node> &path)
+void XmlLogger::writeToLogMap(const XMLMap &map, const std::list<Node> &path)
 {
     if (loglevel == CN_LP_LEVEL_NOPE_WORD || loglevel == CN_LP_LEVEL_TINY_WORD)
         return;
@@ -99,11 +99,11 @@ void XmlLogger::writeToLogMap(const Map &map, const std::list<Node> &path)
     int iterate = 0;
     bool inPath;
     std::string str;
-    for (int i = 0; i < map.getMapHeight(); ++i) {
+    for (int i = 0; i < map.GetHeight(); ++i) {
         XMLElement *element = doc.NewElement(CNS_TAG_ROW);
         element->SetAttribute(CNS_TAG_ATTR_NUM, iterate);
 
-        for (int j = 0; j < map.getMapWidth(); ++j) {
+        for (int j = 0; j < map.GetWidth(); ++j) {
             inPath = false;
             for(std::list<Node>::const_iterator it = path.begin(); it != path.end(); it++)
                 if(it->i == i && it->j == j) {
