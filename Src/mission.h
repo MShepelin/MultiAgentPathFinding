@@ -19,7 +19,6 @@ class Mission
         XMLMap getMap() const;
         bool getConfig();
         bool createLog();
-        void createSearch();
         void createEnvironmentOptions();
         void startSearch();
         void printSearchResultsToConsole();
@@ -30,7 +29,7 @@ class Mission
         XMLMap                     map;
         Config                  config;
         EnvironmentOptions      options;
-        Search                  search;
+        SingleSearch            search;
         ILogger*                logger;
         const char*             fileName;
         SearchResult            sr;

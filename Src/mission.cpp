@@ -48,14 +48,14 @@ void Mission::createEnvironmentOptions()
     options.metrictype = config.SearchParams[CN_SP_MT];
 }
 
-void Mission::createSearch()
-{
-    //might be helpful in case numerous algorithms are added
-}
-
 void Mission::startSearch()
 {
-    sr = search.startSearch(&map, options, config, map.GetTask());
+    search.SetConfiguration(&map, options, config);
+    int agent_ID = search.AddAgent(map.GetTask());
+
+    search.Plan(true);
+
+    sr = search.GetPlan(agent_ID);
 }
 
 void Mission::printSearchResultsToConsole()

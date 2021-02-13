@@ -111,24 +111,25 @@ bool NodesBinaryHeap::compare(const Node& first, const Node& second)
     return fFirst > fSecond;
 }
 
-Search::Search()
+SingleSearch::SingleSearch()
 {
+    map_ = nullptr;
     heuristicWeight = 0;
     isDijk = false;
     maxSize = 0;
     task_ = { 0, 0, 0, 0 };
 }
 
-Search::~Search() {}
+SingleSearch::~SingleSearch() {}
 
-SearchResult Search::startSearch(const Map *map, const EnvironmentOptions &options, const Config& config, AgentTask task)
+void SingleSearch::SetConfiguration(const Map* map, const EnvironmentOptions &options, const Config& config)
 {
+    // Set map
+    map_ = map;
+
     // Initialise search parametres.
     currentOptions = options;
     maxSize = std::max(map->GetHeight(), map->GetHeight());
-
-    // Get task
-    task_ = task;
 
     // Set algorithm configurations.
     isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
@@ -143,17 +144,32 @@ SearchResult Search::startSearch(const Map *map, const EnvironmentOptions &optio
         heuristicWeight = config.SearchParams[CN_SP_HW];
         openHeap.setBreakTie(config.SearchParams[CN_SP_BT] == CN_SP_BT_GMAX);
     }
+}
 
+int SingleSearch::AddAgent(AgentTask task)
+{
+    // Get task
+    task_ = task;
+
+    return 0;
+}
+
+void SingleSearch::RemoveAgent(AgentIDType agent_ID)
+{
+    return;
+}
+
+void SingleSearch::Plan(bool full_plan)
+{
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
 
     sresult = SearchResult();
-    if (!map->IsCellTraversable(task_.start_i, task_.start_j))
+    if (!map_->IsCellTraversable(task_.start_i, task_.start_j))
     {
         // Default constructor of SearchResult will already have correct parameters.
-        return sresult;
+        return;
     }
-
 
     // Create node to start.
     generatedNodes[ENC(task_.start_i, task_.start_j)] = { task_.start_i, task_.start_j, 0 };
@@ -174,7 +190,7 @@ SearchResult Search::startSearch(const Map *map, const EnvironmentOptions &optio
         }
 
         // Expand the node.
-        expandNode(nodeToExpand, map);
+        expandNode(nodeToExpand, map_);
 
         // Mark expanded node as a node in the "close" list.
         nodeToExpand->H = -1;
@@ -236,10 +252,14 @@ SearchResult Search::startSearch(const Map *map, const EnvironmentOptions &optio
             pathIterator++;
         }
     }
+}
+
+SearchResult SingleSearch::GetPlan(AgentIDType agent_ID) const
+{
     return sresult;
 }
 
-void Search::setHeuristic(Node& nodeToEdit)
+void SingleSearch::setHeuristic(Node& nodeToEdit)
 {
     if (nodeToEdit.H >= 0)
     {
@@ -282,14 +302,14 @@ void Search::setHeuristic(Node& nodeToEdit)
     nodeToEdit.H *= heuristicWeight;
 }
 
-int Search::encode(int x, int y, int maxValue)
+int SingleSearch::encode(int x, int y, int maxValue)
 {
     // Hash table requires a hashable type, so std::pair won't suit.
     // This encoding provides one-to-one correspondence between two coordinates and int.
     return x + y * maxValue;
 }
 
-void Search::expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j)
+void SingleSearch::expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j)
 {
     // Check possibility of movement
     if (!map->IsCellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
@@ -349,7 +369,7 @@ void Search::expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int 
     }
 }
 
-void Search::expandNode(Node* nodeToExpand, const Map *map)
+void SingleSearch::expandNode(Node* nodeToExpand, const Map *map)
 {
     expandNodeDirection(nodeToExpand, map, -1, -1);
     expandNodeDirection(nodeToExpand, map, -1, 0);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "map.h"
+#include "mapf_interface.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
 #include <list>
@@ -38,33 +39,42 @@ public:
     void setBreakTie(bool breakTieGMax);
 };
 
-
-class Search
+class SingleSearch : public MAPFSolverInterface
 {
-    public:
-        Search();
-        ~Search(void);
-        SearchResult startSearch(const Map *map, const EnvironmentOptions &options, const Config& config, AgentTask task);
+public:
+    SingleSearch();
+    ~SingleSearch(void);
 
-    protected:
-        NodesBinaryHeap openHeap;
-        std::unordered_map<int, Node> generatedNodes;
-        std::list<Node> lppath, hppath;
-        SearchResult sresult;
+    virtual void SetConfiguration(const Map* map, const EnvironmentOptions &options, const Config& config) override;
 
-        EnvironmentOptions currentOptions;
-        double heuristicWeight;
-        AgentTask task_;
-        int maxSize;
-        // maxSize is the maximum size of the considered grid
-        bool isDijk;
+    virtual AgentIDType AddAgent(AgentTask task) override;
 
-    protected:
-        static int encode(int x, int y, int maxValue);
+    virtual void RemoveAgent(AgentIDType agent_ID) override;
 
-        void setHeuristic(Node& nodeToEdit);
+    virtual void Plan(bool full_plan = true) override;
 
-        void expandNode(Node* nodeToExpand, const Map *map);
+    virtual SearchResult GetPlan(AgentIDType agent_ID) const override;
 
-        void expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j);
+protected:
+    NodesBinaryHeap openHeap;
+    std::unordered_map<int, Node> generatedNodes;
+    std::list<Node> lppath, hppath;
+    SearchResult sresult;
+
+    EnvironmentOptions currentOptions;
+    double heuristicWeight;
+    AgentTask task_;
+    int maxSize;
+    // maxSize is the maximum size of the considered grid
+    bool isDijk;
+    const Map* map_;
+
+protected:
+    static int encode(int x, int y, int maxValue);
+
+    void setHeuristic(Node& nodeToEdit);
+
+    void expandNode(Node* nodeToExpand, const Map *map);
+
+    void expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j);
 };

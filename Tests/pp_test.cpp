@@ -40,7 +40,6 @@ int main(int argc, char* argv[])
     }
 
     mission.createEnvironmentOptions();
-    mission.createSearch();
     mission.startSearch();
     SearchResult result = mission.getSearchResult();
 
