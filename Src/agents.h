@@ -2,6 +2,6 @@
 
 struct AgentTask
 {
-    int start_x, start_y;
-    int goal_x, goal_y;
+    int start_i, start_j;
+    int goal_i, goal_j;
 };

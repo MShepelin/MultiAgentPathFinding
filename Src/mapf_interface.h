@@ -1,6 +1,7 @@
 #pragma once
 
 #include "agents.h"
+#include "searchresult.h"
 
 struct PlanOptions
 {
@@ -18,5 +19,5 @@ public:
 
     virtual void Plan(PlanOptions options, bool full_plan = true) = 0;
 
-    virtual void GetPlan(AgentIDType agent_ID) = 0;
+    virtual SearchResult GetPlan(AgentIDType agent_ID) = 0;
 };

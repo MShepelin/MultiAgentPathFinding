@@ -1,6 +1,8 @@
 #pragma once
+
 #include "search.h"
 #include <chrono>
+#include <iostream>
 #include <algorithm>
 #define ENC(x, y) encode(x, y, maxSize)
 #define EXPEXTED_OPEN_NODES 32
@@ -114,36 +116,48 @@ Search::Search()
     heuristicWeight = 0;
     isDijk = false;
     maxSize = 0;
-    std::fill(task, task + 4, 0);
+    task_ = { 0, 0, 0, 0 };
 }
 
 Search::~Search() {}
 
-SearchResult Search::startSearch(ILogger *Logger, const XMLMap &map, const EnvironmentOptions &options, const Config& config)
+SearchResult Search::startSearch(const Map *map, const EnvironmentOptions &options, const Config& config, AgentTask task)
 {
     // Initialise search parametres.
     currentOptions = options;
-    maxSize = std::max(map.GetHeight(), map.GetHeight());
-    map.GetTask(task);
+    maxSize = std::max(map->GetHeight(), map->GetHeight());
+
+    // Get task
+    task_ = task;
 
     // Set algorithm configurations.
     isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
-    heuristicWeight = config.SearchParams[CN_SP_HW];
-    openHeap.setBreakTie(config.SearchParams[CN_SP_BT] == CN_SP_BT_GMAX);
+
+    if (isDijk)
+    {
+        heuristicWeight = 0;
+        openHeap.setBreakTie(true);
+    }
+    else
+    {
+        heuristicWeight = config.SearchParams[CN_SP_HW];
+        openHeap.setBreakTie(config.SearchParams[CN_SP_BT] == CN_SP_BT_GMAX);
+    }
 
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
 
     sresult = SearchResult();
-    if (!map.IsCellTraversable(task[0], task[1]))
+    if (!map->IsCellTraversable(task_.start_i, task_.start_j))
     {
         // Default constructor of SearchResult will already have correct parameters.
         return sresult;
     }
 
+
     // Create node to start.
-    generatedNodes[ENC(task[0], task[1])] = { task[0], task[1], 0 };
-    Node* startNode = &generatedNodes[ENC(task[0], task[1])];
+    generatedNodes[ENC(task_.start_i, task_.start_j)] = { task_.start_i, task_.start_j, 0 };
+    Node* startNode = &generatedNodes[ENC(task_.start_i, task_.start_j)];
     setHeuristic(*startNode);
     openHeap.insert(*startNode);
 
@@ -155,7 +169,7 @@ SearchResult Search::startSearch(ILogger *Logger, const XMLMap &map, const Envir
         // Remove expanded node from the heap.
         Node* nodeToExpand = openHeap.popMin();
 
-        if (nodeToExpand->i == task[2] && nodeToExpand->j == task[3]) {
+        if (nodeToExpand->i == task_.goal_i && nodeToExpand->j == task_.goal_j) {
             break;
         }
 
@@ -167,9 +181,9 @@ SearchResult Search::startSearch(ILogger *Logger, const XMLMap &map, const Envir
     }
 
     // Back propagation
-    if (generatedNodes.find(ENC(task[2], task[3])) != generatedNodes.end())
+    if (generatedNodes.find(ENC(task_.goal_i, task_.goal_j)) != generatedNodes.end())
     {
-        Node* targetNode = &generatedNodes[ENC(task[2], task[3])];
+        Node* targetNode = &generatedNodes[ENC(task_.goal_i, task_.goal_j)];
 
         sresult.pathfound = true;
         sresult.pathlength = targetNode->g;
@@ -239,8 +253,8 @@ void Search::setHeuristic(Node& nodeToEdit)
         return;
     }
 
-    double dx = abs(nodeToEdit.i - task[2]);
-    double dy = abs(nodeToEdit.j - task[3]);
+    double dx = abs(nodeToEdit.i - task_.goal_i);
+    double dy = abs(nodeToEdit.j - task_.goal_j);
 
     switch (currentOptions.metrictype)
     {
@@ -275,11 +289,11 @@ int Search::encode(int x, int y, int maxValue)
     return x + y * maxValue;
 }
 
-void Search::expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, int j)
+void Search::expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j)
 {
     // Check possibility of movement
-    if (!map.IsCellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
-        !map.IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
+    if (!map->IsCellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
+        !map->IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
     {
         return;
     }
@@ -296,8 +310,8 @@ void Search::expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, i
         }
 
         // Count untraversable cells on the diagonal path.
-        char count = !map.IsCellTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
-            !map.IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j);
+        char count = !map->IsCellTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
+            !map->IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j);
 
         // Check if the path through the diagonal is possible.
         if ((count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze))
@@ -315,7 +329,7 @@ void Search::expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, i
         auto insertResult = generatedNodes.insert({ nodeKey, { nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue } });
         Node& insertedNode = insertResult.first->second;
 
-        //++++ check if insertion fails
+        // Insert in the heap
         setHeuristic(insertedNode);
         openHeap.insert(insertedNode);
 
@@ -335,7 +349,7 @@ void Search::expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, i
     }
 }
 
-void Search::expandNode(Node* nodeToExpand, const XMLMap &map)
+void Search::expandNode(Node* nodeToExpand, const Map *map)
 {
     expandNodeDirection(nodeToExpand, map, -1, -1);
     expandNodeDirection(nodeToExpand, map, -1, 0);

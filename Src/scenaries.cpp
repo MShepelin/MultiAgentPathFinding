@@ -14,7 +14,7 @@ void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
     float distance;
 
     while (scenaries_file >> bucket >> buffer >> width >> height >> \
-        task.start_x >> task.start_y >> task.goal_x >> task.goal_y >> distance)
+        task.start_i >> task.start_j >> task.goal_i >> task.goal_j >> distance)
     {
         tasks_.push_back(task);
         optimal_lengths_.push_back(distance);

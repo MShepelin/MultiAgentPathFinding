@@ -26,7 +26,7 @@ bool Mission::prepareMap()
 
 bool Mission::getConfig()
 {
-    return config.getConfig(fileName);
+    return config.PrepareConfig(fileName);
 }
 
 bool Mission::createLog()
@@ -55,7 +55,7 @@ void Mission::createSearch()
 
 void Mission::startSearch()
 {
-    sr = search.startSearch(logger, map, options, config);
+    sr = search.startSearch(&map, options, config, map.GetTask());
 }
 
 void Mission::printSearchResultsToConsole()

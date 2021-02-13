@@ -1,5 +1,6 @@
 #include "map.h"
 #include <string>
+#include <cassert>
 
 Map::Map()
 {
@@ -41,7 +42,7 @@ bool Map::PrepareMap(std::ifstream& map_file)
     if (height < 0 || width < 0) return false;
 
     ClearGrid();
-    grid_ = new unsigned short int*[height];
+    grid_ = new int* [height];
     height_ = height;
     width_ = width;
 
@@ -49,7 +50,7 @@ bool Map::PrepareMap(std::ifstream& map_file)
     unsigned short int grid_cell;
     for (int row = 0; row < height; ++row)
     {
-        grid_[row] = new unsigned short int [width];
+        grid_[row] = new int [width];
         for (int column = 0; column < width; ++column)
         {
             map_file.get(grid_value);
@@ -71,6 +72,7 @@ bool Map::PrepareMap(std::ifstream& map_file)
 
 bool Map::IsCellTraversable(int i, int j) const
 {
+    assert(IsCellOnGrid(i, j));
     return grid_[i][j] == 0;
 }
 

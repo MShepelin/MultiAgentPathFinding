@@ -1,15 +1,12 @@
 #pragma once
 
-#include "agents.h"
-#include "mapf_interface.h"
 #include <fstream>
 
 class Map
 {
 protected:
-    int width_;
-    int height_;
-    short unsigned int **grid_;
+    int height_, width_;
+    int **grid_;
 
     void ClearGrid();
 
@@ -19,10 +16,10 @@ public:
 
     bool PrepareMap(std::ifstream& map_file);
 
-    // Checks if the [x, y] pair is traversable, considering that [x, y] is on grid
-    bool IsCellTraversable(int x, int y) const;
+    // Checks if the [i, j] pair is traversable, considering that [i, j] is on grid
+    virtual bool IsCellTraversable(int i, int j) const;
 
-    bool IsCellOnGrid(int x, int y) const;
+    bool IsCellOnGrid(int i, int j) const;
 
     int GetHeight() const;
 

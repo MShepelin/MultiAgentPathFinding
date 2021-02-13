@@ -15,4 +15,3 @@ EnvironmentOptions::EnvironmentOptions(bool AS, bool AD, bool CC, int MT)
     allowdiagonal = AD;
     cutcorners = CC;
 }
-

@@ -1,5 +1,5 @@
-#ifndef ENVIRONMENTOPTIONS_H
-#define ENVIRONMENTOPTIONS_H
+#pragma once
+
 #include "gl_const.h"
 
 class EnvironmentOptions
@@ -11,7 +11,4 @@ public:
     bool    allowsqueeze;   //Option that allows to move throught "bottleneck"
     bool    allowdiagonal;  //Option that allows to make diagonal moves
     bool    cutcorners;     //Option that allows to make diagonal moves, when one adjacent cell is untraversable
-
 };
-
-#endif // ENVIRONMENTOPTIONS_H

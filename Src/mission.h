@@ -6,7 +6,6 @@
 #include "ilogger.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
-#include "search.h"
 #include "xmllogger.h"
 
 class Mission

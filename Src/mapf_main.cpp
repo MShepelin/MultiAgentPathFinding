@@ -1,7 +1,4 @@
 #include "tasker.h"
-#include "scenaries.h"
-#include "map.h"
-#include "mapf_interface.h"
 #include <iostream>
 #include <fstream>
 
@@ -28,7 +25,7 @@ int main(int argc, char *argv[])
 
     map.PrepareMap(file);
 
-    std::cout << "Map size is " << map.GetHeight() << " " << map.GetWidth() << "\n";
+    std::cout << "Map size is " << map.GetHeight() << "x" << map.GetWidth() << "\n";
 
     file.close();
     // Finish loading the map

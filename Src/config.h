@@ -1,14 +1,14 @@
-#ifndef CONFIG_H
-#define	CONFIG_H
+#pragma once
+
 #include <string>
 
 class Config
 {
     public:
         Config();
-        //Config(const Config& orig);
+        Config(const Config& orig);
         ~Config();
-        bool getConfig(const char *FileName);
+        bool PrepareConfig(const char *FileName);
 
     public:
         double*         SearchParams;
@@ -16,6 +16,3 @@ class Config
         unsigned int    N;
 
 };
-
-#endif
-

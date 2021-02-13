@@ -1,5 +1,4 @@
-#ifndef GL_CONST_H
-#define	GL_CONST_H
+#pragma once
 
 #define CN_PI_CONSTANT 3.14159265359
 #define CN_SQRT_TWO    1.41421356237
@@ -67,11 +66,11 @@
 //Search Parameters
     #define CN_SP_ST 0
 
-        #define CNS_SP_ST_BFS           "bfs"
+       // #define CNS_SP_ST_BFS           "bfs"
         #define CNS_SP_ST_DIJK          "dijkstra"
         #define CNS_SP_ST_ASTAR         "astar"
-        #define CNS_SP_ST_JP_SEARCH     "jp_search"
-        #define CNS_SP_ST_TH            "theta"
+      //  #define CNS_SP_ST_JP_SEARCH     "jp_search"
+      //  #define CNS_SP_ST_TH            "theta"
 
         #define CN_SP_ST_BFS            0
         #define CN_SP_ST_DIJK           1
@@ -134,6 +133,3 @@
 //Other
     #define CNS_OTHER_PATHSELECTION     "*"
     #define CNS_OTHER_MATRIXSEPARATOR   ' '
-
-#endif
-

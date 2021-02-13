@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ilogger.h"
+#include "map.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
 #include <list>
@@ -10,6 +10,7 @@
 #include <chrono>
 #include <unordered_map>
 #include "config.h"
+#include "agents.h"
 
 class NodesBinaryHeap
 {
@@ -43,7 +44,7 @@ class Search
     public:
         Search();
         ~Search(void);
-        SearchResult startSearch(ILogger *Logger, const XMLMap &Map, const EnvironmentOptions &options, const Config& config);
+        SearchResult startSearch(const Map *map, const EnvironmentOptions &options, const Config& config, AgentTask task);
 
     protected:
         NodesBinaryHeap openHeap;
@@ -53,9 +54,7 @@ class Search
 
         EnvironmentOptions currentOptions;
         double heuristicWeight;
-        int task[4];
-        // task describes locations of start and finish:
-        // 0 - start_i, 1 - start_j, 2 - goal_i, 3 - goal_j
+        AgentTask task_;
         int maxSize;
         // maxSize is the maximum size of the considered grid
         bool isDijk;
@@ -65,7 +64,7 @@ class Search
 
         void setHeuristic(Node& nodeToEdit);
 
-        void expandNode(Node* nodeToExpand, const XMLMap &map);
+        void expandNode(Node* nodeToExpand, const Map *map);
 
-        void expandNodeDirection(Node* nodeToExpand, const XMLMap &map, int i, int j);
+        void expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j);
 };

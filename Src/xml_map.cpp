@@ -14,21 +14,12 @@ XMLMap::XMLMap()
 
 XMLMap::~XMLMap()
 {
-    if (grid_) {
-        for (int i = 0; i < height_; ++i)
-            delete[] grid_[i];
-        delete[] grid_;
-    }
+    ClearGrid();
 }
 
 bool XMLMap::IsCellTraversable(int i, int j) const
 {
     return (grid_[i][j] == CN_GC_NOOBS);
-}
-
-bool XMLMap::IsCellOnGrid(int i, int j) const
-{
-    return (i < height_ && i >= 0 && j < width_ && j >= 0);
 }
 
 bool XMLMap::PrepareMap(const char *FileName)
@@ -39,6 +30,8 @@ bool XMLMap::PrepareMap(const char *FileName)
 
     std::string value;
     std::stringstream stream;
+
+    ClearGrid();
 
     bool hasGridMem = false, hasGrid = false, hasHeight = false, hasWidth = false, hasSTX = false, hasSTY = false, hasFINX = false, hasFINY = false, hasCellSize = false;
 
@@ -318,27 +311,14 @@ int XMLMap::getValue(int i, int j) const
     return grid_[i][j];
 }
 
-int XMLMap::GetHeight() const
-{
-      return height_;
-}
-
-int XMLMap::GetWidth() const
-{
-      return width_;
-}
-
 double XMLMap::GetCellSize() const
 {
       return cell_size_;
 }
 
-void XMLMap::GetTask(int* buffer) const
+AgentTask XMLMap::GetTask() const
 {
-    buffer[0] = start_i;
-    buffer[1] = start_j;
-    buffer[2] = goal_i;
-    buffer[3] = goal_j;
+    return { start_i, start_j, goal_i, goal_j };
 }
 
 XMLMap::XMLMap(const XMLMap& orig)

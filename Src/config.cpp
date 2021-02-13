@@ -18,7 +18,43 @@ Config::~Config()
     if (LogParams) delete[] LogParams;
 }
 
-bool Config::getConfig(const char *FileName)
+Config::Config(const Config& orig)
+{
+    if (orig.N != 4 && orig.N != 7)
+    {
+        LogParams = nullptr;
+        SearchParams = nullptr;
+        return;
+    }
+
+    if (!orig.SearchParams)
+    {
+        SearchParams = nullptr;
+    }
+    else
+    {
+        SearchParams = new double[orig.N];
+        for (int i = 0; i < N; ++i)
+        {
+            *(SearchParams + i) = *(orig.SearchParams + i);
+        }
+    }
+
+    if (!orig.LogParams)
+    {
+        LogParams = nullptr;
+    }
+    else
+    {
+        LogParams = new std::string[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            *(LogParams + i) = *(orig.LogParams + i);
+        }
+    }
+}
+
+bool Config::PrepareConfig(const char *FileName)
 {
     std::string value;
     std::stringstream stream;
@@ -51,24 +87,15 @@ bool Config::getConfig(const char *FileName)
         value = element->GetText();
     std::transform(value.begin(), value.end(), value.begin(), ::tolower);
 
-    if (value == CNS_SP_ST_BFS) {
-        N = 4;
-        SearchParams = new double[N];
-        SearchParams[CN_SP_ST] = CN_SP_ST_BFS;
-    }
-    else if (value == CNS_SP_ST_DIJK) {
+    if (value == CNS_SP_ST_DIJK) {
         N = 4;
         SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_DIJK;
     }
-    else if (value == CNS_SP_ST_ASTAR || value == CNS_SP_ST_JP_SEARCH || value == CNS_SP_ST_TH) {
+    else if (value == CNS_SP_ST_ASTAR) {
         N = 7;
         SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_ASTAR;
-        if (value == CNS_SP_ST_JP_SEARCH)
-            SearchParams[CN_SP_ST] = CN_SP_ST_JP_SEARCH;
-        else if (value == CNS_SP_ST_TH)
-            SearchParams[CN_SP_ST] = CN_SP_ST_TH;
         element = algorithm->FirstChildElement(CNS_TAG_HW);
         if (!element) {
             std::cout << "Warning! No '" << CNS_TAG_HW << "' tag found in algorithm section." << std::endl;
@@ -135,11 +162,9 @@ bool Config::getConfig(const char *FileName)
     else {
         std::cout << "Error! Value of '" << CNS_TAG_ST << "' tag (algorithm name) is not correctly specified."
                   << std::endl;
-        std::cout << "Supported algorithm's names are: '" << CNS_SP_ST_BFS << "', '" << CNS_SP_ST_DIJK << "', '"
-                  << CNS_SP_ST_ASTAR << "', '" << CNS_SP_ST_TH << "', '" << CNS_SP_ST_JP_SEARCH << "'." << std::endl;
+        std::cout << "Supported algorithm's names are: '" << CNS_SP_ST_DIJK << "' and '" << CNS_SP_ST_ASTAR << "'." << std::endl;
         return false;
     }
-
 
     element = algorithm->FirstChildElement(CNS_TAG_AD);
     if (!element) {

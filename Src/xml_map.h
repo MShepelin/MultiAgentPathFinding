@@ -1,5 +1,6 @@
 #pragma once
 
+#include "map.h"
 #include <iostream>
 #include "gl_const.h"
 #include <sstream>
@@ -7,11 +8,11 @@
 #include <string>
 #include <algorithm>
 #include "tinyxml2.h"
+#include "agents.h"
 
-class XMLMap
+class XMLMap : public Map
 {
-private:
-    int     height_, width_;
+protected:
     int     start_i, start_j;
     int     goal_i, goal_j;
     double  cell_size_;
@@ -19,15 +20,18 @@ private:
 
 public:
     XMLMap();
+
     XMLMap(const XMLMap& orig);
+
     ~XMLMap();
 
     bool PrepareMap(const char *FileName);
-    bool IsCellTraversable(int i, int j) const;
-    bool IsCellOnGrid(int i, int j) const;
+
+    virtual bool IsCellTraversable(int i, int j) const override;
+
     int getValue(int i, int j) const;
-    int GetHeight() const;
-    int GetWidth() const;
+
     double GetCellSize() const;
-    void GetTask(int* buffer) const;
+
+    AgentTask GetTask() const;
 };

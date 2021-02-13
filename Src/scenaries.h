@@ -8,7 +8,7 @@ class ScenariesCollection
 {
 protected:
     std::vector<AgentTask> tasks_;
-    std::vector<float> optimal_lengths_;
+    std::vector<double> optimal_lengths_;
 
 public:
     void PrepareScenaries(std::ifstream& scenaries_file);
