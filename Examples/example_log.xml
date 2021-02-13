@@ -52,7 +52,7 @@
     </options>
     <log>
         <mapfilename>C:\Users\shepe\CProjects\MultiAgentPathFinding\Examples\example.xml</mapfilename>
-        <summary numberofsteps="48" nodescreated="84" length="16.071068" length_scaled="385.70562744140625" time="0.000525"/>
+        <summary numberofsteps="48" nodescreated="84" length="16.071068" length_scaled="385.70562744140625" time="0.000041"/>
         <path>
             <row number="0">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>

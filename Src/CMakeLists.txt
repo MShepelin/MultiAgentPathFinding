@@ -11,7 +11,8 @@ set(HEADERS_PP      config.h
                     tinyxml2.h
                     map.h
                     xmllogger.h
-                    agents.h)
+                    agents.h
+                    agents_array.h)
 
 set(SOURCES_PP      config.cpp
                     environmentoptions.cpp
@@ -20,7 +21,8 @@ set(SOURCES_PP      config.cpp
                     mission.cpp
                     search.cpp
                     tinyxml2.cpp
-                    xmllogger.cpp)
+                    xmllogger.cpp
+                    agents_array.cpp)
 
 set(HEADERS_MAPF    tinyxml2.h
                     tasker.h
@@ -33,14 +35,15 @@ set(HEADERS_MAPF    tinyxml2.h
                     mapf_interface.h
                     agents.h
                     map.h
-                    scenaries.h)
+                    scenaries.h
+                    agents_array.h)
 
 set(SOURCES_MAPF    search.cpp
                     tinyxml2.cpp
                     tasker.cpp
                     map.cpp
                     environmentoptions.cpp
-                    scenaries.cpp)
+                    agents_array.cpp)
 
 if (MAPF)
 

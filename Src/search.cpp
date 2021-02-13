@@ -117,7 +117,7 @@ SingleSearch::SingleSearch()
     heuristicWeight = 0;
     isDijk = false;
     maxSize = 0;
-    task_ = { 0, 0, 0, 0 };
+    current_task_ = { 0, 0, 0, 0 };
 }
 
 SingleSearch::~SingleSearch() {}
@@ -148,34 +148,42 @@ void SingleSearch::SetConfiguration(const Map* map, const EnvironmentOptions &op
 
 int SingleSearch::AddAgent(AgentTask task)
 {
-    // Get task
-    task_ = task;
+    current_task_ = task;
 
-    return 0;
+    int new_ID = agents_.ReserveNewID();
+    agents_.PushTask(new_ID, task);
+
+    return new_ID;
 }
 
-void SingleSearch::RemoveAgent(AgentIDType agent_ID)
+void SingleSearch::RemoveAgent(int agent_ID)
 {
-    return;
+    agents_.RemoveID(agent_ID);
 }
 
-void SingleSearch::Plan(bool full_plan)
+void SingleSearch::PlanSingleAgent(AgentTask task)
 {
+    // Set task
+    current_task_ = task;
+
     // Start the counter.
     auto start = std::chrono::high_resolution_clock::now();
 
     sresult = SearchResult();
-    if (!map_->IsCellTraversable(task_.start_i, task_.start_j))
+    if (!map_->IsCellTraversable(current_task_.start_i, current_task_.start_j))
     {
         // Default constructor of SearchResult will already have correct parameters.
         return;
     }
 
     // Create node to start.
-    generatedNodes[ENC(task_.start_i, task_.start_j)] = { task_.start_i, task_.start_j, 0 };
-    Node* startNode = &generatedNodes[ENC(task_.start_i, task_.start_j)];
-    setHeuristic(*startNode);
-    openHeap.insert(*startNode);
+    if (generatedNodes.find(ENC(current_task_.start_i, current_task_.start_j)) == generatedNodes.end())
+    {
+        generatedNodes[ENC(current_task_.start_i, current_task_.start_j)] = { current_task_.start_i, current_task_.start_j, 0 };
+        Node* startNode = &generatedNodes[ENC(current_task_.start_i, current_task_.start_j)];
+        setHeuristic(*startNode);
+        openHeap.insert(*startNode);
+    }
 
     // Search in loop.
     while (openHeap.size())
@@ -185,7 +193,7 @@ void SingleSearch::Plan(bool full_plan)
         // Remove expanded node from the heap.
         Node* nodeToExpand = openHeap.popMin();
 
-        if (nodeToExpand->i == task_.goal_i && nodeToExpand->j == task_.goal_j) {
+        if (nodeToExpand->i == current_task_.goal_i && nodeToExpand->j == current_task_.goal_j) {
             break;
         }
 
@@ -197,9 +205,9 @@ void SingleSearch::Plan(bool full_plan)
     }
 
     // Back propagation
-    if (generatedNodes.find(ENC(task_.goal_i, task_.goal_j)) != generatedNodes.end())
+    if (generatedNodes.find(ENC(current_task_.goal_i, current_task_.goal_j)) != generatedNodes.end())
     {
-        Node* targetNode = &generatedNodes[ENC(task_.goal_i, task_.goal_j)];
+        Node* targetNode = &generatedNodes[ENC(current_task_.goal_i, current_task_.goal_j)];
 
         sresult.pathfound = true;
         sresult.pathlength = targetNode->g;
@@ -222,39 +230,48 @@ void SingleSearch::Plan(bool full_plan)
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     sresult.time = duration.count(); // in seconds
 
-    if (sresult.pathfound)
+    if (!sresult.pathfound)
     {
-        // Create hppath
-        int previousDirection[2] = { 0, 0 };
-        int currentDirection[2] = { 0, 0 };
+        return;
+    }
 
-        auto pathIterator = lppath.begin();
-        hppath.push_back(*pathIterator);
-        Node lastNode = *(pathIterator++);
+    // Create hppath
+    int previousDirection[2] = { 0, 0 };
+    int currentDirection[2] = { 0, 0 };
 
-        while (lppath.end() != pathIterator)
+    auto pathIterator = lppath.begin();
+    hppath.push_back(*pathIterator);
+    Node lastNode = *(pathIterator++);
+
+    while (lppath.end() != pathIterator)
+    {
+        currentDirection[0] = pathIterator->i - lastNode.i;
+        currentDirection[1] = pathIterator->j - lastNode.j;
+
+        if (currentDirection[0] == previousDirection[0] && currentDirection[1] == previousDirection[1])
         {
-            currentDirection[0] = pathIterator->i - lastNode.i;
-            currentDirection[1] = pathIterator->j - lastNode.j;
-
-            if (currentDirection[0] == previousDirection[0] && currentDirection[1] == previousDirection[1])
-            {
-                hppath.back() = *pathIterator;
-            }
-            else
-            {
-                hppath.emplace_back(*pathIterator);
-            }
-
-            previousDirection[0] = currentDirection[0];
-            previousDirection[1] = currentDirection[1];
-            lastNode = *pathIterator;
-            pathIterator++;
+            hppath.back() = *pathIterator;
         }
+        else
+        {
+            hppath.emplace_back(*pathIterator);
+        }
+
+        previousDirection[0] = currentDirection[0];
+        previousDirection[1] = currentDirection[1];
+        lastNode = *pathIterator;
+        pathIterator++;
     }
 }
 
-SearchResult SingleSearch::GetPlan(AgentIDType agent_ID) const
+void SingleSearch::Plan(bool full_plan)
+{
+    // Plan only one agent
+    // PlanSingleAgent(agents_.GetTask(agents_.GetIDs().at(0)));
+    PlanSingleAgent(current_task_);
+}
+
+SearchResult SingleSearch::GetPlan(int agent_ID) const
 {
     return sresult;
 }
@@ -273,8 +290,8 @@ void SingleSearch::setHeuristic(Node& nodeToEdit)
         return;
     }
 
-    double dx = abs(nodeToEdit.i - task_.goal_i);
-    double dy = abs(nodeToEdit.j - task_.goal_j);
+    double dx = abs(nodeToEdit.i - current_task_.goal_i);
+    double dy = abs(nodeToEdit.j - current_task_.goal_j);
 
     switch (currentOptions.metrictype)
     {

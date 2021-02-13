@@ -1,6 +1,7 @@
 #pragma once
 
 #include "map.h"
+#include "agents_array.h"
 #include "mapf_interface.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
@@ -47,13 +48,15 @@ public:
 
     virtual void SetConfiguration(const Map* map, const EnvironmentOptions &options, const Config& config) override;
 
-    virtual AgentIDType AddAgent(AgentTask task) override;
+    virtual int AddAgent(AgentTask task) override;
 
-    virtual void RemoveAgent(AgentIDType agent_ID) override;
+    virtual void RemoveAgent(int agent_ID) override;
 
     virtual void Plan(bool full_plan = true) override;
 
-    virtual SearchResult GetPlan(AgentIDType agent_ID) const override;
+    void PlanSingleAgent(AgentTask task);
+
+    virtual SearchResult GetPlan(int agent_ID) const override;
 
 protected:
     NodesBinaryHeap openHeap;
@@ -63,11 +66,12 @@ protected:
 
     EnvironmentOptions currentOptions;
     double heuristicWeight;
-    AgentTask task_;
     int maxSize;
     // maxSize is the maximum size of the considered grid
     bool isDijk;
+    AgentTask current_task_;
     const Map* map_;
+    AgentsArray agents_;
 
 protected:
     static int encode(int x, int y, int maxValue);
