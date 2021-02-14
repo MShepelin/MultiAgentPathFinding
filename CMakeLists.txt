@@ -14,7 +14,12 @@ endif()
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-option(MAPF "Use MAPF solver and file formats" OFF)
+option(MAPF "Build MAPF solver and use MAPF file formats" OFF)
+option(TESTS "Enable testing" ON)
+
+if (MSVC)
+set(gtest_force_shared_crt ON)
+endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/googletest")
 enable_testing()

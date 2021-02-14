@@ -49,11 +49,11 @@ struct Node
         parent = nullptr;
     }
 
-    Node(CellType init_cell, FTYPE init_g)
+    Node(CellType init_cell, FTYPE init_g, FTYPE init_h = -1)
     {
         cell = init_cell;
         g = init_g;
-        h = -1;
+        h = init_h;
         parent = nullptr;
     }
 
