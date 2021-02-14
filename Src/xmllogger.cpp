@@ -88,7 +88,7 @@ void XmlLogger::saveLog()
     doc.SaveFile(LogFileName.c_str());
 }
 
-void XmlLogger::writeToLogMap(const XMLMap &map, const std::list<Node> &path)
+void XmlLogger::writeToLogMap(const XMLMap &map, const std::vector<Node<GridCell>> &path)
 {
     if (loglevel == CN_LP_LEVEL_NOPE_WORD || loglevel == CN_LP_LEVEL_TINY_WORD)
         return;
@@ -105,8 +105,8 @@ void XmlLogger::writeToLogMap(const XMLMap &map, const std::list<Node> &path)
 
         for (int j = 0; j < map.GetWidth(); ++j) {
             inPath = false;
-            for(std::list<Node>::const_iterator it = path.begin(); it != path.end(); it++)
-                if(it->i == i && it->j == j) {
+            for(std::vector<Node<GridCell>>::const_iterator it = path.begin(); it != path.end(); it++)
+                if(it->cell.i == i && it->cell.j == j) {
                     inPath = true;
                     break;
                 }
@@ -124,16 +124,7 @@ void XmlLogger::writeToLogMap(const XMLMap &map, const std::list<Node> &path)
     }
 }
 
-/*void XmlLogger::writeToLogOpenClose(const typename &open, const typename &close)
-{
-    //need to implement
-    if (loglevel != CN_LP_LEVEL_FULL_WORD  && !(loglevel == CN_LP_LEVEL_MEDIUM_WORD && last))
-        return;
-
-
-}*/
-
-void XmlLogger::writeToLogPath(const std::list<Node> &path)
+void XmlLogger::writeToLogPath(const std::vector<Node<GridCell>> &path)
 {
     if (loglevel == CN_LP_LEVEL_NOPE_WORD || loglevel == CN_LP_LEVEL_TINY_WORD || path.empty())
         return;
@@ -141,34 +132,34 @@ void XmlLogger::writeToLogPath(const std::list<Node> &path)
     XMLElement *lplevel = doc.FirstChildElement(CNS_TAG_ROOT);
     lplevel = lplevel->FirstChildElement(CNS_TAG_LOG)->FirstChildElement(CNS_TAG_LPLEVEL);
 
-    for (std::list<Node>::const_iterator it = path.begin(); it != path.end(); it++) {
+    for (std::vector<Node<GridCell>>::const_iterator it = path.begin(); it != path.end(); it++) {
         XMLElement *element = doc.NewElement(CNS_TAG_POINT);
-        element->SetAttribute(CNS_TAG_ATTR_X, it->j);
-        element->SetAttribute(CNS_TAG_ATTR_Y, it->i);
+        element->SetAttribute(CNS_TAG_ATTR_X, it->cell.j);
+        element->SetAttribute(CNS_TAG_ATTR_Y, it->cell.i);
         element->SetAttribute(CNS_TAG_ATTR_NUM, iterate);
         lplevel->InsertEndChild(element);
         iterate++;
     }
 }
 
-void XmlLogger::writeToLogHPpath(const std::list<Node> &hppath)
+void XmlLogger::writeToLogHPpath(const std::vector<Node<GridCell>> &hppath)
 {
     if (loglevel == CN_LP_LEVEL_NOPE_WORD || loglevel == CN_LP_LEVEL_TINY_WORD || hppath.empty())
         return;
     int partnumber = 0;
     XMLElement *hplevel = doc.FirstChildElement(CNS_TAG_ROOT);
     hplevel = hplevel->FirstChildElement(CNS_TAG_LOG)->FirstChildElement(CNS_TAG_HPLEVEL);
-    std::list<Node>::const_iterator iter = hppath.begin();
-    std::list<Node>::const_iterator it = hppath.begin();
+    std::vector<Node<GridCell>>::const_iterator iter = hppath.begin();
+    std::vector<Node<GridCell>>::const_iterator it = hppath.begin();
 
     while (iter != --hppath.end()) {
         XMLElement *part = doc.NewElement(CNS_TAG_SECTION);
         part->SetAttribute(CNS_TAG_ATTR_NUM, partnumber);
-        part->SetAttribute(CNS_TAG_ATTR_STX, it->j);
-        part->SetAttribute(CNS_TAG_ATTR_STY, it->i);
+        part->SetAttribute(CNS_TAG_ATTR_STX, it->cell.j);
+        part->SetAttribute(CNS_TAG_ATTR_STY, it->cell.i);
         ++iter;
-        part->SetAttribute(CNS_TAG_ATTR_FINX, iter->j);
-        part->SetAttribute(CNS_TAG_ATTR_FINY, iter->i);
+        part->SetAttribute(CNS_TAG_ATTR_FINX, iter->cell.j);
+        part->SetAttribute(CNS_TAG_ATTR_FINY, iter->cell.i);
         part->SetAttribute(CNS_TAG_ATTR_LENGTH, iter->g - it->g);
         hplevel->LinkEndChild(part);
         ++it;

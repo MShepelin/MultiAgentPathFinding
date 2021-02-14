@@ -2,12 +2,13 @@
 
 #include <fstream>
 #include <vector>
+#include "nodes.h"
 #include "agents.h"
 
 class ScenariesCollection
 {
 protected:
-    std::vector<AgentTask> tasks_;
+    std::vector<AgentTask<GridCell>> tasks_;
     std::vector<double> optimal_lengths_;
 
 public:
@@ -15,5 +16,5 @@ public:
     
     int GetNum() const;
 
-    AgentTask GetScenary(size_t scenary_index) const;
+    AgentTask<GridCell> GetScenary(size_t scenary_index) const;
 };

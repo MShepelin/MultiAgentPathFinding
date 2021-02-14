@@ -1,12 +1,12 @@
-if (MAPF)
+#if (MAPF)
 	get_target_property(MAPFLIB_SOURCE_DIR MAPFLIB SOURCE_DIR) 
 	include_directories(${MAPFLIB_SOURCE_DIR})
 	include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-	add_executable(testbench mapf_test.cpp)
+	add_executable(testbench_mapf mapf_test.cpp)
 
 	target_link_libraries(
-		testbench 
+		testbench_mapf 
 		PRIVATE MAPFLIB
 		PRIVATE gtest 
 		PRIVATE gtest_main
@@ -15,7 +15,7 @@ if (MAPF)
 	if (MSVC)
 		set(gtest_force_shared_crt ON)
 	endif()
-else()
+#else()
 	get_target_property(PPLIB_SOURCE_DIR PPLIB SOURCE_DIR) 
 	include_directories(${PPLIB_SOURCE_DIR})
 
@@ -35,4 +35,4 @@ else()
 	add_test(NAME Test10 COMMAND testbench ${CMAKE_SOURCE_DIR}/TestData/9_test.xml)
 	add_test(NAME Test11 COMMAND testbench ${CMAKE_SOURCE_DIR}/TestData/A_test.xml)
 	add_test(NAME Test12 COMMAND testbench ${CMAKE_SOURCE_DIR}/TestData/B_test.xml)
-endif()
+#endif()

@@ -4,399 +4,118 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
-#define ENC(x, y) encode(x, y, maxSize)
-#define EXPEXTED_OPEN_NODES 32
 
-const double ch = 1;
-const double cd = std::sqrt(2);
+// ------------------------------- //
+// GridSingleSearch implementation //
+// ------------------------------- //
 
-NodesBinaryHeap::NodesBinaryHeap()
+const FTYPE GridSingleSearch::ch = 1;
+const FTYPE GridSingleSearch::cd = CN_SQRT_TWO;
+
+void GridSingleSearch::SetHeuristic(NodeType& node_to_edit)
 {
-    nodes = { nullptr };
-    isBreakTieGMax = true;
-    nodes.reserve(EXPEXTED_OPEN_NODES);
-}
-
-void NodesBinaryHeap::moveUp(size_t nodeIndex)
-{
-    for (size_t parentIndex = (nodeIndex >> 1); parentIndex && compare(*nodes[parentIndex], *nodes[nodeIndex]); nodeIndex >>= 1, parentIndex >>= 1)
-    {
-        std::swap(nodes[parentIndex]->heapIndex, nodes[nodeIndex]->heapIndex);
-        std::swap(nodes[parentIndex], nodes[nodeIndex]);
-    }
-}
-
-void NodesBinaryHeap::moveDown(size_t nodeIndex)
-{
-    for (size_t minChildIndex = nodeIndex << 1; minChildIndex + 1 < nodes.size(); minChildIndex = nodeIndex << 1)
-    {
-        if (compare(*nodes[minChildIndex], *nodes[minChildIndex + 1]))
-            ++minChildIndex;
-
-        Node& currentNode = *nodes[nodeIndex];
-        Node& minChild = *nodes[minChildIndex];
-        if (!compare(currentNode, minChild))
-            break;
-
-        std::swap(currentNode.heapIndex, minChild.heapIndex);
-        std::swap(nodes[nodeIndex], nodes[minChildIndex]);
-        nodeIndex = minChildIndex;
-    }
-
-    if ((nodeIndex << 1) < nodes.size())
-    {
-        Node& currentNode = *nodes[nodeIndex];
-        Node& minChild = *nodes[nodeIndex << 1];
-
-        if (compare(currentNode, minChild))
-        {
-            std::swap(currentNode.heapIndex, minChild.heapIndex);
-            std::swap(nodes[nodeIndex], nodes[nodeIndex << 1]);
-        }
-    }
-}
-
-void NodesBinaryHeap::insert(Node& newNode)
-{
-    newNode.heapIndex = nodes.size();
-    nodes.emplace_back(&newNode);
-    moveUp(newNode.heapIndex);
-}
-
-void NodesBinaryHeap::decreaseGValue(Node& nodeToChange, double newGValue)
-{
-    nodeToChange.g = newGValue;
-    moveUp(nodeToChange.heapIndex);
-}
-
-Node* NodesBinaryHeap::popMin()
-{
-    if (nodes.size() <= 1)
-    {
-        return nullptr;
-    }
-
-    Node* result = nodes[1];
-    std::swap(nodes[1], nodes[nodes.size() - 1]);
-    nodes.pop_back();
-    if (nodes.size() >= 2)
-    {
-        nodes[1]->heapIndex = 1;
-    }
-    moveDown(1);
-
-    return result;
-}
-
-size_t NodesBinaryHeap::size()
-{
-    return nodes.size() ? nodes.size() - 1 : 0;
-}
-
-void NodesBinaryHeap::setBreakTie(bool breakTieGMax)
-{
-    isBreakTieGMax = breakTieGMax;
-}
-
-bool NodesBinaryHeap::compare(const Node& first, const Node& second)
-{
-    double fFirst = first.g + first.H;
-    double fSecond = second.g + second.H;
-    
-    if (fFirst == fSecond)
-    {
-        return isBreakTieGMax == (first.g < second.g);
-    }
-
-    return fFirst > fSecond;
-}
-
-SingleSearch::SingleSearch()
-{
-    map_ = nullptr;
-    heuristicWeight = 0;
-    isDijk = false;
-    maxSize = 0;
-    current_task_ = { 0, 0, 0, 0 };
-}
-
-SingleSearch::~SingleSearch() {}
-
-void SingleSearch::SetConfiguration(const Map* map, const EnvironmentOptions &options, const Config& config)
-{
-    // Set map
-    map_ = map;
-
-    // Initialise search parametres.
-    currentOptions = options;
-    maxSize = std::max(map->GetHeight(), map->GetHeight());
-
-    // Set algorithm configurations.
-    isDijk = (config.SearchParams[CN_SP_ST] == CN_SP_ST_DIJK);
-
-    if (isDijk)
-    {
-        heuristicWeight = 0;
-        openHeap.setBreakTie(true);
-    }
-    else
-    {
-        heuristicWeight = config.SearchParams[CN_SP_HW];
-        openHeap.setBreakTie(config.SearchParams[CN_SP_BT] == CN_SP_BT_GMAX);
-    }
-}
-
-int SingleSearch::AddAgent(AgentTask task)
-{
-    current_task_ = task;
-
-    int new_ID = agents_.ReserveNewID();
-    agents_.PushTask(new_ID, task);
-
-    return new_ID;
-}
-
-void SingleSearch::RemoveAgent(int agent_ID)
-{
-    agents_.RemoveID(agent_ID);
-}
-
-void SingleSearch::PlanSingleAgent(AgentTask task)
-{
-    // Set task
-    current_task_ = task;
-
-    // Start the counter.
-    auto start = std::chrono::high_resolution_clock::now();
-
-    sresult = SearchResult();
-    if (!map_->IsCellTraversable(current_task_.start_i, current_task_.start_j))
-    {
-        // Default constructor of SearchResult will already have correct parameters.
-        return;
-    }
-
-    // Create node to start.
-    if (generatedNodes.find(ENC(current_task_.start_i, current_task_.start_j)) == generatedNodes.end())
-    {
-        generatedNodes[ENC(current_task_.start_i, current_task_.start_j)] = { current_task_.start_i, current_task_.start_j, 0 };
-        Node* startNode = &generatedNodes[ENC(current_task_.start_i, current_task_.start_j)];
-        setHeuristic(*startNode);
-        openHeap.insert(*startNode);
-    }
-
-    // Search in loop.
-    while (openHeap.size())
-    {
-        sresult.numberofsteps++;
-
-        // Remove expanded node from the heap.
-        Node* nodeToExpand = openHeap.popMin();
-
-        if (nodeToExpand->i == current_task_.goal_i && nodeToExpand->j == current_task_.goal_j) {
-            break;
-        }
-
-        // Expand the node.
-        expandNode(nodeToExpand, map_);
-
-        // Mark expanded node as a node in the "close" list.
-        nodeToExpand->H = -1;
-    }
-
-    // Back propagation
-    if (generatedNodes.find(ENC(current_task_.goal_i, current_task_.goal_j)) != generatedNodes.end())
-    {
-        Node* targetNode = &generatedNodes[ENC(current_task_.goal_i, current_task_.goal_j)];
-
-        sresult.pathfound = true;
-        sresult.pathlength = targetNode->g;
-
-        Node* currentNode = targetNode;
-        while (currentNode)
-        {
-            // For now, nodes are copied to lppath, not moved.
-            lppath.push_front(*currentNode);
-            currentNode = currentNode->parent;
-        }
-
-        sresult.hppath = &hppath; // For now, hppath isn't created
-        sresult.lppath = &lppath;
-    }
-
-    // Count result data.
-    sresult.nodescreated = generatedNodes.size();
-
-    std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
-    sresult.time = duration.count(); // in seconds
-
-    if (!sresult.pathfound)
-    {
-        return;
-    }
-
-    // Create hppath
-    int previousDirection[2] = { 0, 0 };
-    int currentDirection[2] = { 0, 0 };
-
-    auto pathIterator = lppath.begin();
-    hppath.push_back(*pathIterator);
-    Node lastNode = *(pathIterator++);
-
-    while (lppath.end() != pathIterator)
-    {
-        currentDirection[0] = pathIterator->i - lastNode.i;
-        currentDirection[1] = pathIterator->j - lastNode.j;
-
-        if (currentDirection[0] == previousDirection[0] && currentDirection[1] == previousDirection[1])
-        {
-            hppath.back() = *pathIterator;
-        }
-        else
-        {
-            hppath.emplace_back(*pathIterator);
-        }
-
-        previousDirection[0] = currentDirection[0];
-        previousDirection[1] = currentDirection[1];
-        lastNode = *pathIterator;
-        pathIterator++;
-    }
-}
-
-void SingleSearch::Plan(bool full_plan)
-{
-    // Plan only one agent
-    // PlanSingleAgent(agents_.GetTask(agents_.GetIDs().at(0)));
-    PlanSingleAgent(current_task_);
-}
-
-SearchResult SingleSearch::GetPlan(int agent_ID) const
-{
-    return sresult;
-}
-
-void SingleSearch::setHeuristic(Node& nodeToEdit)
-{
-    if (nodeToEdit.H >= 0)
+    if (node_to_edit.h >= 0)
     {
         // Not to change already calculated heuristic.
         return;
     }
 
-    if (isDijk)
+    if (0 == heuristic_weight_)
     {
-        nodeToEdit.H = 0;
+        node_to_edit.h = 0;
         return;
     }
 
-    double dx = abs(nodeToEdit.i - current_task_.goal_i);
-    double dy = abs(nodeToEdit.j - current_task_.goal_j);
+    double di = abs(node_to_edit.cell.i - task_.goal.i);
+    double dj = abs(node_to_edit.cell.j - task_.goal.j);
 
-    switch (currentOptions.metrictype)
+    switch (options_.metrictype)
     {
     case CN_SP_MT_DIAG:
-        nodeToEdit.H = ch*abs(dx - dy) + cd*std::min(dx, dy);
+        node_to_edit.h = ch * abs(di - dj) + cd * std::min(di, dj);
         break;
 
     case CN_SP_MT_MANH:
-        nodeToEdit.H = ch * (dx + dy);
+        node_to_edit.h = di + dj;
         break;
 
     case CN_SP_MT_EUCL:
-        nodeToEdit.H = ch * std::sqrt(dx*dx + dy * dy);
+        node_to_edit.h = std::sqrt(di * di + dj * dj);
         break;
 
     case CN_SP_MT_CHEB:
-        nodeToEdit.H = std::max(dx, dy);
+        node_to_edit.h = std::max(di, dj);
         break;
 
     default:
-        nodeToEdit.H = 0;
+        node_to_edit.h = 0;
         break;
     }
 
-    nodeToEdit.H *= heuristicWeight;
+    node_to_edit.h *= heuristic_weight_;
 }
 
-int SingleSearch::encode(int x, int y, int maxValue)
+void GridSingleSearch::ExpandNode(NodeType* node_to_expand)
 {
-    // Hash table requires a hashable type, so std::pair won't suit.
-    // This encoding provides one-to-one correspondence between two coordinates and int.
-    return x + y * maxValue;
+    GridCell cell_of_node = node_to_expand->cell;
+    ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j - 1 } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j + 1 } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j - 1 } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j + 1 } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j - 1 } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j } );
+    ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j + 1 } );
 }
 
-void SingleSearch::expandNodeDirection(Node* nodeToExpand, const Map *map, int i, int j)
+FTYPE GridSingleSearch::GetMoveCost(GridCell from, GridCell to) const
 {
-    // Check possibility of movement
-    if (!map->IsCellOnGrid(nodeToExpand->i + i, nodeToExpand->j + j) ||
-        !map->IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j + j))
-    {
-        return;
-    }
-
-    double cValue = ch;
+    if (!map_->IsCellOnGrid(to.i, to.j) ||
+        !map_->IsCellTraversable(to.i, to.j))
+        return -1;
 
     // Check if the current step goes through the diagonal.
-    if (i && j)
-    {
-        cValue = cd;
-        if (!currentOptions.allowdiagonal)
-        {
-            return;
-        }
+    if (!( (to.i - from.i) && (to.j - from.j) )) return ch;
+    if (!options_.allowdiagonal) return -1;
 
-        // Count untraversable cells on the diagonal path.
-        char count = !map->IsCellTraversable(nodeToExpand->i, nodeToExpand->j + j) + \
-            !map->IsCellTraversable(nodeToExpand->i + i, nodeToExpand->j);
+    // Count untraversable cells on the diagonal path.
+    char count = (char)!map_->IsCellTraversable(from.i, to.j) + (char)!map_->IsCellTraversable(to.i, from.j);
 
-        // Check if the path through the diagonal is possible.
-        if ((count > 0 && !currentOptions.cutcorners) || (count == 2 && !currentOptions.allowsqueeze))
-        {
-            return;
-        }
-    }
+    // Check if the path through the diagonal is possible.
+    if ((count > 0 && !options_.cutcorners) || 
+        (count == 2 && !options_.allowsqueeze)) 
+        return -1;
 
-    // Check if the considered node exists and is traversable.
-    int nodeKey = ENC(nodeToExpand->i + i, nodeToExpand->j + j);
-    auto potentialNode = generatedNodes.find(nodeKey);
-    if (potentialNode == generatedNodes.end())
-    {
-        // Create a new node.
-        auto insertResult = generatedNodes.insert({ nodeKey, { nodeToExpand->i + i, nodeToExpand->j + j, nodeToExpand->g + cValue } });
-        Node& insertedNode = insertResult.first->second;
-
-        // Insert in the heap
-        setHeuristic(insertedNode);
-        openHeap.insert(insertedNode);
-
-        // Set the parential node.
-        insertedNode.parent = nodeToExpand;
-    }
-    else
-    {
-        if (potentialNode->second.H >= 0 && potentialNode->second.g > nodeToExpand->g + cValue)
-        {
-            openHeap.decreaseGValue(potentialNode->second, nodeToExpand->g + cValue);
-
-            // Change the parential node to the one which is expanded.
-            potentialNode->second.parent = nodeToExpand;
-        }
-        // If the potential node is in the close list, we never reopen/reexpand it.
-    }
+    return cd;
 }
 
-void SingleSearch::expandNode(Node* nodeToExpand, const Map *map)
+void GridSingleSearch::BuildCompactPath()
 {
-    expandNodeDirection(nodeToExpand, map, -1, -1);
-    expandNodeDirection(nodeToExpand, map, -1, 0);
-    expandNodeDirection(nodeToExpand, map, -1, 1);
-    expandNodeDirection(nodeToExpand, map, 0, -1);
-    expandNodeDirection(nodeToExpand, map, 0, 1);
-    expandNodeDirection(nodeToExpand, map, 1, -1);
-    expandNodeDirection(nodeToExpand, map, 1, 0);
-    expandNodeDirection(nodeToExpand, map, 1, 1);
-}
+    if (!lppath_.size()) return;
 
-#undef ENC
-#undef EXPEXTED_OPEN_NODES
+    hppath_.clear();
+
+    // Create hppath
+    int previous_direction[2] = { 0, 0 };
+    int current_direction[2] = { 0, 0 };
+
+    hppath_.push_back(lppath_[0]);
+    NodeType last_node = lppath_[0];
+    for (size_t i = 1; i < lppath_.size(); ++i)
+    {
+        current_direction[0] = lppath_[i].cell.i - lppath_[i - 1].cell.i;
+        current_direction[1] = lppath_[i].cell.j - lppath_[i - 1].cell.j;
+
+        if (current_direction[0] == previous_direction[0] && current_direction[1] == previous_direction[1])
+        {
+            hppath_.back() = lppath_[i];
+        }
+        else
+        {
+            hppath_.push_back(lppath_[i]);
+        }
+
+        previous_direction[0] = current_direction[0];
+        previous_direction[1] = current_direction[1];
+    }
+}

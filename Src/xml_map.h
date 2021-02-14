@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "tinyxml2.h"
 #include "agents.h"
+#include "nodes.h"
 
 class XMLMap : public Map
 {
@@ -33,5 +34,5 @@ public:
 
     double GetCellSize() const;
 
-    AgentTask GetTask() const;
+    AgentTask<GridCell> GetTask() const;
 };

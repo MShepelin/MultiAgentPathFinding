@@ -10,11 +10,11 @@ void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
     std::getline(scenaries_file, buffer);
 
     int bucket, width, height;
-    AgentTask task;
+    AgentTask<GridCell> task;
     float distance;
 
     while (scenaries_file >> bucket >> buffer >> width >> height >> \
-        task.start_i >> task.start_j >> task.goal_i >> task.goal_j >> distance)
+        task.start.i >> task.start.j >> task.goal.i >> task.goal.j >> distance)
     {
         tasks_.push_back(task);
         optimal_lengths_.push_back(distance);
@@ -26,7 +26,7 @@ int ScenariesCollection::GetNum() const
     return tasks_.size();
 }
 
-AgentTask ScenariesCollection::GetScenary(size_t scenary_index) const
+AgentTask<GridCell> ScenariesCollection::GetScenary(size_t scenary_index) const
 {
     return tasks_.at(scenary_index);
 }

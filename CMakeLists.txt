@@ -16,11 +16,8 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 option(MAPF "Use MAPF solver and file formats" OFF)
 
-if (MAPF)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/googletest")
-else()
 enable_testing()
-endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Src")
 

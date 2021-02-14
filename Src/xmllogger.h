@@ -2,10 +2,7 @@
 
 #include "tinyxml2.h"
 #include "ilogger.h"
-
-
-//That's the class that flushes the data to the output XML
-
+#include "nodes.h"
 
 class XmlLogger : public ILogger {
 
@@ -18,13 +15,13 @@ public:
 
     void saveLog();
 
-    void writeToLogMap(const XMLMap &Map, const std::list<Node> &path);
+    void writeToLogMap(const XMLMap &Map, const std::vector<Node<GridCell>> &path);
 
     //void writeToLogOpenClose(const typename &open, const typename &close);
 
-    void writeToLogPath(const std::list<Node> &path);
+    void writeToLogPath(const std::vector<Node<GridCell>> &path);
 
-    void writeToLogHPpath(const std::list<Node> &hppath);
+    void writeToLogHPpath(const std::vector<Node<GridCell>> &hppath);
 
     void writeToLogNotFound();
 

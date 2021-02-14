@@ -5,14 +5,15 @@ set(HEADERS_PP      config.h
                     ilogger.h
                     xml_map.h
                     mission.h
-                    node.h
+                    nodes.h
                     search.h
                     searchresult.h
                     tinyxml2.h
                     map.h
                     xmllogger.h
                     agents.h
-                    agents_array.h)
+                    agents_array.h
+					nodes_heap.h)
 
 set(SOURCES_PP      config.cpp
                     environmentoptions.cpp
@@ -22,7 +23,7 @@ set(SOURCES_PP      config.cpp
                     search.cpp
                     tinyxml2.cpp
                     xmllogger.cpp
-                    agents_array.cpp)
+					nodes.cpp)
 
 set(HEADERS_MAPF    tinyxml2.h
                     tasker.h
@@ -31,27 +32,30 @@ set(HEADERS_MAPF    tinyxml2.h
                     gl_const.h
                     config.h
                     searchresult.h
-                    node.h
+                    nodes.h
                     mapf_interface.h
                     agents.h
                     map.h
                     scenaries.h
-                    agents_array.h)
+                    agents_array.h
+					nodes_heap.h)
 
 set(SOURCES_MAPF    search.cpp
                     tinyxml2.cpp
                     tasker.cpp
                     map.cpp
                     environmentoptions.cpp
-                    agents_array.cpp)
+					scenaries.cpp
+					config.cpp
+					nodes.cpp)
 
-if (MAPF)
+#if (MAPF)
 
 add_compile_definitions(MAPF)
 add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} mapf_main.cpp)
 add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
 
-else()
+#else()
 
 add_executable(${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
 add_library(PPLIB ${HEADERS_PP} ${SOURCES_PP})
@@ -63,4 +67,4 @@ install(TARGETS ${PROJECT_NAME}
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-endif()
+#endif()

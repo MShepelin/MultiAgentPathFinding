@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "gl_const.h"
 
 class Config
 {
@@ -11,8 +12,6 @@ class Config
         bool PrepareConfig(const char *FileName);
 
     public:
-        double*         SearchParams;
-        std::string*    LogParams;
-        unsigned int    N;
-
+        double          SearchParams[SEARCH_PARAMS_NUM];
+        std::string     LogParams[LOG_PARAMS_NUM];
 };

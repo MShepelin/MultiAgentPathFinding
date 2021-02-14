@@ -5,6 +5,7 @@
 #include "searchresult.h"
 #include "environmentoptions.h"
 #include "scenaries.h"
+#include "nodes.h"
 
 class Tasker
 {
@@ -27,5 +28,5 @@ class Tasker
         Config                  config;
         EnvironmentOptions      options;
         const char*             fileName;
-        SearchResult            sr;
+        SearchResult<GridCell>  sr;
 };

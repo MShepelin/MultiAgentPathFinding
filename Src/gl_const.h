@@ -1,5 +1,7 @@
 #pragma once
 
+#define FTYPE double
+
 #define CN_PI_CONSTANT 3.14159265359
 #define CN_SQRT_TWO    1.41421356237
 
@@ -64,13 +66,13 @@
 
 
 //Search Parameters
+    #define SEARCH_PARAMS_NUM 7
+    #define LOG_PARAMS_NUM 3
+
     #define CN_SP_ST 0
 
-       // #define CNS_SP_ST_BFS           "bfs"
         #define CNS_SP_ST_DIJK          "dijkstra"
         #define CNS_SP_ST_ASTAR         "astar"
-      //  #define CNS_SP_ST_JP_SEARCH     "jp_search"
-      //  #define CNS_SP_ST_TH            "theta"
 
         #define CN_SP_ST_BFS            0
         #define CN_SP_ST_DIJK           1
@@ -105,8 +107,6 @@
 
         #define CN_SP_BT_GMIN 0
         #define CN_SP_BT_GMAX 1
-
-
 
     //Log Configuration
     #define CN_LP_LEVEL 0

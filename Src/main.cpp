@@ -1,3 +1,4 @@
+#include "nodes.h"
 #include "mission.h"
 
 int main(int argc, char* argv[])

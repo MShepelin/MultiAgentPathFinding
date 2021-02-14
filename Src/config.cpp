@@ -1,5 +1,4 @@
 #include "config.h"
-#include "gl_const.h"
 #include "tinyxml2.h"
 #include <iostream>
 #include <sstream>
@@ -8,49 +7,25 @@
 
 Config::Config()
 {
-    LogParams = nullptr;
-    SearchParams = nullptr;
+    std::fill(LogParams, LogParams + 3, "");
+    std::fill(SearchParams, SearchParams  + 7, -1);
 }
 
 Config::~Config()
 {
-    if (SearchParams) delete[] SearchParams;
-    if (LogParams) delete[] LogParams;
+
 }
 
 Config::Config(const Config& orig)
 {
-    if (orig.N != 4 && orig.N != 7)
+    for (int i = 0; i < SEARCH_PARAMS_NUM; ++i)
     {
-        LogParams = nullptr;
-        SearchParams = nullptr;
-        return;
+        SearchParams[i] = orig.SearchParams[i];
     }
 
-    if (!orig.SearchParams)
+    for (int i = 0; i < LOG_PARAMS_NUM; ++i)
     {
-        SearchParams = nullptr;
-    }
-    else
-    {
-        SearchParams = new double[orig.N];
-        for (int i = 0; i < N; ++i)
-        {
-            *(SearchParams + i) = *(orig.SearchParams + i);
-        }
-    }
-
-    if (!orig.LogParams)
-    {
-        LogParams = nullptr;
-    }
-    else
-    {
-        LogParams = new std::string[3];
-        for (int i = 0; i < 3; ++i)
-        {
-            *(LogParams + i) = *(orig.LogParams + i);
-        }
+        LogParams[i] = orig.LogParams[i];
     }
 }
 
@@ -88,13 +63,9 @@ bool Config::PrepareConfig(const char *FileName)
     std::transform(value.begin(), value.end(), value.begin(), ::tolower);
 
     if (value == CNS_SP_ST_DIJK) {
-        N = 4;
-        SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_DIJK;
     }
     else if (value == CNS_SP_ST_ASTAR) {
-        N = 7;
-        SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_ASTAR;
         element = algorithm->FirstChildElement(CNS_TAG_HW);
         if (!element) {
@@ -251,7 +222,6 @@ bool Config::PrepareConfig(const char *FileName)
     }
 
     options = root->FirstChildElement(CNS_TAG_OPT);
-    LogParams = new std::string[3];
     LogParams[CN_LP_PATH] = "";
     LogParams[CN_LP_NAME] = "";
 

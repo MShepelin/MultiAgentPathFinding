@@ -1,16 +1,17 @@
 #pragma once
 
-#include <list>
-#include "node.h"
+#include <vector>
+#include "nodes.h"
 
+template<typename CellType>
 struct SearchResult
 {
         bool pathfound;
-        float pathlength; 
-        const std::list<Node>* lppath;
-        const std::list<Node>* hppath; 
+        FTYPE pathlength; 
+        const std::vector<Node<CellType>>* lppath;
+        const std::vector<Node<CellType>>* hppath;
         unsigned int nodescreated; 
-        unsigned int numberofsteps; 
+        unsigned int numberofsteps;
         double time;
 
         SearchResult()

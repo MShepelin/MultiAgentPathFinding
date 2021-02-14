@@ -316,7 +316,7 @@ double XMLMap::GetCellSize() const
       return cell_size_;
 }
 
-AgentTask XMLMap::GetTask() const
+AgentTask<GridCell> XMLMap::GetTask() const
 {
     return { start_i, start_j, goal_i, goal_j };
 }

@@ -78,7 +78,7 @@ bool Map::IsCellTraversable(int i, int j) const
 
 bool Map::IsCellOnGrid(int i, int j) const
 {
-    return (j >= 0 && j < width_) && (i >= 0 && i < height_);
+    return j >= 0 && j < width_ && i >= 0 && i < height_;
 }
 
 int Map::GetHeight() const

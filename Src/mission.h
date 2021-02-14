@@ -23,14 +23,14 @@ class Mission
         void startSearch();
         void printSearchResultsToConsole();
         void saveSearchResultsToLog();
-        SearchResult getSearchResult();
+        SearchResult<GridCell> getSearchResult();
         
     private:
-        XMLMap                     map;
+        XMLMap                  map;
         Config                  config;
         EnvironmentOptions      options;
-        SingleSearch            search;
+        GridSingleSearch        search;
         ILogger*                logger;
         const char*             fileName;
-        SearchResult            sr;
+        SearchResult<GridCell>  sr;
 };

@@ -50,12 +50,12 @@ void Mission::createEnvironmentOptions()
 
 void Mission::startSearch()
 {
-    search.SetConfiguration(&map, options, config);
-    int agent_ID = search.AddAgent(map.GetTask());
+    search.SetConfiguration(&map, config);
+    search.Plan(map.GetTask());
+    search.BuildPathTo(map.GetTask().goal);
+    search.BuildCompactPath();
 
-    search.Plan(true);
-
-    sr = search.GetPlan(agent_ID);
+    sr = search.GetResult();
 }
 
 void Mission::printSearchResultsToConsole()
@@ -85,7 +85,7 @@ void Mission::saveSearchResultsToLog()
     logger->saveLog();
 }
 
-SearchResult Mission::getSearchResult()
+SearchResult<GridCell> Mission::getSearchResult()
 {
     return sr;
 }
