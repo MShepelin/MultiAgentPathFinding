@@ -29,7 +29,6 @@ int main(int argc, char* argv[])
             else {
                 std::cout<<"Log OK!"<<std::endl<<"Start searching the path:"<<std::endl;
 
-                mission.createEnvironmentOptions();
                 mission.startSearch();
 
                 std::cout<<"Search is finished!"<<std::endl;

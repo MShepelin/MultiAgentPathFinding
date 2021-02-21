@@ -40,14 +40,6 @@ bool Mission::createLog()
     return logger->getLog(fileName, config.LogParams);
 }
 
-void Mission::createEnvironmentOptions()
-{
-    options.cutcorners = config.SearchParams[CN_SP_CC];
-    options.allowsqueeze = config.SearchParams[CN_SP_AS];
-    options.allowdiagonal = config.SearchParams[CN_SP_AD];
-    options.metrictype = config.SearchParams[CN_SP_MT];
-}
-
 void Mission::startSearch()
 {
     search.SetConfiguration(&map, config);

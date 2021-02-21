@@ -21,7 +21,7 @@ void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
     }
 }
 
-int ScenariesCollection::GetNum() const
+size_t ScenariesCollection::GetNum() const
 {
     return tasks_.size();
 }
@@ -29,4 +29,9 @@ int ScenariesCollection::GetNum() const
 AgentTask<GridCell> ScenariesCollection::GetScenary(size_t scenary_index) const
 {
     return tasks_.at(scenary_index);
+}
+
+FTYPE ScenariesCollection::GetOptimalLength(size_t scenary_index) const
+{
+    return optimal_lengths_.at(scenary_index);
 }

@@ -7,7 +7,7 @@ template<typename CellType>
 struct SearchResult
 {
         bool pathfound;
-        FTYPE pathlength; 
+        float pathlength; 
         const std::vector<Node<CellType>>* lppath;
         const std::vector<Node<CellType>>* hppath;
         unsigned int nodescreated; 

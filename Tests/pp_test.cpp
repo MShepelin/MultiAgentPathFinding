@@ -40,11 +40,10 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    mission.createEnvironmentOptions();
     mission.startSearch();
     SearchResult<GridCell> result = mission.getSearchResult();
 
-    if (abs(len - (float) result.pathlength) > EPS)
+    if (abs(len - result.pathlength) > EPS)
     {
         std::cerr << "Incorrect path legth" << std::endl;
         return 1;

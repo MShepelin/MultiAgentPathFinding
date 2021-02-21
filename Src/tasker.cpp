@@ -1,70 +1,95 @@
 #include "tasker.h"
 #include <iostream>
+#include <cassert>
 
-Tasker::Tasker()
+void Tasker::SetSolver(MAPFSolverInterface<GridCell>* new_solver)
 {
-    fileName = nullptr;
+    solver_ = new_solver;
 }
 
-Tasker::Tasker(const char *FileName)
+bool Tasker::PrepareMap(const char* file_name)
 {
-    fileName = FileName;
-}
-
-Tasker::~Tasker()
-{
-
-}
-
-bool Tasker::prepareMap()
-{
-    return true;//map.PrepareMap(fileName);
-}
-
-bool Tasker::getConfig()
-{
-    return config.PrepareConfig(fileName);
-}
-
-bool Tasker::createLog()
-{
-    return false;
-}
-
-void Tasker::createEnvironmentOptions()
-{
-    options.cutcorners = config.SearchParams[CN_SP_CC];
-    options.allowsqueeze = config.SearchParams[CN_SP_AS];
-    options.allowdiagonal = config.SearchParams[CN_SP_AD];
-    options.metrictype = config.SearchParams[CN_SP_MT];
-}
-
-void Tasker::startSearch()
-{
-    //sr = search.startSearch(map, options, config);
-}
-
-void Tasker::printSearchResultsToConsole()
-{
-    std::cout << "Path ";
-    if (!sr.pathfound)
-        std::cout << "NOT ";
-    std::cout << "found!" << std::endl;
-    std::cout << "numberofsteps=" << sr.numberofsteps << std::endl;
-    std::cout << "nodescreated=" << sr.nodescreated << std::endl;
-    if (sr.pathfound) {
-        std::cout << "pathlength=" << sr.pathlength << std::endl;
-        std::cout << "pathlength_scaled=" << sr.pathlength << std::endl;
+    std::ifstream file(file_name);
+    if (!file.is_open())
+    {
+        return false;
     }
-    std::cout << "time=" << sr.time << std::endl;
+
+    bool map_prepared = map_.PrepareMap(file);
+
+    file.close();
+
+    return map_prepared;
 }
 
-void Tasker::saveSearchResultsToLog()
+bool Tasker::PrepareConfig(const char* file_name)
 {
-    
+    return config_.PrepareConfig(file_name);
 }
 
-Map Tasker::getMap() const
+bool Tasker::PrepareScenaries(const char* file_name)
 {
-    return map;
+    std::ifstream file(file_name);
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    scenaries_.PrepareScenaries(file);
+
+    file.close();
+
+    return true;
+}
+
+int Tasker::GetScenariesNum() const
+{
+    return scenaries_.GetNum();
+}
+
+void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
+{
+    assert(scenary_ID < scenaries_.GetNum());
+    assert(solver_);
+
+    solver_->Clear();
+    solver_->SetConfiguration(&map_, config_);
+
+    AgentTask<GridCell> task = scenaries_.GetScenary(scenary_ID);
+
+    int agent_ID = solver_->AddAgent(task);
+    solver_->Plan();
+    single_search_result_ = solver_->GetPlan(agent_ID);
+
+    if (!log_stream) return;
+
+    *log_stream << "Path ";
+    if (!single_search_result_.pathfound) *log_stream << "NOT ";
+    *log_stream << "found!\n";
+    *log_stream << "numberofsteps=" << single_search_result_.numberofsteps << "\n";
+    *log_stream << "nodescreated=" << single_search_result_.nodescreated << "\n";
+    if (single_search_result_.pathfound) 
+    {
+        *log_stream << "pathlength=" << single_search_result_.pathlength << "\n";
+        *log_stream << "pathlength_scaled=" << single_search_result_.pathlength << "\n";
+    }
+    *log_stream << "time=" << single_search_result_.time << "\n";
+
+    // Optimal length is calculated for the cases where "agents cannot cut corners through walls"
+    if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
+
+    *log_stream << "\nOptimal path length = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
+}
+
+void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID)
+{
+    assert(first_scenary_ID <= last_scenary_ID);
+    assert(last_scenary_ID < scenaries_.GetNum());
+
+    //TODO
+}
+
+void Tasker::PrintStatistics(std::ofstream* log_stream)
+{
+    //TODO
 }

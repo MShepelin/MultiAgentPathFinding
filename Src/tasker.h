@@ -3,30 +3,34 @@
 #include "map.h"
 #include "config.h"
 #include "searchresult.h"
-#include "environmentoptions.h"
+#include "mapf/mapf_interface.h"
 #include "scenaries.h"
 #include "nodes.h"
+#include <vector>
+#include <fstream>
 
 class Tasker
 {
-    public:
-        Tasker();
-        Tasker(const char* fileName);
-        ~Tasker();
+protected:
+    Map map_;
+    Config config_;
+    ScenariesCollection scenaries_;
+    SearchResult<GridCell> single_search_result_;
+    std::vector<SearchResult<GridCell>> results_;
+    MAPFSolverInterface<GridCell>* solver_ = nullptr;
 
-        bool prepareMap();
-        Map getMap() const;
-        bool getConfig();
-        bool createLog();
-        void createEnvironmentOptions();
-        void startSearch();
-        void printSearchResultsToConsole();
-        void saveSearchResultsToLog();
-        
-    private:
-        Map                     map;
-        Config                  config;
-        EnvironmentOptions      options;
-        const char*             fileName;
-        SearchResult<GridCell>  sr;
+public:
+    void SetSolver(MAPFSolverInterface<GridCell>* new_solver);
+
+    bool PrepareMap(const char* file_name);
+    bool PrepareConfig(const char* file_name);
+    bool PrepareScenaries(const char* file_name);
+
+    int GetScenariesNum() const;
+
+    void StartSearch(size_t scenary_ID, std::ostream* log_stream = nullptr);
+
+    void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID);
+
+    void PrintStatistics(std::ofstream* log_stream);
 };

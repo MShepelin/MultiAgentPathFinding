@@ -19,7 +19,6 @@ class Mission
         XMLMap getMap() const;
         bool getConfig();
         bool createLog();
-        void createEnvironmentOptions();
         void startSearch();
         void printSearchResultsToConsole();
         void saveSearchResultsToLog();

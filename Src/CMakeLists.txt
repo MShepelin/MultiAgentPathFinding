@@ -1,5 +1,4 @@
 set(HEADERS         config.h
-                    mapf_interface.h
                     environmentoptions.h
                     gl_const.h
                     nodes.h
@@ -31,7 +30,8 @@ set(SOURCES_PP      ${SOURCES}
 
 set(HEADERS_MAPF    ${HEADERS}
                     tasker.h
-                    scenaries.h)
+                    scenaries.h
+                    mapf/mapf_interface.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
@@ -46,7 +46,7 @@ endif()
 
 if (MAPF)
 
-add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} mapf_main.cpp)
+add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} main_mapf.cpp)
 add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
 
 install(TARGETS ${PROJECT_NAME}_MAPF
@@ -56,6 +56,8 @@ install(TARGETS ${PROJECT_NAME}_MAPF
 install(TARGETS ${PROJECT_NAME}_MAPF
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
+
+target_include_directories("${PROJECT_NAME}_MAPF" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 else()
 
