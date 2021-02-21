@@ -64,7 +64,9 @@ public:
 
     void Plan(AgentTask<CellType> task);
     
-    FTYPE GetGValue(CellType cell, bool continue_search = true);
+    FTYPE GetGValue(CellType cell) const;
+
+    bool ContinueSearch(CellType cell);
 
     bool BuildPathTo(CellType cell);
 
@@ -223,20 +225,23 @@ bool SingleSearch<CellType>::BuildPathTo(CellType cell)
 }
 
 template<typename CellType>
-FTYPE SingleSearch<CellType>::GetGValue(CellType cell, bool continue_search)
+FTYPE SingleSearch<CellType>::GetGValue(CellType cell) const
 {
     NodeType* node_reached_cell = CellIsReached(cell);
     if (node_reached_cell) return node_reached_cell->g;
 
-    // Cell wasn't reached so additional search is needed
-    if (!continue_search) return -1;
+    return -1;
+}
+
+template<typename CellType>
+bool SingleSearch<CellType>::ContinueSearch(CellType cell)
+{
+    if (CellIsReached(cell)) return true;
 
     ReachCell(cell);
-    node_reached_cell = CellIsReached(cell);
-    if (node_reached_cell) return node_reached_cell->g;
 
-    // Search couldn't find this cell
-    return -1;
+    if (CellIsReached(cell)) return true;
+    return false;
 }
 
 template<typename CellType>

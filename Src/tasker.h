@@ -4,7 +4,7 @@
 #include "config.h"
 #include "searchresult.h"
 #include "mapf/mapf_interface.h"
-#include "scenaries.h"
+#include "scenarios.h"
 #include "nodes.h"
 #include <vector>
 #include <fstream>
@@ -33,4 +33,6 @@ public:
     void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID);
 
     void PrintStatistics(std::ofstream* log_stream);
+
+    const Map* GetMap() const;
 };

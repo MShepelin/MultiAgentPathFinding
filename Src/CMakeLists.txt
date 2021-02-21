@@ -30,12 +30,14 @@ set(SOURCES_PP      ${SOURCES}
 
 set(HEADERS_MAPF    ${HEADERS}
                     tasker.h
-                    scenaries.h
-                    mapf/mapf_interface.h)
+                    scenarios.h
+                    mapf/mapf_interface.h
+					mapf/ma_star.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
-                    scenaries.cpp)
+                    scenarios.cpp
+					mapf/ma_star.cpp)
 
 if (TESTS)
 

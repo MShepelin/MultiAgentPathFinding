@@ -52,7 +52,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
     assert(scenary_ID < scenaries_.GetNum());
     assert(solver_);
 
-    solver_->Clear();
+    //solver_->Clear();
     solver_->SetConfiguration(&map_, config_);
 
     AgentTask<GridCell> task = scenaries_.GetScenary(scenary_ID);
@@ -76,7 +76,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
     *log_stream << "time=" << single_search_result_.time << "\n";
 
     // Optimal length is calculated for the cases where "agents cannot cut corners through walls"
-    if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
+    //if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
 
     *log_stream << "\nOptimal path length = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
 }
@@ -92,4 +92,9 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID)
 void Tasker::PrintStatistics(std::ofstream* log_stream)
 {
     //TODO
+}
+
+const Map* Tasker::GetMap() const
+{
+    return &map_;
 }

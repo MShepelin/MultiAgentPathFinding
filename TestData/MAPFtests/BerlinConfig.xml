@@ -5,7 +5,7 @@
         <metrictype>diagonal</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
-        <allowdiagonal>false</allowdiagonal>
+        <allowdiagonal>true</allowdiagonal>
         <cutcorners>false</cutcorners>
         <allowsqueeze>false</allowsqueeze>
     </algorithm>

@@ -1,4 +1,4 @@
-#include "scenaries.h"
+#include "scenarios.h"
 #include <string>
 
 void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
@@ -14,7 +14,7 @@ void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
     float distance;
 
     while (scenaries_file >> bucket >> buffer >> width >> height >> \
-        task.start.i >> task.start.j >> task.goal.i >> task.goal.j >> distance)
+        task.start.j >> task.start.i >> task.goal.j >> task.goal.i >> distance)
     {
         tasks_.push_back(task);
         optimal_lengths_.push_back(distance);

@@ -1,5 +1,6 @@
 #include <cassert>
 #include "tasker.h"
+#include "mapf/ma_star.h"
 #include <iostream>
 #include <fstream>
 
@@ -38,7 +39,52 @@ int main(int argc, char *argv[])
 
     assert(tasker.GetScenariesNum() > 0);
 
+    MAStar astar_solver;
+    tasker.SetSolver(&astar_solver);
+
     tasker.StartSearch(0, &std::cout);
+
+    SearchResult<GridCell> sr = astar_solver.GetPlan(0);
+
+    std::ofstream file("res.txt");
+    if (!file.is_open())
+    {
+        return 0;
+    }
+
+    const Map* map = tasker.GetMap();
+
+    for (int i = 0; i < map->GetHeight(); ++i)
+    {
+        for (int j = 0; j < map->GetWidth(); ++j)
+        {
+            bool found = false;
+            for (Node<GridCell> node : *sr.lppath)
+            {
+                if (node.cell.i == i && node.cell.j == j)
+                {
+                    file << "0";
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                if (map->IsCellTraversable(i, j))
+                {
+                    file << ".";
+                }
+                else
+                {
+                    file << "@";
+                }
+            }
+        }
+
+        file << "\n";
+    }
+
+    file.close();
 
     return 0;
 }
