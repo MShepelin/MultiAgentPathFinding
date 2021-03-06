@@ -7,7 +7,7 @@ bool GridCell::operator==(const GridCell& other) const
     return i == other.i && j == other.j;
 }
 
-bool TimeSpaceCell::operator==(const TimeSpaceCell& other) const
+bool SpaceTimeCell::operator==(const SpaceTimeCell& other) const
 {
     return i == other.i && j == other.j && t == other.t;
 }

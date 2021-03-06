@@ -8,7 +8,6 @@ template<typename CellType>
 class AgentsArray
 {
 public:
-    using ResultType = SearchResult<CellType>;
     using TaskType = AgentTask<CellType>;
 
 private:

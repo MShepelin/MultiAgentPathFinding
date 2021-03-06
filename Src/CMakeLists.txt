@@ -8,14 +8,15 @@ set(HEADERS         config.h
                     map.h
                     agents.h
                     agents_array.h
-                    nodes_heap.h)
+                    nodes_heap.h
+					astar.h)
 
 set(SOURCES         config.cpp
                     environmentoptions.cpp
                     map.cpp
-                    search.cpp
                     tinyxml2.cpp
-                    nodes.cpp)
+                    nodes.cpp
+					astar.cpp)
 
 set(HEADERS_PP      ${HEADERS}
                     ilogger.h
@@ -32,12 +33,16 @@ set(HEADERS_MAPF    ${HEADERS}
                     tasker.h
                     scenarios.h
                     mapf/mapf_interface.h
-					mapf/ma_star.h)
+					mapf/ma_star.h
+					mapf/whca.h
+					mapf/astar3d.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
                     scenarios.cpp
-					mapf/ma_star.cpp)
+					mapf/ma_star.cpp
+					mapf/whca.cpp
+					mapf/astar3d.cpp)
 
 if (TESTS)
 

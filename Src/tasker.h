@@ -9,6 +9,15 @@
 #include <vector>
 #include <fstream>
 
+struct Stats
+{
+    std::string desription;
+    double total_time = 0;
+    // Total length delta
+    float length_delta = 0;
+    size_t number_of_agents = 0;
+};
+
 class Tasker
 {
 protected:
@@ -18,6 +27,8 @@ protected:
     SearchResult<GridCell> single_search_result_;
     std::vector<SearchResult<GridCell>> results_;
     MAPFSolverInterface<GridCell>* solver_ = nullptr;
+
+    std::vector<Stats> stats_;
 
 public:
     void SetSolver(MAPFSolverInterface<GridCell>* new_solver);
@@ -30,9 +41,11 @@ public:
 
     void StartSearch(size_t scenary_ID, std::ostream* log_stream = nullptr);
 
-    void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID);
+    void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream);
 
-    void PrintStatistics(std::ofstream* log_stream);
+    void PrintStatistics(std::ostream* log_stream) const;
+
+    void ClearStatistics();
 
     const Map* GetMap() const;
 };

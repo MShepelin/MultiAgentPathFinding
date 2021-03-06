@@ -12,7 +12,7 @@ protected:
 
 public:
     Map();
-    ~Map();
+    virtual ~Map();
 
     bool PrepareMap(std::ifstream& map_file);
 

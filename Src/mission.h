@@ -2,7 +2,7 @@
 
 #include "xml_map.h"
 #include "config.h"
-#include "search.h"
+#include "astar.h"
 #include "ilogger.h"
 #include "searchresult.h"
 #include "environmentoptions.h"

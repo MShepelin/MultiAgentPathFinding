@@ -73,12 +73,20 @@ struct GridCell
     bool operator==(const GridCell& other) const;
 };
 
-struct TimeSpaceCell
+struct SpaceTimeCell
 {
     int i, j, t;
 
-    bool operator==(const TimeSpaceCell& other) const;
+    // Move description
+    unsigned char wait : 1;
+    unsigned char diagonal : 1;
+    unsigned char up : 1;
+    unsigned char left : 1;
+    
+    // @note wait move is described as wait = true, and everything else false
+
+    bool operator==(const SpaceTimeCell& other) const;
 };
 
 MAKE_HASHABLE(GridCell, type.i, type.j);
-MAKE_HASHABLE(TimeSpaceCell, type.i, type.j, type.t);
+MAKE_HASHABLE(SpaceTimeCell, type.i, type.j, type.t);

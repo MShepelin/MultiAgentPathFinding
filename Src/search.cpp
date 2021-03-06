@@ -1,6 +1,4 @@
-#pragma once
-
-#include "search.h"
+#include "astar.h"
 #include <chrono>
 #include <iostream>
 #include <algorithm>

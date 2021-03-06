@@ -33,8 +33,8 @@ protected:
 
     EnvironmentOptions options_;
     AgentTask<CellType> task_;
-    const Map* map_;
-    double heuristic_weight_;
+    const Map* map_ = nullptr;
+    double heuristic_weight_ = 0;
  
 protected:
     virtual void SetHeuristic(NodeType& node_to_edit) = 0;
@@ -47,22 +47,16 @@ protected:
 
     virtual bool NodeReachedCell(NodeType* node, CellType cell) const;
 
-    virtual bool ReachCell(CellType cell);
+    virtual const Node<CellType>* ReachCell(CellType cell, FTYPE depth = -1);
 
     // Return -1 if the move isn't possible
     // Otherwise returns the cost of the move
     virtual FTYPE GetMoveCost(CellType from, CellType to) const = 0;
 
 public:
-    SingleSearch()
-    {
-        map_ = nullptr;
-        heuristic_weight_ = 0;
-    }
-
     void SetConfiguration(const Map* map, const Config& config);
 
-    void Plan(AgentTask<CellType> task);
+    const Node<CellType>* Plan(AgentTask<CellType> task, FTYPE depth = -1);
     
     FTYPE GetGValue(CellType cell) const;
 
@@ -73,27 +67,6 @@ public:
     virtual void BuildCompactPath() = 0;
 
     ResultType GetResult() const;
-};
-
-// --------------------------- //
-// GridSingleSearch definition //
-// --------------------------- //
-
-class GridSingleSearch : public SingleSearch<GridCell>
-{
-public:
-    static const FTYPE ch;
-    static const FTYPE cd;
-
-protected:
-    virtual void SetHeuristic(NodeType& node_to_edit) override;
-
-    virtual void ExpandNode(NodeType* node_to_expand) override;
-
-    virtual FTYPE GetMoveCost(GridCell from, GridCell to) const override;
-
-public:
-    virtual void BuildCompactPath() override;
 };
 
 // --------------------------- //
@@ -128,7 +101,7 @@ void SingleSearch<CellType>::SetConfiguration(const Map* map, const Config& conf
 }
 
 template<typename CellType>
-void SingleSearch<CellType>::Plan(AgentTask<CellType> task)
+const Node<CellType>* SingleSearch<CellType>::Plan(AgentTask<CellType> task, FTYPE depth)
 {
     // Clear previous planning
     open_.Clear();
@@ -142,18 +115,19 @@ void SingleSearch<CellType>::Plan(AgentTask<CellType> task)
 
     // Init start node
     nodes_[task_.start] = NodeType(task_.start);
-    NodeType* start_node = &nodes_[task_.start];
-    SetHeuristic(*start_node);
-    open_.Insert(*start_node);
+    NodeType& start_node = nodes_[task_.start];
+    SetHeuristic(start_node);
+    open_.Insert(start_node);
 
     // Plan a path
-    ReachCell(task_.goal);
+    return ReachCell(task_.goal, depth);
 }
 
 template<typename CellType>
-bool SingleSearch<CellType>::ReachCell(CellType cell)
+const Node<CellType>* SingleSearch<CellType>::ReachCell(CellType cell, FTYPE depth)
 {
-    if (CellIsReached(cell)) return true;
+    const Node<CellType>* reach_check = CellIsReached(cell);
+    if (reach_check) return reach_check;
 
     // Set timer
     auto start = std::chrono::high_resolution_clock::now();
@@ -173,6 +147,8 @@ bool SingleSearch<CellType>::ReachCell(CellType cell)
 
         // Mark expanded node as a node in the "close" list.
         expanded_node->h = -1;
+
+        if (expanded_node->g >= depth && depth > 0) break; // for Plan function only
     }
 
     // Count statistics
@@ -180,7 +156,7 @@ bool SingleSearch<CellType>::ReachCell(CellType cell)
     result_.nodescreated = nodes_.size();
 
     // If the cell is reached expanded_node holds a suitable node
-    if (NodeReachedCell(expanded_node, cell))
+    if (NodeReachedCell(expanded_node, cell) || depth > 0)
     {
         result_.pathfound = true;
         result_.pathlength = expanded_node->g;
@@ -189,7 +165,14 @@ bool SingleSearch<CellType>::ReachCell(CellType cell)
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     result_.time += duration.count(); // in seconds
 
-    return result_.pathfound;
+    if (!result_.pathfound)
+    {
+        return nullptr;
+    }
+    else
+    {
+        return expanded_node;
+    }
 }
 
 template<typename CellType>
@@ -212,6 +195,8 @@ bool SingleSearch<CellType>::BuildPathTo(CellType cell)
         lppath_.push_back(*current_node);
         // lppath_ will contain nodes with unsafe pointers (parent pointer)
         current_node = current_node->parent;
+
+        lppath_.back().parent = nullptr;
     }
 
     std::reverse(lppath_.begin(), lppath_.end());

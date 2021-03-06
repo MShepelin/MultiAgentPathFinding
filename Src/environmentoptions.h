@@ -12,3 +12,5 @@ public:
     bool    allowdiagonal;  //Option that allows to make diagonal moves
     bool    cutcorners;     //Option that allows to make diagonal moves, when one adjacent cell is untraversable
 };
+
+// WARNING: mapf tests only consider environment with 2D grid and allowdiagonal (without cutcorners and allowsqueeze)

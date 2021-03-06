@@ -42,16 +42,18 @@ int main(int argc, char *argv[])
     MAStar astar_solver;
     tasker.SetSolver(&astar_solver);
 
-    tasker.StartSearch(0, &std::cout);
+    //tasker.StartSearch(0, &std::cout);
+    //SearchResult<GridCell> sr = astar_solver.GetPlan(0);
 
-    SearchResult<GridCell> sr = astar_solver.GetPlan(0);
+    tasker.StartSearch(0, 30, &std::cout);
 
     std::ofstream file("res.txt");
     if (!file.is_open())
-    {
         return 0;
-    }
 
+    tasker.PrintStatistics(&file);
+
+    /* Map paint
     const Map* map = tasker.GetMap();
 
     for (int i = 0; i < map->GetHeight(); ++i)
@@ -83,6 +85,7 @@ int main(int argc, char *argv[])
 
         file << "\n";
     }
+    */
 
     file.close();
 

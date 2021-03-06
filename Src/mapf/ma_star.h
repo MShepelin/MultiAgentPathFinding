@@ -4,7 +4,7 @@
 #include "agents.h"
 #include "agents_array.h"
 #include "mapf_interface.h"
-#include "search.h"
+#include "astar.h"
 #include <vector>
 #include <unordered_map>
 

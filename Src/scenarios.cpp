@@ -13,7 +13,7 @@ void ScenariesCollection::PrepareScenaries(std::ifstream& scenaries_file)
     AgentTask<GridCell> task;
     float distance;
 
-    while (scenaries_file >> bucket >> buffer >> width >> height >> \
+    while (scenaries_file >> buffer >> map_name_ >> width >> height >> \
         task.start.j >> task.start.i >> task.goal.j >> task.goal.i >> distance)
     {
         tasks_.push_back(task);
@@ -34,4 +34,9 @@ AgentTask<GridCell> ScenariesCollection::GetScenary(size_t scenary_index) const
 FTYPE ScenariesCollection::GetOptimalLength(size_t scenary_index) const
 {
     return optimal_lengths_.at(scenary_index);
+}
+
+std::string ScenariesCollection::GetMapName() const
+{
+    return map_name_;
 }
