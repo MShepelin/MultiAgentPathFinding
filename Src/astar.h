@@ -4,9 +4,9 @@
 
 class GridSingleSearch : public SingleSearch<GridCell>
 {
-public:
-    static const FTYPE ch;
-    static const FTYPE cd;
+protected:
+    FTYPE ch;
+    FTYPE cd;
 
 protected:
     virtual void SetHeuristic(NodeType& node_to_edit) override;
@@ -16,5 +16,9 @@ protected:
     virtual FTYPE GetMoveCost(GridCell from, GridCell to) const override;
 
 public:
+    GridSingleSearch();
+
     virtual void BuildCompactPath() override;
+
+    void SetDiagonalCost(FTYPE new_cd);
 };

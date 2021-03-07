@@ -33,14 +33,12 @@ set(HEADERS_MAPF    ${HEADERS}
                     tasker.h
                     scenarios.h
                     mapf/mapf_interface.h
-					mapf/ma_star.h
 					mapf/whca.h
 					mapf/astar3d.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
                     scenarios.cpp
-					mapf/ma_star.cpp
 					mapf/whca.cpp
 					mapf/astar3d.cpp)
 

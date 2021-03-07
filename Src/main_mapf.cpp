@@ -37,55 +37,16 @@ int main(int argc, char *argv[])
 
     std::cout << "Scenaries file: " << argv[3] << "\n";
 
-    assert(tasker.GetScenariesNum() > 0);
+    if (!tasker.GetScenariesNum())
+    {
+        std::cout << "No scenaries loaded\n";
+    }
 
     //tasker.StartSearch(0, &std::cout);
     //SearchResult<GridCell> sr = astar_solver.GetPlan(0);
 
-    tasker.StartSearch(0, 1, &std::cout);
-
-    /*
-    std::ofstream file("res.txt");
-    if (!file.is_open())
-        return 0;
-
-    tasker.PrintStatistics(&file);
-
-    // Map paint
-    const Map* map = tasker.GetMap();
-
-    for (int i = 0; i < map->GetHeight(); ++i)
-    {
-        for (int j = 0; j < map->GetWidth(); ++j)
-        {
-            bool found = false;
-            for (Node<GridCell> node : *sr.lppath)
-            {
-                if (node.cell.i == i && node.cell.j == j)
-                {
-                    file << "0";
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                if (map->IsCellTraversable(i, j))
-                {
-                    file << ".";
-                }
-                else
-                {
-                    file << "@";
-                }
-            }
-        }
-
-        file << "\n";
-    }
-    
-
-    file.close();*/
+    tasker.GetSolver()->SetDepth(10);
+    tasker.StartSearch(0, tasker.GetScenariesNum() - 1, &std::cout);
 
     return 0;
 }

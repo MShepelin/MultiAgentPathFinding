@@ -97,6 +97,9 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
     std::vector<AgentTask<GridCell>> tasks;
     std::vector<int> agent_IDs;
 
+    int move_steps = solver_.GetDepth();
+    if (move_steps > 0) move_steps /= 2;
+
     size_t scenary_ID = first_scenary_ID;
     for (; scenary_ID <= last_scenary_ID; ++scenary_ID)
     {
@@ -111,6 +114,9 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             0,
             0,
             scenary_ID - first_scenary_ID + 1 });*/
+
+        // locs will be used to print map
+        std::vector<GridCell> locs;
 
         // Set up a problem's conditions
         tasks.push_back(scenaries_.GetScenary(scenary_ID));
@@ -133,74 +139,80 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 }
             };
 
+            // Add task
             agent_IDs.emplace_back(solver_.AddAgent(task3d));
+
+            // Add start location
+            locs.push_back(task.start);
         }
 
-        // Plan
-        solver_.Plan();
+        int goals_reached = 0;
+        int start_time = 1;
 
-        std::vector<std::stack<SpaceTimeCell>> paths;
+        // Print start map
+        PrintMap(locs, log_stream);
 
-        for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
+        while (goals_reached < agent_IDs.size())
         {
-            paths.push_back(*solver_.GetPlan(agent_IDs[agent_index]));
-        }
-
-        std::vector<GridCell> locs;
-
-        bool repeat = true;
-        int t = 0;
-
-        while (repeat)
-        {
-            repeat = false;
-            locs.clear();
-
-            for (std::stack<SpaceTimeCell>& path : paths)
+            // Plan
+            if (!solver_.Plan())
             {
-                if (!path.empty() && path.top().t <= t)
-                {
-                    locs.push_back({ path.top().i, path.top().j });
-                    path.pop();
-                    repeat = true;
-                }
+                *log_stream << "Plan failed\n";
+                return;
             }
 
-            if (!repeat) break;
+            std::vector<std::stack<SpaceTimeCell>> paths;
 
-            *log_stream << "Time " << t << "\n";
-
-            for (int i = 0; i < map_.GetHeight(); ++i)
+            for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
             {
-                for (int j = 0; j < map_.GetWidth(); ++j)
+                paths.push_back(*solver_.GetPlan(agent_IDs[agent_index]));
+            }
+
+            bool repeat = true;
+
+            // We don't print first time unit
+            int t = 1;
+
+            goals_reached = solver_.NumOfGoalsReached();
+
+            while(repeat)
+            {
+                repeat = false;
+                locs.clear();
+
+                for (std::stack<SpaceTimeCell>& path : paths)
                 {
-                    bool found = false;
-                    for (GridCell cell : locs)
+                    if (!path.empty() && path.top().t <= t)
                     {
-                        if (cell.i == i && cell.j == j)
+                        repeat = true;
+                        locs.push_back({ path.top().i, path.top().j });
+
+                        while (!path.empty() && path.top().t <= t)
                         {
-                            *log_stream << "0";
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        if (map_.IsCellTraversable(i, j))
-                        {
-                            *log_stream << ".";
-                        }
-                        else
-                        {
-                            *log_stream << "@";
+                            if (path.top().t > move_steps && goals_reached < agent_IDs.size())
+                            {
+                                repeat = false;
+                                break;
+                            }
+                            
+                            locs.back() = { path.top().i, path.top().j };
+                            path.pop();
                         }
                     }
                 }
 
-                *log_stream << "\n";
+                if (!repeat) break;
+
+                *log_stream << "Time " << t - 1 + start_time << "\n";
+
+                PrintMap(locs, log_stream);
+
+                ++t;
             }
 
-            ++t;
+            start_time += t - 1;
+
+            if (move_steps > 0) solver_.MoveTime(move_steps);
         }
 
         // Gather output
@@ -234,4 +246,42 @@ const Map* Tasker::GetMap() const
 void Tasker::ClearStatistics()
 {
     stats_.clear();
+}
+
+WHCA* Tasker::GetSolver()
+{
+    return &solver_;
+}
+
+void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const
+{
+    for (int i = 0; i < map_.GetHeight(); ++i)
+    {
+        for (int j = 0; j < map_.GetWidth(); ++j)
+        {
+            bool found = false;
+            for (int cell_index = 0; cell_index < locs.size(); cell_index++)
+            {
+                if (locs[cell_index].i == i && locs[cell_index].j == j)
+                {
+                    *log_stream << (char)('0' + cell_index);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                if (map_.IsCellTraversable(i, j))
+                {
+                    *log_stream << ".";
+                }
+                else
+                {
+                    *log_stream << '#';
+                }
+            }
+        }
+
+        *log_stream << "\n";
+    }
 }

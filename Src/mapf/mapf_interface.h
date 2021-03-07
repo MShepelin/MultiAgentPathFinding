@@ -19,7 +19,7 @@ public:
     virtual void RemoveAgent(int agent_ID) = 0;
 
     // Plan to find a solution to a mapf problem.
-    virtual void Plan() = 0;
+    virtual bool Plan() = 0;
 
     // Get the plan constructed to a sertain agent.
     //virtual SearchResult<CellType> GetPlan(int agent_ID) const = 0;

@@ -29,6 +29,8 @@ protected:
 
     std::vector<Stats> stats_;
 
+    void PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const;
+
 public:
     bool PrepareMap(const char* file_name);
     bool PrepareConfig(const char* file_name);
@@ -36,7 +38,7 @@ public:
 
     int GetScenariesNum() const;
 
-    void StartSearch(size_t scenary_ID, std::ostream* log_stream = nullptr);
+    void StartSearch(size_t scenary_ID, std::ostream* log_stream);
 
     void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream);
 
@@ -45,4 +47,6 @@ public:
     void ClearStatistics();
 
     const Map* GetMap() const;
+
+    WHCA* GetSolver();
 };

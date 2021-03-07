@@ -6,7 +6,7 @@
 
 class SpaceTimeSearch : public SingleSearch<SpaceTimeCell>
 {
-public:
+protected:
     SingleSearch<GridCell>* heuristic_;
     std::unordered_set<SpaceTimeCell>* reservation_;
     static const FTYPE cost; // set FTYPE as a type of single search
@@ -21,7 +21,7 @@ protected:
     virtual const NodeType* CellIsReached(SpaceTimeCell cell) const override;
 
 public:
-    virtual bool NodeReachedCell(NodeType* node, SpaceTimeCell cell) const override;
+    virtual bool NodeReachedCell(NodeType* node, SpaceTimeCell cell, FTYPE depth) const override;
 
     virtual void BuildCompactPath() override;
 

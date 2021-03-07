@@ -45,7 +45,7 @@ protected:
     
     virtual const NodeType* CellIsReached(CellType cell) const;
 
-    virtual bool NodeReachedCell(NodeType* node, CellType cell) const;
+    virtual bool NodeReachedCell(NodeType* node, CellType cell, FTYPE depth) const;
 
     virtual const Node<CellType>* ReachCell(CellType cell, FTYPE depth = -1);
 
@@ -135,7 +135,7 @@ const Node<CellType>* SingleSearch<CellType>::ReachCell(CellType cell, FTYPE dep
     // Search loop
     result_.pathfound = false;
     NodeType* expanded_node = nullptr;
-    while (open_.Size() && !NodeReachedCell(expanded_node, cell))
+    while (open_.Size() && !NodeReachedCell(expanded_node, cell, depth))
     {
         result_.numberofsteps++;
 
@@ -147,8 +147,6 @@ const Node<CellType>* SingleSearch<CellType>::ReachCell(CellType cell, FTYPE dep
 
         // Mark expanded node as a node in the "close" list.
         expanded_node->h = -1;
-
-        if (expanded_node->g >= depth && depth > 0) break; // for Plan function only
     }
 
     // Count statistics
@@ -156,7 +154,7 @@ const Node<CellType>* SingleSearch<CellType>::ReachCell(CellType cell, FTYPE dep
     result_.nodescreated = nodes_.size();
 
     // If the cell is reached expanded_node holds a suitable node
-    if (NodeReachedCell(expanded_node, cell) || depth > 0)
+    if (NodeReachedCell(expanded_node, cell, depth))
     {
         result_.pathfound = true;
         result_.pathlength = expanded_node->g;
@@ -274,7 +272,7 @@ const Node<CellType>* SingleSearch<CellType>::CellIsReached(CellType cell) const
 }
 
 template<typename CellType>
-bool SingleSearch<CellType>::NodeReachedCell(NodeType* node, CellType cell) const
+bool SingleSearch<CellType>::NodeReachedCell(NodeType* node, CellType cell, FTYPE depth) const
 {
     if (nullptr == node) return false;
     return node->cell == cell;

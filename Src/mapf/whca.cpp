@@ -1,6 +1,9 @@
 #include "whca.h"
 
-WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_) {}
+WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_) 
+{
+    space_solver_.SetDiagonalCost(1);
+}
 
 void WHCA::SetConfiguration(const Map* map, const Config& config)
 {
@@ -36,7 +39,7 @@ void WHCA::RemoveAgent(int agent_ID)
     agents_.RemoveID(agent_ID);
 }
 
-void WHCA::Plan()
+bool WHCA::Plan()
 {
     // Clear the reservation table
     reservation_.clear();
@@ -44,7 +47,11 @@ void WHCA::Plan()
     // Current start time is considered to be 0
     extra_time_ = 0;
 
-    for (int agent_ID : agents_.GetIDs())
+    // All paths are reset
+    on_goal_ = 0;
+
+    auto IDs = agents_.GetIDs();
+    for (int agent_ID : IDs)
     {
         // Build a single path
         AgentTask<SpaceTimeCell> task = tasks_.at(agent_ID);
@@ -53,9 +60,11 @@ void WHCA::Plan()
 
         GridCell start = { task.start.i, task.start.j };
         GridCell goal = { task.goal.i, task.goal.j };
-        space_solver_.Plan({ start, goal });
-
-        // @TODO Check if it exists
+        if (nullptr == space_solver_.Plan({ goal, start }))
+        {
+            reservation_.clear();
+            return false;
+        }
 
         // Run 3d pathfinder
         const Node<SpaceTimeCell>* node;
@@ -68,6 +77,12 @@ void WHCA::Plan()
             node = space_time_solver_.Plan(task, depth_ - task.start.t);
         }
 
+        if (nullptr == node)
+        {
+            reservation_.clear();
+            return false;
+        }
+
         space_time_solver_.BuildPathTo(node->cell);
         space_time_solver_.WritePath();
 
@@ -77,11 +92,16 @@ void WHCA::Plan()
         
         SearchResult<SpaceTimeCell> result = space_time_solver_.GetResult();
 
+        SpaceTimeCell final_cell = result.lppath->back().cell;
+        if (final_cell.i == goal.i && final_cell.j == goal.j) ++on_goal_;
+
         for (size_t node_index = result.lppath->size(); node_index > 0; --node_index)
         {
             single_path.push(result.lppath->at(node_index - 1).cell);
         }
     }
+
+    return true;
 }
 
 void WHCA::SetDepth(FTYPE new_depth)
@@ -98,6 +118,7 @@ const std::stack<SpaceTimeCell>* WHCA::GetPlan(int agent_ID) const
 
 void WHCA::MoveTime(int delta_time)
 {
+    assert(delta_time >= 0);
     extra_time_ += delta_time;
 
     for (int agent_ID : agents_.GetIDs())
@@ -115,3 +136,14 @@ void WHCA::MoveTime(int delta_time)
         task.goal.t -= delta_time;
     }
 }
+
+int WHCA::NumOfGoalsReached() const
+{
+    return on_goal_;
+}
+
+FTYPE WHCA::GetDepth() const
+{
+    return depth_;
+}
+

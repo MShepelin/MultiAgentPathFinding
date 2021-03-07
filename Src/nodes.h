@@ -83,7 +83,8 @@ enum Move : unsigned char
     Right = 5,
     DownLeft = 6,
     Down = 7,
-    DownRight = 8
+    DownRight = 8,
+    Spawn = 9
 };
 
 struct SpaceTimeCell

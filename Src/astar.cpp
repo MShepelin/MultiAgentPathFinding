@@ -1,8 +1,16 @@
 #include "astar.h"
 #include <algorithm>
 
-const FTYPE GridSingleSearch::ch = 1;
-const FTYPE GridSingleSearch::cd = CN_SQRT_TWO;
+GridSingleSearch::GridSingleSearch()
+{
+    ch = 1;
+    cd = CN_SQRT_TWO;
+}
+
+void GridSingleSearch::SetDiagonalCost(FTYPE new_cd)
+{
+    cd = new_cd;
+}
 
 void GridSingleSearch::SetHeuristic(NodeType& node_to_edit)
 {

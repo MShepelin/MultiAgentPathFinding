@@ -122,9 +122,12 @@ const Node<SpaceTimeCell>* SpaceTimeSearch::CellIsReached(SpaceTimeCell cell) co
     }
 }
 
-bool SpaceTimeSearch::NodeReachedCell(NodeType* node, SpaceTimeCell cell) const
+bool SpaceTimeSearch::NodeReachedCell(NodeType* node, SpaceTimeCell cell, FTYPE depth) const
 {
     if (nullptr == node) return false;
+
+    if (depth > 0) return (node->g >= depth);
+
     if (cell.t == -1)
     {
         return (node->cell.i == cell.i && node->cell.j == cell.j);
@@ -140,17 +143,17 @@ void SpaceTimeSearch::WritePath() const
     for (const Node<SpaceTimeCell>& node : lppath_)
     {
         assert(reservation_->find(node.cell) == reservation_->end());
-        SpaceTimeCell node_cell = node.cell;
+        SpaceTimeCell new_cell = node.cell;
         if (node.parent == nullptr)
         {
-            node_cell.move = Wait;
+            new_cell.move = Spawn;
         }
         else
         {
-            node_cell.move = SpaceTimeSearch::GetMove(node.parent->cell, node.cell);
+            new_cell.move = SpaceTimeSearch::GetMove(node.parent->cell, node.cell);
         }
 
-        reservation_->insert(node_cell);
+        reservation_->insert(new_cell);
     }
 }
 
