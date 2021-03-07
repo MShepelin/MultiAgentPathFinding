@@ -73,17 +73,24 @@ struct GridCell
     bool operator==(const GridCell& other) const;
 };
 
+enum Move : unsigned char
+{
+    UpLeft = 0,
+    Up = 1,
+    UpRight = 2,
+    Left = 3,
+    Wait = 4,
+    Right = 5,
+    DownLeft = 6,
+    Down = 7,
+    DownRight = 8
+};
+
 struct SpaceTimeCell
 {
     int i, j, t;
 
-    // Move description
-    unsigned char wait : 1;
-    unsigned char diagonal : 1;
-    unsigned char up : 1;
-    unsigned char left : 1;
-    
-    // @note wait move is described as wait = true, and everything else false
+    Move move;
 
     bool operator==(const SpaceTimeCell& other) const;
 };

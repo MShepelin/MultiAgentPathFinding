@@ -40,8 +40,9 @@ void WHCA::Plan()
 {
     // Clear the reservation table
     reservation_.clear();
-
-    // @note Current start time is considered to be 0
+   
+    // Current start time is considered to be 0
+    extra_time_ = 0;
 
     for (int agent_ID : agents_.GetIDs())
     {

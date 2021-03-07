@@ -30,4 +30,6 @@ public:
     SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unordered_set<SpaceTimeCell>* reservation);
 
     void WritePath() const;
+
+    static Move GetMove(SpaceTimeCell from, SpaceTimeCell to);
 };

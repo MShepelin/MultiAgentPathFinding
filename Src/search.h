@@ -195,8 +195,6 @@ bool SingleSearch<CellType>::BuildPathTo(CellType cell)
         lppath_.push_back(*current_node);
         // lppath_ will contain nodes with unsafe pointers (parent pointer)
         current_node = current_node->parent;
-
-        lppath_.back().parent = nullptr;
     }
 
     std::reverse(lppath_.begin(), lppath_.end());

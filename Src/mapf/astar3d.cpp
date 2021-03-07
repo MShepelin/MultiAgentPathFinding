@@ -24,13 +24,13 @@ void SpaceTimeSearch::ExpandNode(NodeType* node_to_expand)
     int j = cell_of_node.j;
     int t = cell_of_node.t;
     ExpandNodeMove(node_to_expand, { i + 1, j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i + 1, j, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i + 1, j - 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i, j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i, j, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i, j - 1, t + 1 } );
+    ExpandNodeMove(node_to_expand, { i + 1, j,     t + 1 } );
+    ExpandNodeMove(node_to_expand, { i + 1, j - 1, t + 1 });
+    ExpandNodeMove(node_to_expand, { i,     j + 1, t + 1 } );
+    ExpandNodeMove(node_to_expand, { i,     j,     t + 1 } );
+    ExpandNodeMove(node_to_expand, { i,     j - 1, t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i - 1, j, t + 1 } );
+    ExpandNodeMove(node_to_expand, { i - 1, j,     t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j - 1, t + 1 } );
 }
 
@@ -39,10 +39,17 @@ FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
     // Check the reservation table
     if (reservation_->find(to) != reservation_->end())
     {
-        // @TODO add actions check to prevent conflicts
         // @TODO obstacle avoidance properties
         return -1;
     }
+
+    // Check swapping conflict
+    SpaceTimeCell from_future = from;
+    from_future.t += 1;
+
+    auto iterator = reservation_->find(from_future);
+    Move conflict_move = SpaceTimeSearch::GetMove(to, from_future);
+    if (iterator != reservation_->end() && iterator->move == conflict_move) return -1;
 
     if (!map_->IsCellOnGrid(to.i, to.j) ||
         !map_->IsCellTraversable(to.i, to.j))
@@ -133,6 +140,40 @@ void SpaceTimeSearch::WritePath() const
     for (const Node<SpaceTimeCell>& node : lppath_)
     {
         assert(reservation_->find(node.cell) == reservation_->end());
-        reservation_->insert(node.cell);
+        SpaceTimeCell node_cell = node.cell;
+        if (node.parent == nullptr)
+        {
+            node_cell.move = Wait;
+        }
+        else
+        {
+            node_cell.move = SpaceTimeSearch::GetMove(node.parent->cell, node.cell);
+        }
+
+        reservation_->insert(node_cell);
     }
+}
+
+Move SpaceTimeSearch::GetMove(SpaceTimeCell from, SpaceTimeCell to)
+{
+    unsigned char move = 0;
+    if (from.i == to.i)
+    {
+        move = 3;
+    }
+    else if (from.i > to.i)
+    {
+        move = 6;
+    }
+
+    if (from.j == to.j)
+    {
+        move += 1;
+    }
+    else if (from.j > to.j)
+    {
+        move += 2;
+    }
+
+    return static_cast<Move>(move);
 }
