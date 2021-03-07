@@ -2,11 +2,6 @@
 #include <iostream>
 #include <cassert>
 
-void Tasker::SetSolver(MAPFSolverInterface<GridCell>* new_solver)
-{
-    solver_ = new_solver;
-}
-
 bool Tasker::PrepareMap(const char* file_name)
 {
     std::ifstream file(file_name);
@@ -50,16 +45,30 @@ int Tasker::GetScenariesNum() const
 void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
 {
     assert(scenary_ID < scenaries_.GetNum());
-    assert(solver_);
 
-    solver_->SetConfiguration(&map_, config_);
+    solver_.SetConfiguration(&map_, config_);
 
     AgentTask<GridCell> task = scenaries_.GetScenary(scenary_ID);
 
-    int agent_ID = solver_->AddAgent(task);
-    solver_->Plan();
-    single_search_result_ = solver_->GetPlan(agent_ID);
+    AgentTask<SpaceTimeCell> task3d = { 
+        {
+            task.start.i,
+            task.start.j,
+            0
+        },
+        {
+            task.goal.i,
+            task.goal.j,
+            -1
+        }
+    };
 
+    int agent_ID = solver_.AddAgent(task3d);
+    solver_.Plan();
+    const std::stack<SpaceTimeCell>* plan = solver_.GetPlan(agent_ID);
+
+
+    /*
     if (!log_stream) return;
 
     *log_stream << "Path ";
@@ -77,7 +86,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
     // Optimal length is calculated for the cases where "agents cannot cut corners through walls"
     //if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
 
-    *log_stream << "\nOptimal path length = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
+    *log_stream << "\nOptimal path length = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";*/
 }
 
 void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream)
@@ -94,34 +103,114 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         // Log progress
         *log_stream << "Scenarios: " + std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID) << "\n";
 
-
         // Create new stats
+        /*
         stats_.emplace_back(Stats{
             ((scenary_ID == first_scenary_ID) ? scenaries_.GetMapName() + ", scenarios: " : "Scenarios: ") +
                 std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID),
             0,
             0,
-            scenary_ID - first_scenary_ID + 1 });
+            scenary_ID - first_scenary_ID + 1 });*/
 
         // Set up a problem's conditions
         tasks.push_back(scenaries_.GetScenary(scenary_ID));
         agent_IDs.clear();
 
-        solver_->SetConfiguration(&map_, config_);
+        solver_.SetConfiguration(&map_, config_);
 
         for (AgentTask<GridCell> task : tasks)
-            agent_IDs.emplace_back(solver_->AddAgent(task));
+        {
+            AgentTask<SpaceTimeCell> task3d = {
+                {
+                    task.start.i,
+                    task.start.j,
+                    0
+                },
+                {
+                    task.goal.i,
+                    task.goal.j,
+                    -1
+                }
+            };
+
+            agent_IDs.emplace_back(solver_.AddAgent(task3d));
+        }
 
         // Plan
-        solver_->Plan();
+        solver_.Plan();
 
-        // Gather output
+        std::vector<std::stack<SpaceTimeCell>> paths;
+
         for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
         {
-            SearchResult<GridCell> result = solver_->GetPlan(agent_IDs[agent_index]);
+            paths.push_back(*solver_.GetPlan(agent_IDs[agent_index]));
+        }
+
+        std::vector<GridCell> locs;
+
+        bool repeat = true;
+        int t = 0;
+
+        while (repeat)
+        {
+            repeat = false;
+            locs.clear();
+
+            for (std::stack<SpaceTimeCell>& path : paths)
+            {
+                if (!path.empty() && path.top().t <= t)
+                {
+                    locs.push_back({ path.top().i, path.top().j });
+                    path.pop();
+                    repeat = true;
+                }
+            }
+
+            if (!repeat) break;
+
+            *log_stream << "Time " << t << "\n";
+
+            for (int i = 0; i < map_.GetHeight(); ++i)
+            {
+                for (int j = 0; j < map_.GetWidth(); ++j)
+                {
+                    bool found = false;
+                    for (GridCell cell : locs)
+                    {
+                        if (cell.i == i && cell.j == j)
+                        {
+                            *log_stream << "0";
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        if (map_.IsCellTraversable(i, j))
+                        {
+                            *log_stream << ".";
+                        }
+                        else
+                        {
+                            *log_stream << "@";
+                        }
+                    }
+                }
+
+                *log_stream << "\n";
+            }
+
+            ++t;
+        }
+
+        // Gather output
+        /*
+        for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
+        {
+            SearchResult<GridCell> result = solver_.GetPlan(agent_IDs[agent_index]);
             stats_.back().total_time += result.time;
             stats_.back().length_delta += result.pathlength - scenaries_.GetOptimalLength(first_scenary_ID + agent_index);
-        }
+        }*/
     }
 }
 

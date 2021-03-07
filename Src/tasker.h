@@ -3,7 +3,7 @@
 #include "map.h"
 #include "config.h"
 #include "searchresult.h"
-#include "mapf/mapf_interface.h"
+#include "mapf/whca.h"
 #include "scenarios.h"
 #include "nodes.h"
 #include <vector>
@@ -24,15 +24,12 @@ protected:
     Map map_;
     Config config_;
     ScenariesCollection scenaries_;
-    SearchResult<GridCell> single_search_result_;
-    std::vector<SearchResult<GridCell>> results_;
-    MAPFSolverInterface<GridCell>* solver_ = nullptr;
+
+    WHCA solver_;
 
     std::vector<Stats> stats_;
 
 public:
-    void SetSolver(MAPFSolverInterface<GridCell>* new_solver);
-
     bool PrepareMap(const char* file_name);
     bool PrepareConfig(const char* file_name);
     bool PrepareScenaries(const char* file_name);

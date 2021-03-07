@@ -4,6 +4,10 @@ WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_) {}
 
 void WHCA::SetConfiguration(const Map* map, const Config& config)
 {
+    tasks_.clear();
+    paths_.clear();
+    agents_.Clear();
+
     space_solver_.SetConfiguration(map, config);
     space_time_solver_.SetConfiguration(map, config);
 
@@ -44,7 +48,7 @@ void WHCA::Plan()
         // Build a single path
         AgentTask<SpaceTimeCell> task = tasks_.at(agent_ID);
 
-        if (task.start.t > depth_) continue;
+        if (task.start.t > depth_ && depth_ != -1) continue;
 
         GridCell start = { task.start.i, task.start.j };
         GridCell goal = { task.goal.i, task.goal.j };

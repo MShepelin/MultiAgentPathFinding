@@ -27,5 +27,5 @@ public:
 
     virtual void Plan() override;
 
-    virtual SearchResult<GridCell> GetPlan(int agent_ID) const override;
+    virtual SearchResult<GridCell> GetPlan(int agent_ID) const;
 };

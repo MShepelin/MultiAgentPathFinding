@@ -22,6 +22,8 @@ public:
     std::vector<int> GetIDs() const;
 
     bool IsStored(int agent_ID) const;
+
+    void Clear();
 };
 
 
@@ -77,4 +79,11 @@ bool AgentsArray<CellType>::IsStored(int agent_ID) const
         return false;
 
     return true;
+}
+
+template<typename CellType>
+void AgentsArray<CellType>::Clear()
+{
+    storage_validation_.clear();
+    popped_IDs_.clear();
 }

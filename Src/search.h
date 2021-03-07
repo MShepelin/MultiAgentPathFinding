@@ -207,12 +207,14 @@ bool SingleSearch<CellType>::BuildPathTo(CellType cell)
     // Count statistics
     std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
     result_.time += duration.count(); // in seconds
+
+    return true;
 }
 
 template<typename CellType>
 FTYPE SingleSearch<CellType>::GetGValue(CellType cell) const
 {
-    NodeType* node_reached_cell = CellIsReached(cell);
+    const NodeType* node_reached_cell = CellIsReached(cell);
     if (node_reached_cell) return node_reached_cell->g;
 
     return -1;
