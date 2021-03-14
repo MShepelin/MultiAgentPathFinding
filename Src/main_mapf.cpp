@@ -42,11 +42,43 @@ int main(int argc, char *argv[])
         std::cout << "No scenaries loaded\n";
     }
 
-    //tasker.StartSearch(0, &std::cout);
-    //SearchResult<GridCell> sr = astar_solver.GetPlan(0);
-
     tasker.GetSolver()->SetDepth(10);
-    tasker.StartSearch(0, tasker.GetScenariesNum() - 1, &std::cout);
+
+    std::cout << "Print \"1 x\" to solve scenario x\n";
+    std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";
+    std::cout << "Print \"depth x\" to set new depth of cooperation\n";
+
+    int x, y;
+    std::string command;
+    while (std::cin >> command)
+    {
+        if (command == "1")
+        {
+            if (std::cin >> x)
+            {
+                tasker.StartSearch(x, x, &std::cout);
+                continue;
+            }
+        }
+        else if (command == "2")
+        {
+            if (std::cin >> x >> y)
+            {
+                tasker.StartSearch(x, y, &std::cout);
+                continue;
+            }
+        }
+        else if (command == "depth")
+        {
+            if (std::cin >> x && x > 0)
+            {
+                tasker.GetSolver()->SetDepth(x);
+                continue;
+            }
+        }
+
+        std::cout << "Wrong command\n";
+    }
 
     return 0;
 }

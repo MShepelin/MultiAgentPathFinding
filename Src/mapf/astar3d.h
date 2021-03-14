@@ -6,10 +6,12 @@
 
 class SpaceTimeSearch : public SingleSearch<SpaceTimeCell>
 {
+public:
+    static const FTYPE cost; // set FTYPE as a type of single search
+
 protected:
     SingleSearch<GridCell>* heuristic_;
     std::unordered_set<SpaceTimeCell>* reservation_;
-    static const FTYPE cost; // set FTYPE as a type of single search
 
 protected:
     virtual void SetHeuristic(NodeType& node_to_edit) override;

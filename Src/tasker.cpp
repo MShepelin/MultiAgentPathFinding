@@ -65,28 +65,27 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
 
     int agent_ID = solver_.AddAgent(task3d);
     solver_.Plan();
-    const std::vector<SpaceTimeCell>* plan = solver_.GetPlan(agent_ID);
 
+    SearchResult<SpaceTimeCell> result = solver_.GetPlan(agent_ID);
 
-    /*
     if (!log_stream) return;
 
     *log_stream << "Path ";
-    if (!single_search_result_.pathfound) *log_stream << "NOT ";
+    if (!result.pathfound) *log_stream << "NOT ";
     *log_stream << "found!\n";
-    *log_stream << "numberofsteps=" << single_search_result_.numberofsteps << "\n";
-    *log_stream << "nodescreated=" << single_search_result_.nodescreated << "\n";
-    if (single_search_result_.pathfound) 
+    *log_stream << "numberofsteps=" << result.numberofsteps << "\n";
+    *log_stream << "nodescreated=" << result.nodescreated << "\n";
+    if (result.pathfound)
     {
-        *log_stream << "pathlength=" << single_search_result_.pathlength << "\n";
-        *log_stream << "pathlength_scaled=" << single_search_result_.pathlength << "\n";
+        *log_stream << "pathlength=" << result.pathlength << "\n";
+        *log_stream << "pathlength_scaled=" << result.pathlength << "\n";
     }
-    *log_stream << "time=" << single_search_result_.time << "\n";
+    *log_stream << "time=" << result.time << "\n";
 
     // Optimal length is calculated for the cases where "agents cannot cut corners through walls"
     //if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
 
-    *log_stream << "\nOptimal path length = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";*/
+    *log_stream << "\nOptimal path length from file = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
 }
 
 void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream)
@@ -98,7 +97,10 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
     std::vector<int> agent_IDs;
 
     int move_steps = solver_.GetDepth();
-    if (move_steps > 0) move_steps /= 2;
+
+    // TODO support depth == -1
+    assert(move_steps > 0);
+    move_steps /= 2;
 
     size_t scenary_ID = first_scenary_ID;
     for (; scenary_ID <= last_scenary_ID; ++scenary_ID)
@@ -107,13 +109,12 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         *log_stream << "Scenarios: " + std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID) << "\n";
 
         // Create new stats
-        /*
         stats_.emplace_back(Stats{
             ((scenary_ID == first_scenary_ID) ? scenaries_.GetMapName() + ", scenarios: " : "Scenarios: ") +
                 std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID),
             0,
             0,
-            scenary_ID - first_scenary_ID + 1 });*/
+            scenary_ID - first_scenary_ID + 1 });
 
         // locs will be used to print map
         std::vector<GridCell> locs;
@@ -122,8 +123,10 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         tasks.push_back(scenaries_.GetScenary(scenary_ID));
         agent_IDs.clear();
 
+        // Setup the solver
         solver_.SetConfiguration(&map_, config_);
 
+        // Add tasks
         for (AgentTask<GridCell> task : tasks)
         {
             AgentTask<SpaceTimeCell> task3d = {
@@ -139,10 +142,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 }
             };
 
-            // Add task
             agent_IDs.emplace_back(solver_.AddAgent(task3d));
-
-            // Add start location
             locs.push_back(task.start);
         }
 
@@ -161,68 +161,37 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 return;
             }
 
-            std::vector<std::vector<SpaceTimeCell>> paths;
-
-            for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
-            {
-                paths.push_back(*solver_.GetPlan(agent_IDs[agent_index]));
-            }
-
-            bool repeat = true;
-
-            // We don't print first time unit
-            int t = 1;
-
             goals_reached = solver_.NumOfGoalsReached();
 
-            while(repeat)
+            int target_time = (goals_reached == agent_IDs.size()) ? solver_.GetDepth() : move_steps;
+
+            // Print each time unit except for the first
+            for (int i = 1; i <= target_time; ++i)
             {
-                repeat = false;
                 locs.clear();
 
-                for (std::vector<SpaceTimeCell>& path : paths)
+                for (int ID : agent_IDs)
                 {
-                    if (!path.empty() && path.back().t <= t)
-                    {
-                        repeat = true;
-                        locs.push_back({ path.back().i, path.back().j });
-
-                        while (!path.empty() && path.back().t <= t)
-                        {
-                            if (path.back().t > move_steps && goals_reached < agent_IDs.size())
-                            {
-                                repeat = false;
-                                break;
-                            }
-                            
-                            locs.back() = { path.back().i, path.back().j };
-                            path.pop_back();
-                        }
-                    }
+                    auto plan = solver_.GetPlan(ID).lppath;
+                    Node<SpaceTimeCell> node = plan->at(solver_.GetDepth() - i);
+                    locs.push_back({ node.cell.i, node.cell.j });
                 }
 
-                if (!repeat) break;
-
-                *log_stream << "Time " << t - 1 + start_time << "\n";
-
+                *log_stream << "Time " << i - 1 + start_time << "\n";
                 PrintMap(locs, log_stream);
-
-                ++t;
             }
 
-            start_time += t - 1;
-
-            if (move_steps > 0) solver_.MoveTime(move_steps);
+            solver_.MoveTime(move_steps);
+            start_time += move_steps;
         }
 
-        // Gather output
-        /*
+        // Gather stats
         for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
         {
-            SearchResult<GridCell> result = solver_.GetPlan(agent_IDs[agent_index]);
+            SearchResult<SpaceTimeCell> result = solver_.GetPlan(agent_IDs[agent_index]);
             stats_.back().total_time += result.time;
             stats_.back().length_delta += result.pathlength - scenaries_.GetOptimalLength(first_scenary_ID + agent_index);
-        }*/
+        }
     }
 }
 

@@ -5,6 +5,8 @@ const FTYPE SpaceTimeSearch::cost = 1;
 
 void SpaceTimeSearch::SetHeuristic(NodeType& node_to_edit)
 {
+    // TODO assert if the heuristic_ found the path from goal to start
+
     if (node_to_edit.h >= 0)
     {
         // Not to change already calculated heuristic.
@@ -140,6 +142,7 @@ bool SpaceTimeSearch::NodeReachedCell(NodeType* node, SpaceTimeCell cell, FTYPE 
 
 void SpaceTimeSearch::WritePath() const
 {
+    // TODO check if BuildPath was executed
     for (const Node<SpaceTimeCell>& node : lppath_)
     {
         assert(reservation_->find(node.cell) == reservation_->end());
