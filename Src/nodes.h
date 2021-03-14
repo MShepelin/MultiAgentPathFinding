@@ -73,6 +73,7 @@ struct GridCell
     bool operator==(const GridCell& other) const;
 };
 
+// Up means i -> i - 1, Left means j -> j - 1
 enum Move : unsigned char
 {
     UpLeft = 0,

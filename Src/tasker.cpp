@@ -88,10 +88,12 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
     *log_stream << "\nOptimal path length from file = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
 }
 
-void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream)
+void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream, bool check_solution)
 {
     assert(first_scenary_ID <= last_scenary_ID);
     assert(last_scenary_ID < scenaries_.GetNum());
+
+    Checker check;
 
     std::vector<AgentTask<GridCell>> tasks;
     std::vector<int> agent_IDs;
@@ -125,6 +127,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
         // Setup the solver
         solver_.SetConfiguration(&map_, config_);
+        check.SetConfiguration(&map_, config_);
 
         // Add tasks
         for (AgentTask<GridCell> task : tasks)
@@ -159,6 +162,12 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             {
                 *log_stream << "Plan failed\n";
                 return;
+            }
+
+            // Check
+            if (check_solution)
+            {
+                check.CheckNaive(solver_.GetResTable(), log_stream);
             }
 
             goals_reached = solver_.NumOfGoalsReached();

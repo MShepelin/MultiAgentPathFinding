@@ -52,4 +52,6 @@ public:
     int NumOfGoalsReached() const;
 
     FTYPE GetDepth() const;
+
+    const std::unordered_set<SpaceTimeCell>* GetResTable() const;
 };

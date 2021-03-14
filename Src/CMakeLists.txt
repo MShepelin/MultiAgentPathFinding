@@ -34,13 +34,15 @@ set(HEADERS_MAPF    ${HEADERS}
                     scenarios.h
                     mapf/mapf_interface.h
 					mapf/whca.h
-					mapf/astar3d.h)
+					mapf/astar3d.h
+					mapf/checker.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
                     scenarios.cpp
 					mapf/whca.cpp
-					mapf/astar3d.cpp)
+					mapf/astar3d.cpp
+					mapf/checker.cpp)
 
 if (TESTS)
 

@@ -8,6 +8,7 @@
 #include "nodes.h"
 #include <vector>
 #include <fstream>
+#include "mapf/checker.h"
 
 struct Stats
 {
@@ -40,7 +41,7 @@ public:
 
     void StartSearch(size_t scenary_ID, std::ostream* log_stream);
 
-    void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream);
+    void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream, bool check_solution = true);
 
     void PrintStatistics(std::ostream* log_stream) const;
 

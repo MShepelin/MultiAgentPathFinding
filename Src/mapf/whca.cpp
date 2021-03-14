@@ -168,3 +168,7 @@ FTYPE WHCA::GetDepth() const
     return depth_;
 }
 
+const std::unordered_set<SpaceTimeCell>* WHCA::GetResTable() const
+{
+    return &reservation_;
+}
