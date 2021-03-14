@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     }
 
     tasker.GetSolver()->SetDepth(10);
+    tasker.SetOptions({ true, 3 });
 
     std::cout << "Print \"1 x\" to solve scenario x\n";
     std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";

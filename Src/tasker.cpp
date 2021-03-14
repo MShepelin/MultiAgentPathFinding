@@ -88,7 +88,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
     *log_stream << "\nOptimal path length from file = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
 }
 
-void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream, bool check_solution)
+void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream)
 {
     assert(first_scenary_ID <= last_scenary_ID);
     assert(last_scenary_ID < scenaries_.GetNum());
@@ -153,7 +153,10 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         int start_time = 1;
 
         // Print start map
-        PrintMap(locs, log_stream);
+        if (options_.log_level >= 3) // TODO define 3 as smth
+        {
+            PrintMap(locs, log_stream);
+        }
 
         while (goals_reached < agent_IDs.size())
         {
@@ -165,12 +168,18 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             }
 
             // Check
-            if (check_solution)
+            if (options_.check_solution)
             {
                 check.CheckNaive(solver_.GetResTable(), log_stream);
             }
 
             goals_reached = solver_.NumOfGoalsReached();
+
+            if (options_.log_level < 3)
+            {
+                solver_.MoveTime(move_steps);
+                continue;
+            }
 
             int target_time = (goals_reached == agent_IDs.size()) ? solver_.GetDepth() : move_steps;
 
@@ -262,4 +271,9 @@ void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) con
 
         *log_stream << "\n";
     }
+}
+
+void Tasker::SetOptions(TaskerOptions options)
+{
+    options_ = options;
 }
