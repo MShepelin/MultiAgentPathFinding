@@ -25,7 +25,7 @@ int WHCA::AddAgent(AgentTask<SpaceTimeCell> task)
 
     int new_agent = agents_.ReserveNewID();
     tasks_.insert({ new_agent, task });
-    paths_.insert({ new_agent, std::stack<SpaceTimeCell>()});
+    paths_.insert({ new_agent, std::vector<SpaceTimeCell>()});
 
     return new_agent;
 }
@@ -87,8 +87,8 @@ bool WHCA::Plan()
         space_time_solver_.WritePath();
 
         // Copy the found path
-        std::stack<SpaceTimeCell>& single_path = paths_[agent_ID];
-        while (!single_path.empty()) paths_[agent_ID].pop();
+        std::vector<SpaceTimeCell>& single_path = paths_[agent_ID];
+        single_path.clear();
         
         SearchResult<SpaceTimeCell> result = space_time_solver_.GetResult();
 
@@ -97,7 +97,7 @@ bool WHCA::Plan()
 
         for (size_t node_index = result.lppath->size(); node_index > 0; --node_index)
         {
-            single_path.push(result.lppath->at(node_index - 1).cell);
+            single_path.push_back(result.lppath->at(node_index - 1).cell);
         }
     }
 
@@ -109,7 +109,7 @@ void WHCA::SetDepth(FTYPE new_depth)
     depth_ = new_depth;
 }
 
-const std::stack<SpaceTimeCell>* WHCA::GetPlan(int agent_ID) const
+const std::vector<SpaceTimeCell>* WHCA::GetPlan(int agent_ID) const
 {
     assert(agents_.IsStored(agent_ID));
 
@@ -124,12 +124,12 @@ void WHCA::MoveTime(int delta_time)
     for (int agent_ID : agents_.GetIDs())
     {
         AgentTask<SpaceTimeCell>& task = tasks_[agent_ID];
-        std::stack<SpaceTimeCell>& single_path = paths_[agent_ID];
+        std::vector<SpaceTimeCell>& single_path = paths_[agent_ID];
 
-        while (!single_path.empty() && single_path.top().t <= extra_time_)
+        while (!single_path.empty() && single_path.back().t <= extra_time_)
         {
-            task.start = single_path.top();
-            single_path.pop();
+            task.start = single_path.back();
+            single_path.pop_back();
         }
 
         task.start.t = 0;

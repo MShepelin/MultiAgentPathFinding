@@ -65,7 +65,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
 
     int agent_ID = solver_.AddAgent(task3d);
     solver_.Plan();
-    const std::stack<SpaceTimeCell>* plan = solver_.GetPlan(agent_ID);
+    const std::vector<SpaceTimeCell>* plan = solver_.GetPlan(agent_ID);
 
 
     /*
@@ -161,7 +161,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 return;
             }
 
-            std::vector<std::stack<SpaceTimeCell>> paths;
+            std::vector<std::vector<SpaceTimeCell>> paths;
 
             for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
             {
@@ -180,23 +180,23 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 repeat = false;
                 locs.clear();
 
-                for (std::stack<SpaceTimeCell>& path : paths)
+                for (std::vector<SpaceTimeCell>& path : paths)
                 {
-                    if (!path.empty() && path.top().t <= t)
+                    if (!path.empty() && path.back().t <= t)
                     {
                         repeat = true;
-                        locs.push_back({ path.top().i, path.top().j });
+                        locs.push_back({ path.back().i, path.back().j });
 
-                        while (!path.empty() && path.top().t <= t)
+                        while (!path.empty() && path.back().t <= t)
                         {
-                            if (path.top().t > move_steps && goals_reached < agent_IDs.size())
+                            if (path.back().t > move_steps && goals_reached < agent_IDs.size())
                             {
                                 repeat = false;
                                 break;
                             }
                             
-                            locs.back() = { path.top().i, path.top().j };
-                            path.pop();
+                            locs.back() = { path.back().i, path.back().j };
+                            path.pop_back();
                         }
                     }
                 }

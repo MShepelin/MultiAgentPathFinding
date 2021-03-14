@@ -7,7 +7,6 @@
 #include "astar.h"
 #include "astar3d.h"
 #include <vector>
-#include <stack>
 #include <unordered_map>
 
 class WHCA : public MAPFSolverInterface<SpaceTimeCell>
@@ -19,7 +18,7 @@ protected:
     SpaceTimeSearch space_time_solver_;
 
     std::unordered_map<int, AgentTask<SpaceTimeCell>> tasks_;
-    std::unordered_map<int, std::stack<SpaceTimeCell>> paths_;
+    std::unordered_map<int, std::vector<SpaceTimeCell>> paths_;
     AgentsArray<SpaceTimeCell> agents_;
     
     const Map* map_ = nullptr;
@@ -30,7 +29,7 @@ protected:
     int extra_time_ = 0;
 
     // The number of agents on their goals in 2d in the last time unit
-    int on_goal_ = 0; 
+    int on_goal_ = 0;
     
 public:
     WHCA();
@@ -45,7 +44,7 @@ public:
 
     virtual bool Plan() override;
 
-    const std::stack<SpaceTimeCell>* GetPlan(int agent_ID) const;
+    const std::vector<SpaceTimeCell>* GetPlan(int agent_ID) const;
 
     void MoveTime(int delta_time);
 
