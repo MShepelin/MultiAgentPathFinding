@@ -25,11 +25,15 @@ void SpaceTimeSearch::ExpandNode(NodeType* node_to_expand)
     int i = cell_of_node.i;
     int j = cell_of_node.j;
     int t = cell_of_node.t;
+
+    // Expand the wait move first
+    ExpandNodeMove(node_to_expand, { i,     j,     t + 1 });
+
+    // Then check the directions
     ExpandNodeMove(node_to_expand, { i + 1, j + 1, t + 1 } );
     ExpandNodeMove(node_to_expand, { i + 1, j,     t + 1 } );
     ExpandNodeMove(node_to_expand, { i + 1, j - 1, t + 1 });
     ExpandNodeMove(node_to_expand, { i,     j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i,     j,     t + 1 } );
     ExpandNodeMove(node_to_expand, { i,     j - 1, t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j + 1, t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j,     t + 1 } );
@@ -38,12 +42,13 @@ void SpaceTimeSearch::ExpandNode(NodeType* node_to_expand)
 
 FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
 {
-    // Check the reservation table
-    if (reservation_->find(to) != reservation_->end())
-    {
-        // @TODO obstacle avoidance properties
+    // Check if to exists on the map
+    if (!map_->IsCellOnGrid(to.i, to.j) ||
+        !map_->IsCellTraversable(to.i, to.j))
         return -1;
-    }
+
+    // Check if the target is an available cell
+    if (reservation_->find(to) != reservation_->end()) return -1;
 
     // Check swapping conflict
     SpaceTimeCell from_future = from;
@@ -53,14 +58,24 @@ FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
     Move conflict_move = SpaceTimeSearch::GetMove(to, from_future);
     if (iterator != reservation_->end() && iterator->move == conflict_move) return -1;
 
-    if (!map_->IsCellOnGrid(to.i, to.j) ||
-        !map_->IsCellTraversable(to.i, to.j))
-        return -1;
-
-    // Check if the current step goes through the diagonal.
+    // Check if the current step goes through a diagonal
     if (!((to.i - from.i) && (to.j - from.j))) return cost;
 
     if (!options_.allowdiagonal) return -1;
+
+    // Check if someone moves through the same point of the cell
+    Move move = SpaceTimeSearch::GetMove(from, to);
+    switch (move)
+    {
+    case UpLeft:
+        if (diagonals_->find({ from.i - 1, from.j, from.t + 1 }) != diagonals_->end()) return -1;
+    case UpRight:
+        if (diagonals_->find({ from.i - 1, from.j + 1, from.t + 1 }) != diagonals_->end()) return -1;
+    case DownLeft:
+        if (diagonals_->find({ from.i, from.j, from.t + 1 }) != diagonals_->end()) return -1;
+    case DownRight:
+        if (diagonals_->find({ from.i, from.j + 1, from.t + 1 }) != diagonals_->end()) return -1;
+    }
 
     // Count untraversable cells on the diagonal path.
     char count = (char)!map_->IsCellTraversable(from.i, to.j) + (char)!map_->IsCellTraversable(to.i, from.j);
@@ -104,12 +119,14 @@ void SpaceTimeSearch::BuildCompactPath()
     }
 }
 
-SpaceTimeSearch::SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unordered_set<SpaceTimeCell>* reservation)
+SpaceTimeSearch::SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unordered_set<SpaceTimeCell>* reservation, std::unordered_set<SpaceTimeCell>* diagonals)
 {
     assert(heuristic);
     assert(reservation);
+    assert(diagonals);
     heuristic_ = heuristic;
     reservation_ = reservation;
+    diagonals_ = diagonals;
 }
 
 const Node<SpaceTimeCell>* SpaceTimeSearch::CellIsReached(SpaceTimeCell cell) const
@@ -157,6 +174,22 @@ void SpaceTimeSearch::WritePath() const
         }
 
         reservation_->insert(new_cell);
+
+        switch (new_cell.move)
+        {
+        case UpLeft:
+            diagonals_->insert({ new_cell.i - 1, new_cell.j, new_cell.t + 1});
+            break;
+        case UpRight:
+            diagonals_->insert({ new_cell.i - 1, new_cell.j + 1, new_cell.t + 1 });
+            break;
+        case DownLeft:
+            diagonals_->insert({ new_cell.i, new_cell.j, new_cell.t + 1 });
+            break;
+        case DownRight:
+            diagonals_->insert({ new_cell.i, new_cell.j + 1, new_cell.t + 1 });
+            break;
+        }
     }
 }
 

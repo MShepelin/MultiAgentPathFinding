@@ -13,6 +13,7 @@ class WHCA : public MAPFSolverInterface<SpaceTimeCell>
 {
 protected:
     std::unordered_set<SpaceTimeCell> reservation_;
+    std::unordered_set<SpaceTimeCell> diagonals_;
 
     GridSingleSearch space_solver_;
     SpaceTimeSearch space_time_solver_;

@@ -1,6 +1,6 @@
 #include "whca.h"
 
-WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_) 
+WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
 {
     space_solver_.SetDiagonalCost(SpaceTimeSearch::cost);
 }
@@ -49,6 +49,7 @@ bool WHCA::Plan()
 {
     // Clear the reservation table
     reservation_.clear();
+    diagonals_.clear();
    
     // Current start time is considered to be 0
     extra_time_ = 0;
@@ -71,6 +72,7 @@ bool WHCA::Plan()
         if (nullptr == space_solver_.Plan({ goal, start }))
         {
             reservation_.clear();
+            diagonals_.clear();
             return false;
         }
 
@@ -89,6 +91,7 @@ bool WHCA::Plan()
         if (nullptr == node)
         {
             reservation_.clear();
+            diagonals_.clear();
             return false;
         }
 

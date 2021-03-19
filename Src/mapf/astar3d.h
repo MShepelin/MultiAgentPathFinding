@@ -12,6 +12,7 @@ public:
 protected:
     SingleSearch<GridCell>* heuristic_;
     std::unordered_set<SpaceTimeCell>* reservation_;
+    std::unordered_set<SpaceTimeCell>* diagonals_;
 
 protected:
     virtual void SetHeuristic(NodeType& node_to_edit) override;
@@ -29,7 +30,7 @@ public:
 
     SpaceTimeSearch() = delete;
 
-    SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unordered_set<SpaceTimeCell>* reservation);
+    SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unordered_set<SpaceTimeCell>* reservation, std::unordered_set<SpaceTimeCell>* diagonals);
 
     void WritePath() const;
 
