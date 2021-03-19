@@ -6,7 +6,7 @@ get_target_property(BASE_SOURCE_DIR pathplanningbase SOURCE_DIR)
 include_directories(${BASE_SOURCE_DIR})
 
 add_executable(base_testing general_test.cpp)
-target_link_libraries(base_testing 
+target_link_libraries(base_testing
 		PRIVATE pathplanningbase
 		PRIVATE gtest
 		PRIVATE gtest_main)

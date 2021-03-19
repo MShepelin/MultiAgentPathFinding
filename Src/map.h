@@ -12,12 +12,12 @@ protected:
 
 public:
     Map();
-    virtual ~Map();
+    ~Map();
 
     bool PrepareMap(std::ifstream& map_file);
 
     // Checks if the [i, j] pair is traversable, considering that [i, j] is on grid
-    virtual bool IsCellTraversable(int i, int j) const;
+    bool IsCellTraversable(int i, int j) const;
 
     bool IsCellOnGrid(int i, int j) const;
 

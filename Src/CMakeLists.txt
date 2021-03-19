@@ -9,14 +9,14 @@ set(HEADERS         config.h
                     agents.h
                     agents_array.h
                     nodes_heap.h
-					astar.h)
+                    astar.h)
 
 set(SOURCES         config.cpp
                     environmentoptions.cpp
                     map.cpp
                     tinyxml2.cpp
                     nodes.cpp
-					astar.cpp)
+                    astar.cpp)
 
 set(HEADERS_PP      ${HEADERS}
                     ilogger.h
@@ -33,16 +33,16 @@ set(HEADERS_MAPF    ${HEADERS}
                     tasker.h
                     scenarios.h
                     mapf/mapf_interface.h
-					mapf/whca.h
-					mapf/astar3d.h
-					mapf/checker.h)
+                    mapf/whca.h
+                    mapf/astar3d.h
+                    mapf/checker.h)
 
 set(SOURCES_MAPF    ${SOURCES}
                     tasker.cpp
                     scenarios.cpp
-					mapf/whca.cpp
-					mapf/astar3d.cpp
-					mapf/checker.cpp)
+                    mapf/whca.cpp
+                    mapf/astar3d.cpp
+                    mapf/checker.cpp)
 
 if (TESTS)
 
@@ -50,8 +50,9 @@ add_library(pathplanningbase ${HEADERS} ${SOURCES})
 
 endif()
 
-
 if (MAPF)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} main_mapf.cpp)
 add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
@@ -64,12 +65,11 @@ install(TARGETS ${PROJECT_NAME}_MAPF
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-target_include_directories("${PROJECT_NAME}_MAPF" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
 else()
 
 add_executable(${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
 add_library(PPLIB ${HEADERS_PP} ${SOURCES_PP})
+
 install(TARGETS ${PROJECT_NAME} 
         CONFIGURATIONS Debug
         DESTINATION Bin/Debug)
