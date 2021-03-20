@@ -43,7 +43,36 @@ int main(int argc, char *argv[])
     }
 
     tasker.GetSolver()->SetDepth(10);
-    tasker.SetOptions({ true, 3 });
+    tasker.SetOptions({ false, 3 });
+
+    std::cout << "Print file path or print or just cout\n";
+
+    bool try_to_read;
+    std::string name;
+    std::ofstream file;
+    std::ostream *output = nullptr;
+
+    while (std::cin >> name)
+    {
+        if (name == "cout")
+        {
+            output = &std::cout;
+            break;
+        }
+        else
+        {
+            file.open(name);
+            if (file.is_open())
+            {
+                output = &file;
+                break;
+            }
+        }
+
+        std::cout << "Wrong name, try again\n";
+    }
+
+    if (!output) return 0;
 
     std::cout << "Print \"1 x\" to solve scenario x\n";
     std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";
@@ -57,7 +86,8 @@ int main(int argc, char *argv[])
         {
             if (std::cin >> x)
             {
-                tasker.StartSearch(x, x, &std::cout);
+                tasker.StartSearch(x, x, output);
+                std::cout << "End of print\n";
                 continue;
             }
         }
@@ -65,7 +95,8 @@ int main(int argc, char *argv[])
         {
             if (std::cin >> x >> y)
             {
-                tasker.StartSearch(x, y, &std::cout);
+                tasker.StartSearch(x, y, output);
+                std::cout << "End of print\n";
                 continue;
             }
         }
@@ -74,7 +105,12 @@ int main(int argc, char *argv[])
             if (std::cin >> x && x > 0)
             {
                 tasker.GetSolver()->SetDepth(x);
+                std::cout << "OK, new depth\n";
                 continue;
+            }
+            else
+            {
+                std::cout << "Wrong input\n";
             }
         }
 

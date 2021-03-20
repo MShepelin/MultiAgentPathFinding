@@ -16,6 +16,7 @@ if (MAPF)
 	include_directories(${MAPFLIB_SOURCE_DIR})
 	
 	add_executable(testbench mapf_test.cpp)
+	add_compile_definitions(TEST_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../TestData/MAPFtests")
 
 	target_link_libraries(testbench 
 		PRIVATE MAPFLIB

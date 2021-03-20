@@ -42,7 +42,7 @@ int Tasker::GetScenariesNum() const
     return scenaries_.GetNum();
 }
 
-void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
+void Tasker:: StartSearch(size_t scenary_ID, std::ostream* log_stream)
 {
     assert(scenary_ID < scenaries_.GetNum());
 
@@ -175,28 +175,42 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
             goals_reached = solver_.NumOfGoalsReached();
 
-            if (options_.log_level < 3)
-            {
-                solver_.MoveTime(move_steps);
-                continue;
-            }
-
             int target_time = (goals_reached == agent_IDs.size()) ? solver_.GetDepth() : move_steps;
 
-            // Print each time unit except for the first
-            for (int i = 1; i <= target_time; ++i)
+            if (options_.log_level >= 3)
             {
-                locs.clear();
+                // Print each time unit except for the first
+                for (int i = 1; i <= target_time; ++i)
+                {
+                    locs.clear();
 
+                    for (int ID : agent_IDs)
+                    {
+                        auto plan = solver_.GetPlan(ID).lppath;
+                        Node<SpaceTimeCell> node = plan->at(solver_.GetDepth() - i);
+                        locs.push_back({ node.cell.i, node.cell.j });
+                    }
+
+                    *log_stream << "Time " << i - 1 + start_time << "\n";
+                    PrintMap(locs, log_stream);
+                }
+            }
+            else if (options_.log_level >= 2)
+            {
+                // Print each path
                 for (int ID : agent_IDs)
                 {
-                    auto plan = solver_.GetPlan(ID).lppath;
-                    Node<SpaceTimeCell> node = plan->at(solver_.GetDepth() - i);
-                    locs.push_back({ node.cell.i, node.cell.j });
-                }
+                    *log_stream << "Agent " << ID << "\n";
 
-                *log_stream << "Time " << i - 1 + start_time << "\n";
-                PrintMap(locs, log_stream);
+                    locs.clear();
+                    auto plan = solver_.GetPlan(ID).lppath;
+                    for (const Node<SpaceTimeCell> &node : *plan)
+                    {
+                        locs.push_back({ node.cell.i, node.cell.j });
+                    }
+                    
+                    PrintPath(locs, log_stream);
+                }
             }
 
             solver_.MoveTime(move_steps);
@@ -242,30 +256,49 @@ WHCA* Tasker::GetSolver()
 
 void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const
 {
+    std::vector<std::vector<char>> print(map_.GetHeight(), std::vector<char>(map_.GetWidth(), '.'));
+    for (size_t cell_index = 0; cell_index < locs.size(); cell_index++)
+    {
+        print[locs[cell_index].i][locs[cell_index].j] = '0' + cell_index;
+    }
+
     for (int i = 0; i < map_.GetHeight(); ++i)
     {
         for (int j = 0; j < map_.GetWidth(); ++j)
         {
-            bool found = false;
-            for (int cell_index = 0; cell_index < locs.size(); cell_index++)
+            if (!map_.IsCellTraversable(i, j))
             {
-                if (locs[cell_index].i == i && locs[cell_index].j == j)
-                {
-                    *log_stream << (char)('0' + cell_index);
-                    found = true;
-                    break;
-                }
+                *log_stream << "@";
             }
-            if (!found)
+            else
             {
-                if (map_.IsCellTraversable(i, j))
-                {
-                    *log_stream << ".";
-                }
-                else
-                {
-                    *log_stream << '#';
-                }
+                *log_stream << print[i][j];
+            }
+        }
+
+        *log_stream << "\n";
+    }
+}
+
+void Tasker::PrintPath(std::vector<GridCell>& locs, std::ostream* log_stream) const
+{
+    std::vector<std::vector<char>> print(map_.GetHeight(), std::vector<char>(map_.GetWidth(), '.'));
+    for (GridCell& cell : locs)
+    {
+        print[cell.i][cell.j] = '0';
+    }
+
+    for (int i = 0; i < map_.GetHeight(); ++i)
+    {
+        for (int j = 0; j < map_.GetWidth(); ++j)
+        {
+            if (!map_.IsCellTraversable(i, j))
+            {
+                *log_stream << "@";
+            }
+            else
+            {
+                *log_stream << print[i][j];
             }
         }
 

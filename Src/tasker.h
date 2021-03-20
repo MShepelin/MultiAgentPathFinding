@@ -21,7 +21,7 @@ struct Stats
 
 struct TaskerOptions
 {
-    bool check_solution;
+    unsigned int check_solution : 1;
     
     int log_level;
     // 0 - errors
@@ -43,6 +43,7 @@ protected:
     std::vector<Stats> stats_;
 
     void PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const;
+    void PrintPath(std::vector<GridCell>& locs, std::ostream* log_stream) const;
 
 public:
     void SetOptions(TaskerOptions options);
