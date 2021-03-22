@@ -1,6 +1,7 @@
 #include "tasker.h"
 #include <iostream>
 #include <cassert>
+#include <stdlib.h> 
 
 #define TIME_LIMIT 1000
 
@@ -109,7 +110,9 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
     if (options_.use_all_scenarios)
     {
         for (size_t scenary = first_scenary_ID; scenary < last_scenary_ID; ++scenary)
+        {
             tasks.push_back(scenaries_.GetScenary(scenary));
+        }
         scenary_ID = last_scenary_ID;
     }
     
@@ -147,7 +150,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 {
                     task.start.i,
                     task.start.j,
-                    0
+                    (options_.random_start) ? rand() % tasks.size() : 0
                 },
                 {
                     task.goal.i,
@@ -157,7 +160,15 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             };
 
             agent_IDs.emplace_back(solver_.AddAgent(task3d));
-            locs.push_back(task.start);
+
+            if (task3d.start.t > 0)
+            {
+                locs.push_back(task.start);
+            }
+            else
+            {
+                locs.push_back({ -1, -1 });
+            }
         }
 
         int goals_reached = 0;
@@ -197,8 +208,23 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
                     for (int ID : agent_IDs)
                     {
+                        // Check if plan exists
                         auto plan = solver_.GetPlan(ID).lppath;
-                        Node<SpaceTimeCell> node = plan->at(solver_.GetDepth() - i);
+                        if (!plan)
+                        {
+                            locs.push_back({ -1, -1 });
+                            continue;
+                        }
+
+                        // Check if the start of the plan has the needed time
+                        int start_t = plan->back().cell.t;
+                        if (start_t > i)
+                        {
+                            locs.push_back({ -1, -1 });
+                            continue;
+                        }
+                        
+                        Node<SpaceTimeCell> node = plan->at(solver_.GetDepth() - i - start_t);
                         locs.push_back({ node.cell.i, node.cell.j });
                     }
 
@@ -219,6 +245,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
                     locs.clear();
                     auto plan = solver_.GetPlan(ID).lppath;
+                    if (!plan) continue;
                     for (const Node<SpaceTimeCell> &node : *plan)
                     {
                         locs.push_back({ node.cell.i, node.cell.j });
@@ -280,6 +307,8 @@ void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) con
     std::vector<std::vector<char>> print(map_.GetHeight(), std::vector<char>(map_.GetWidth(), '.'));
     for (size_t cell_index = 0; cell_index < locs.size(); cell_index++)
     {
+        if (locs[cell_index].i < 0 || locs[cell_index].j < 0) continue;
+
         print[locs[cell_index].i][locs[cell_index].j] = 'A' + cell_index;
     }
 
@@ -306,6 +335,8 @@ void Tasker::PrintPath(std::vector<GridCell>& locs, std::ostream* log_stream) co
     std::vector<std::vector<char>> print(map_.GetHeight(), std::vector<char>(map_.GetWidth(), '.'));
     for (GridCell& cell : locs)
     {
+        if (cell.i < 0 || cell.j < 0) continue;
+
         print[cell.i][cell.j] = '0';
     }
 

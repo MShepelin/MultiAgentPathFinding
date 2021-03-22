@@ -78,6 +78,11 @@ bool Checker::CheckNaive(
             result = false;
             continue;
         }
+
+        // TODO
+        // check diagonal collisions:
+        // 2.1 1.1
+        // 1.2 2.2
     }
 
     if (result) *log_stream << "NO ";

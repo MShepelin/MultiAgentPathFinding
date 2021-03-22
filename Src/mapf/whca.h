@@ -9,6 +9,7 @@
 #include <vector>
 #include <unordered_map>
 
+// MAPF solver with limited depth of search
 class WHCA : public MAPFSolverInterface<SpaceTimeCell>
 {
 protected:
@@ -26,12 +27,12 @@ protected:
     const Map* map_ = nullptr;
     const Config* config_ = nullptr;
 
-    FTYPE depth_ = -1;
-
-    int extra_time_ = 0;
-
+    // Depth of cooperation
+    int depth_;
+    // Counter to move time and change the locations of agents
+    TTYPE extra_time_;
     // The number of agents on their goals in 2d in the last time unit
-    int on_goal_ = 0;
+    int on_goal_;
     
 public:
     WHCA();
@@ -48,11 +49,11 @@ public:
 
     SearchResult<SpaceTimeCell> GetPlan(int agent_ID) const;
 
-    void MoveTime(int delta_time);
+    void MoveTime(TTYPE delta_time);
 
     int NumOfGoalsReached() const;
 
-    FTYPE GetDepth() const;
+    int GetDepth() const;
 
     const std::unordered_set<SpaceTimeCell>* GetResTable() const;
 };

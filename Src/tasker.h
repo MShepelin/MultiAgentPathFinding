@@ -33,6 +33,7 @@ struct TaskerOptions
     unsigned int use_all_scenarios : 1;
     // Markers give information about current set of scenarios and time frames
     unsigned int print_markers : 1;
+    unsigned int random_start : 1;
     
     int log_level;
 };

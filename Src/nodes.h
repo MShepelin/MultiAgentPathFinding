@@ -90,8 +90,8 @@ enum Move : unsigned char
 
 struct SpaceTimeCell
 {
-    int i, j, t;
-
+    int i, j;
+    TTYPE t;
     Move move;
 
     bool operator==(const SpaceTimeCell& other) const;

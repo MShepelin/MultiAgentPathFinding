@@ -2,12 +2,16 @@
 
 WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
 {
-    space_solver_.SetDiagonalCost(SpaceTimeSearch::cost);
+    space_solver_.SetDiagonalCost(1);
+    depth_ = 16;
+    extra_time_ = 0;
+    on_goal_ = 0;
 }
 
 // TODO change the name to reset configuration
 void WHCA::SetConfiguration(const Map* map, const Config& config)
 {
+    assert(map);
     tasks_.clear();
     paths_.clear();
     agents_.Clear();
@@ -37,7 +41,12 @@ void WHCA::RemoveAgent(int agent_ID)
 {
     assert(agents_.IsStored(agent_ID));
 
-    // TODO Clear reservation table enterances
+    // Clear reservation table enterances of this agent
+    std::vector<Node<SpaceTimeCell>>& agent_path = paths_.at(agent_ID);
+    for (size_t node_i = 0; node_i < agent_path.size(); ++node_i)
+    {
+        reservation_.erase(agent_path[node_i].cell);
+    }
 
     tasks_.erase(agent_ID);
     paths_.erase(agent_ID);
@@ -64,7 +73,11 @@ bool WHCA::Plan()
         AgentTask<SpaceTimeCell> task = tasks_.at(agent_ID);
 
         // Check if we need to build a path on this depth
-        if (task.start.t > depth_ && depth_ != -1) continue;
+        if (task.start.t > depth_ && depth_ != -1)
+        {
+            // TODO Mark that path was built but it's out of boundaries
+            results_[agent_ID] = SearchResult<SpaceTimeCell>();
+        }
 
         // Plan in 2d to set heuristic values and check if the path exists at all
         GridCell start = { task.start.i, task.start.j };
@@ -124,7 +137,7 @@ bool WHCA::Plan()
 
 void WHCA::SetDepth(FTYPE new_depth)
 {
-    assert(new_depth == -1 || new_depth > 0);
+    assert(new_depth > 0);
     depth_ = new_depth;
 }
 
@@ -135,7 +148,7 @@ SearchResult<SpaceTimeCell> WHCA::GetPlan(int agent_ID) const
     return results_.at(agent_ID);
 }
 
-void WHCA::MoveTime(int delta_time)
+void WHCA::MoveTime(TTYPE delta_time)
 {
     if (delta_time <= 0) return;
 
@@ -155,9 +168,26 @@ void WHCA::MoveTime(int delta_time)
         }
 
         // Even if the start wasn't changed we need to decrease its time
-        task.start.t -= delta_time;
-        if (task.goal.t != -1) task.goal.t -= delta_time;
-        // TODO check if goal and start are still valid
+        if (task.start.t < delta_time)
+        {
+            task.start.t = 0;
+        }
+        else
+        {
+            task.start.t -= delta_time;
+        }
+        
+        if (task.goal.t != -1)
+        {
+            if (task.goal.t < delta_time)
+            {
+                task.goal.t = 0;
+            }
+            else
+            {
+                task.goal.t -= delta_time;
+            }
+        }
     }
 }
 
@@ -166,7 +196,7 @@ int WHCA::NumOfGoalsReached() const
     return on_goal_;
 }
 
-FTYPE WHCA::GetDepth() const
+int WHCA::GetDepth() const
 {
     return depth_;
 }

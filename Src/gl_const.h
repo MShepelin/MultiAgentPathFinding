@@ -1,6 +1,7 @@
 #pragma once
 
 #define FTYPE double
+#define TTYPE short int
 
 #define CN_PI_CONSTANT 3.14159265359
 #define CN_SQRT_TWO    1.41421356237

@@ -40,7 +40,9 @@ int AgentsArray<CellType>::ReserveNewID()
 
     storage_validation_.push_back(true);
 
-    return storage_validation_.size() - 1;
+    int result = storage_validation_.size() - 1;
+    assert(result == storage_validation_.size() - 1);
+    return result;
 }
 
 template<typename CellType>
@@ -75,7 +77,9 @@ std::vector<int> AgentsArray<CellType>::GetIDs() const
 template<typename CellType>
 bool AgentsArray<CellType>::IsStored(int agent_ID) const
 {
-    if (agent_ID < 0 || agent_ID >= storage_validation_.size() || !storage_validation_[agent_ID])
+    if (agent_ID < 0 || 
+        agent_ID >= storage_validation_.size() || 
+        !storage_validation_[agent_ID])
         return false;
 
     return true;

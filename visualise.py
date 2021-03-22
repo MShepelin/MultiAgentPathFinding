@@ -101,7 +101,7 @@ def main(win, width):
 	# read file with frames
 	data = []
 	rows = 0
-	with open("output_example.txt") as f:
+	with open("animation.txt") as f:
 		rows = int(f.readline())
 		data = f.readlines()
 

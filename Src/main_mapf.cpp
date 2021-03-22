@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
 
     tasker.GetSolver()->SetDepth(10);
-    tasker.SetOptions({ false, true, false, 3 });
+    tasker.SetOptions({ false, true, false, false, LOG_PRINT_FRAMES });
 
     std::cout << "Print file path or print or just cout\n";
 
