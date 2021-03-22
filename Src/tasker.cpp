@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cassert>
 
+#define TIME_LIMIT 1000
+
 bool Tasker::PrepareMap(const char* file_name)
 {
     std::ifstream file(file_name);
@@ -82,9 +84,7 @@ void Tasker:: StartSearch(size_t scenary_ID, std::ostream* log_stream)
     }
     *log_stream << "time=" << result.time << "\n";
 
-    // Optimal length is calculated for the cases where "agents cannot cut corners through walls"
-    //if (solver_->GetEnvironmentOptions().allowdiagonal == true) return;
-
+    // Usually optimal length is calculated for the cases where "agents can move diagonally but cannot cut corners"
     *log_stream << "\nOptimal path length from file = " << scenaries_.GetOptimalLength(scenary_ID) << "\n";
 }
 
@@ -105,10 +105,21 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
     move_steps /= 2;
 
     size_t scenary_ID = first_scenary_ID;
+
+    if (options_.use_all_scenarios)
+    {
+        for (size_t scenary = first_scenary_ID; scenary < last_scenary_ID; ++scenary)
+            tasks.push_back(scenaries_.GetScenary(scenary));
+        scenary_ID = last_scenary_ID;
+    }
+    
     for (; scenary_ID <= last_scenary_ID; ++scenary_ID)
     {
         // Log progress
-        *log_stream << "Scenarios: " + std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID) << "\n";
+        if (options_.print_markers)
+        {
+            *log_stream << "Scenarios: " + std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID) << "\n";
+        }
 
         // Create new stats
         stats_.emplace_back(Stats{
@@ -153,7 +164,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         int start_time = 1;
 
         // Print start map
-        if (options_.log_level >= 3) // TODO define 3 as smth
+        if (options_.log_level >= LOG_PRINT_FRAMES)
         {
             PrintMap(locs, log_stream);
         }
@@ -163,7 +174,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             // Plan
             if (!solver_.Plan())
             {
-                *log_stream << "Plan failed\n";
+                if (options_.print_markers) *log_stream << "Plan failed\n";
                 return;
             }
 
@@ -177,7 +188,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
             int target_time = (goals_reached == agent_IDs.size()) ? solver_.GetDepth() : move_steps;
 
-            if (options_.log_level >= 3)
+            if (options_.log_level >= LOG_PRINT_FRAMES)
             {
                 // Print each time unit except for the first
                 for (int i = 1; i <= target_time; ++i)
@@ -191,16 +202,20 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                         locs.push_back({ node.cell.i, node.cell.j });
                     }
 
-                    *log_stream << "Time " << i - 1 + start_time << "\n";
+                    if (options_.print_markers)
+                    {
+                        *log_stream << "Time " << i - 1 + start_time << "\n";
+                    }
+
                     PrintMap(locs, log_stream);
                 }
             }
-            else if (options_.log_level >= 2)
+            else if (options_.log_level >= LOG_PRINT_PATHS)
             {
                 // Print each path
                 for (int ID : agent_IDs)
                 {
-                    *log_stream << "Agent " << ID << "\n";
+                    if (options_.print_markers) *log_stream << "Agent " << ID << "\n";
 
                     locs.clear();
                     auto plan = solver_.GetPlan(ID).lppath;
@@ -215,6 +230,12 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
             solver_.MoveTime(move_steps);
             start_time += move_steps;
+
+            if (start_time > TIME_LIMIT)
+            {
+                if (options_.print_markers) *log_stream << "TOO LONG\n";
+                break;
+            }
         }
 
         // Gather stats
@@ -259,7 +280,7 @@ void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) con
     std::vector<std::vector<char>> print(map_.GetHeight(), std::vector<char>(map_.GetWidth(), '.'));
     for (size_t cell_index = 0; cell_index < locs.size(); cell_index++)
     {
-        print[locs[cell_index].i][locs[cell_index].j] = '0' + cell_index;
+        print[locs[cell_index].i][locs[cell_index].j] = 'A' + cell_index;
     }
 
     for (int i = 0; i < map_.GetHeight(); ++i)

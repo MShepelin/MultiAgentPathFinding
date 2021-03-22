@@ -58,13 +58,17 @@ void GridSingleSearch::SetHeuristic(NodeType& node_to_edit)
 void GridSingleSearch::ExpandNode(NodeType* node_to_expand)
 {
     GridCell cell_of_node = node_to_expand->cell;
+
+    // Firstly, non-diagonal moves
+    ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j });
+    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j - 1 });
+    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j + 1 });
+    ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j });
+
+    // Then diagonal moves
     ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j - 1 } );
-    ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j } );
     ExpandNodeMove(node_to_expand, { cell_of_node.i - 1, cell_of_node.j + 1 } );
-    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j - 1 } );
-    ExpandNodeMove(node_to_expand, { cell_of_node.i,     cell_of_node.j + 1 } );
     ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j - 1 } );
-    ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j } );
     ExpandNodeMove(node_to_expand, { cell_of_node.i + 1, cell_of_node.j + 1 } );
 }
 

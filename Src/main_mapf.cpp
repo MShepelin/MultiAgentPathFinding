@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
 
     tasker.GetSolver()->SetDepth(10);
-    tasker.SetOptions({ false, 3 });
+    tasker.SetOptions({ false, true, false, 3 });
 
     std::cout << "Print file path or print or just cout\n";
 
@@ -73,6 +73,9 @@ int main(int argc, char *argv[])
     }
 
     if (!output) return 0;
+
+    // Write map height
+    *output << tasker.GetMap()->GetHeight() << "\n";
 
     std::cout << "Print \"1 x\" to solve scenario x\n";
     std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";

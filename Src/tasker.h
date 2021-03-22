@@ -19,15 +19,22 @@ struct Stats
     size_t number_of_agents = 0;
 };
 
+#define LOG_ERRORS_ONLY 0
+#define LOG_WARNINGS 1
+#define LOG_PRINT_PATHS 2
+#define LOG_PRINT_FRAMES 3
+
 struct TaskerOptions
 {
+    // States whether we need to check the correctness of solution or not
     unsigned int check_solution : 1;
+    // We can either add scenarios gradually or use all given task in the same time.
+    // To use the second option use_all_scenarios should be true
+    unsigned int use_all_scenarios : 1;
+    // Markers give information about current set of scenarios and time frames
+    unsigned int print_markers : 1;
     
     int log_level;
-    // 0 - errors
-    // 1 - warnings
-    // 2 - print paths 
-    // 3 - print maps (as frames)
 };
 
 class Tasker

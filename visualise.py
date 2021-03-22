@@ -1,9 +1,10 @@
 # Partially copied from https://www.youtube.com/watch?v=JtiK0DOeI4A
 
 import pygame
-import math
-import time
+import datetime
 
+# delay between frame updates in microseconds
+DELAY = 100000
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Visualisation")
@@ -14,12 +15,19 @@ agent_colors = [
 	(128, 0, 128),
 	(255, 255, 0),
 	(0, 255, 0),
-	(255, 0, 0)
+	(255, 0, 0),
+	(255, 128, 128),
+	(25, 128, 128),
+	(25, 0, 50),
+	(100, 0, 50),
+	(200, 50, 50),
+	(128, 128, 0)
 ]
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (128, 128, 128)
+
 
 class Spot:
 	def __init__(self, row, col, width, total_rows):
@@ -31,12 +39,6 @@ class Spot:
 		self.neighbors = []
 		self.width = width
 		self.total_rows = total_rows
-
-	def get_pos(self):
-		return self.row, self.col
-
-	def is_barrier(self):
-		return self.color == BLACK
 
 	def reset(self):
 		self.color = WHITE
@@ -98,56 +100,50 @@ def get_clicked_pos(pos, rows, width):
 def main(win, width):
 	# read file with frames
 	data = []
+	rows = 0
 	with open("output_example.txt") as f:
+		rows = int(f.readline())
 		data = f.readlines()
 
-	line_index = 0
-	ticks = 0
+	if rows <= 0:
+		print("Error, wrong number of rows per frame")
+		return
 
-	ROWS = 4
-	grid = make_grid(ROWS, width)
-
-	animate = False
+	animate = True
 	run = True
+	delta = 1
+	line_index = 0
+	cur_time = datetime.datetime.now()
+	grid = make_grid(rows, width)
+
 	while run:
-		draw(win, grid, ROWS, width)
+		draw(win, grid, rows, width)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False
 				break
 
-			if pygame.mouse.get_pressed()[0]: # LEFT
-				animate = not animate
-				#pos = pygame.mouse.get_pos()
-				#row, col = get_clicked_pos(pos, ROWS, width)
-				#spot = grid[row][col]
-				#spot.make_barrier()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					cur_time = datetime.datetime.now() - datetime.timedelta(microseconds=DELAY)
+					animate = not animate
 
-			if pygame.mouse.get_pressed()[1]: # LEFT
-				animate = True
-				line_index = 0
+				if event.key == pygame.K_r:
+					animate = True
+					delta = -delta
 
-		if not animate:
+		if not animate or datetime.datetime.now() - cur_time < datetime.timedelta(microseconds=DELAY):
 			continue
 
-		ticks += 1
-		if ticks < 500:
-			continue
-		ticks = 0
+		cur_time = datetime.datetime.now()
 
-		# animation
-		# 1) skip wrong lines
-		while line_index < len(data) and (data[line_index][0] == "T" or data[line_index][0] == "S"):
-			line_index += 1
-
-		if line_index >= len(data):
+		if line_index >= len(data) or line_index < 0:
 			animate = False
 			line_index = 0
 			continue
 
-		# 2) read grid
-		for i in range(ROWS):
-			for j in range(ROWS):
+		for i in range(rows):
+			for j in range(rows):
 				symbol = data[line_index + i][j]
 				spot = grid[i][j]
 				if symbol == '.':
@@ -155,11 +151,11 @@ def main(win, width):
 				elif symbol == '@':
 					spot.make_barrier()
 				else:
-					char = ord(symbol) - ord('0')
+					char = ord(symbol) - ord('A')
 					index = char % len(agent_colors)
 					spot.make_color(agent_colors[index])
 
-		line_index += ROWS
+		line_index += delta * rows
 
 	pygame.quit()
 

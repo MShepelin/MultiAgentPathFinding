@@ -29,14 +29,16 @@ void SpaceTimeSearch::ExpandNode(NodeType* node_to_expand)
     // Expand the wait move first
     ExpandNodeMove(node_to_expand, { i,     j,     t + 1 });
 
-    // Then check the directions
+    // Then non-diagonal moves
+    ExpandNodeMove(node_to_expand, { i,     j + 1, t + 1 });
+    ExpandNodeMove(node_to_expand, { i + 1, j,     t + 1 });
+    ExpandNodeMove(node_to_expand, { i - 1, j,     t + 1 });
+    ExpandNodeMove(node_to_expand, { i,     j - 1, t + 1 });
+    
+    // Then diagonal moves
     ExpandNodeMove(node_to_expand, { i + 1, j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i + 1, j,     t + 1 } );
     ExpandNodeMove(node_to_expand, { i + 1, j - 1, t + 1 });
-    ExpandNodeMove(node_to_expand, { i,     j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i,     j - 1, t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j + 1, t + 1 } );
-    ExpandNodeMove(node_to_expand, { i - 1, j,     t + 1 } );
     ExpandNodeMove(node_to_expand, { i - 1, j - 1, t + 1 } );
 }
 
