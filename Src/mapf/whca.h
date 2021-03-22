@@ -27,6 +27,8 @@ protected:
     const Map* map_ = nullptr;
     const Config* config_ = nullptr;
 
+    // If true before each planning agents will be reordered randomly
+    unsigned int random_order : 1;
     // Depth of cooperation
     int depth_;
     // Counter to move time and change the locations of agents
@@ -34,6 +36,10 @@ protected:
     // The number of agents on their goals in 2d in the last time unit
     int on_goal_;
     
+protected:
+    static int number_of_swaps;
+    static void RandomReorder(std::vector<int>& vec);
+
 public:
     WHCA();
 

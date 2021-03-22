@@ -309,7 +309,7 @@ void Tasker::PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) con
     {
         if (locs[cell_index].i < 0 || locs[cell_index].j < 0) continue;
 
-        print[locs[cell_index].i][locs[cell_index].j] = 'A' + cell_index;
+        print[locs[cell_index].i][locs[cell_index].j] = 'A' + (cell_index % ('Z' - 'A'));
     }
 
     for (int i = 0; i < map_.GetHeight(); ++i)

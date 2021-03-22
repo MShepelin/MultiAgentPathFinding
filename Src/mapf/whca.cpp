@@ -1,4 +1,5 @@
 #include "whca.h"
+#include "stdlib.h"
 
 WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
 {
@@ -6,6 +7,7 @@ WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
     depth_ = 16;
     extra_time_ = 0;
     on_goal_ = 0;
+    random_order = true;
 }
 
 // TODO change the name to reset configuration
@@ -54,6 +56,16 @@ void WHCA::RemoveAgent(int agent_ID)
     agents_.RemoveID(agent_ID);
 }
 
+int WHCA::number_of_swaps = 10;
+void WHCA::RandomReorder(std::vector<int>& vec)
+{
+    assert(vec.size());
+    for (int i = 0; i < number_of_swaps; ++i)
+    {
+        std::swap(vec[rand() % vec.size()], vec[rand() % vec.size()]);
+    }
+}   
+
 bool WHCA::Plan()
 {
     // Clear the reservation table
@@ -67,7 +79,9 @@ bool WHCA::Plan()
     on_goal_ = 0;
 
     // Build a single-agent path for each agent
-    auto IDs = agents_.GetIDs();
+    std::vector<int> IDs = agents_.GetIDs();
+    if (random_order) RandomReorder(IDs);
+
     for (int agent_ID : IDs)
     {
         AgentTask<SpaceTimeCell> task = tasks_.at(agent_ID);
