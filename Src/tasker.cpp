@@ -268,9 +268,11 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 {
                     auto plan = solver_.GetPlan(ID).lppath;
                     if (!plan || plan->size() < 2) continue;
-                    for (size_t node_index = plan->size() - 1; node_index > 0; node_index--)
+                    for (int i = 1; i <= move_steps; ++i)
                     {
-                        raw_paths_.at(ID).push_back(plan->at(node_index - 1).cell);
+                        int cell_index = plan->size() - 1 - i;
+                        raw_paths_.at(ID).push_back(plan->at(cell_index).cell);
+                        raw_paths_.at(ID).back().t += start_time - 1;
                     }
                 }
             }
