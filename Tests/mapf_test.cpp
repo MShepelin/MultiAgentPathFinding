@@ -3,9 +3,8 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "tasker.h"
-
-#define EPS 1e-5
 
 #ifndef TEST_DIR
 #define TEST_DIR "error string"
@@ -19,12 +18,28 @@ TEST(MapTest, Construction)
     ASSERT_EQ(map.GetHeight(), 0);
 }
 
-TEST(WHCATest, Contruction)
+TEST(WHCATest, SmallMap)
 {
     Tasker tasker;
-    ASSERT_TRUE(tasker.PrepareMap(TEST_DIR "\\test1.map"));
+    ASSERT_TRUE(tasker.PrepareMap(TEST_DIR "\\0_test.map"));
     ASSERT_TRUE(tasker.PrepareConfig(TEST_DIR "\\BaseConfig.xml"));
-    ASSERT_TRUE(tasker.PrepareScenaries(TEST_DIR "\\test1.scen"));
+    ASSERT_TRUE(tasker.PrepareScenaries(TEST_DIR "\\0_test.scen"));
+
+    tasker.SetOptions({ true, false, true, false, LOG_ERRORS_ONLY });
+    tasker.StartSearch(0, 2, &std::cout);
+}
+
+TEST(WHCATest, MazeMap)
+{
+    Tasker tasker;
+    ASSERT_TRUE(tasker.PrepareMap(TEST_DIR "\\maze-32-32-2.map"));
+    ASSERT_TRUE(tasker.PrepareConfig(TEST_DIR "\\BaseConfig.xml"));
+    ASSERT_TRUE(tasker.PrepareScenaries(TEST_DIR "\\maze-32-32-2-even-1.scen"));
+
+    std::ostringstream output;
+    tasker.GetSolver()->SetDepth(20);
+    tasker.SetOptions({ true, false, true, false, LOG_ERRORS_ONLY });
+    tasker.StartSearch(0, 30, &std::cout);
 }
 
 int main(int argc, char* argv[])
@@ -32,5 +47,3 @@ int main(int argc, char* argv[])
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-
-#undef EPS

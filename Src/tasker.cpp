@@ -129,8 +129,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             ((scenary_ID == first_scenary_ID) ? scenaries_.GetMapName() + ", scenarios: " : "Scenarios: ") +
                 std::to_string(first_scenary_ID) + "-" + std::to_string(scenary_ID),
             0,
-            0,
-            scenary_ID - first_scenary_ID + 1 });
+            true});
 
         // locs will be used to print map
         std::vector<GridCell> locs;
@@ -306,8 +305,8 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
         {
             SearchResult<SpaceTimeCell> result = solver_.GetPlan(agent_IDs[agent_index]);
+            if (!result.pathfound) stats_.back().path_found = false;
             stats_.back().total_time += result.time;
-            stats_.back().length_delta += result.pathlength - scenaries_.GetOptimalLength(first_scenary_ID + agent_index);
         }
     }
 }
@@ -318,9 +317,13 @@ void Tasker::PrintStatistics(std::ostream* log_stream) const
     {
         *log_stream << stats_measuring.desription << "\n";
         *log_stream << "Total computation time = " << stats_measuring.total_time << "\n";
-        *log_stream << "On average, planned paths differ by " << 
-            stats_measuring.length_delta / stats_measuring.number_of_agents << " from the shortest distances\n";
-        *log_stream << "\n";
+        if (!stats_measuring.path_found)
+        {
+            *log_stream << "Plan failed!\n";
+            continue;
+        }
+
+        *log_stream << "Plan found!\n"; 
     }
 }
 

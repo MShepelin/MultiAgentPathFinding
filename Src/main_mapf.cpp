@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
     std::string command;
     while (std::cin >> command)
     {
+        tasker.ClearStatistics();
+
         if (command == "1")
         {
             if (std::cin >> x)
@@ -101,6 +103,7 @@ int main(int argc, char *argv[])
             if (std::cin >> x >> y)
             {
                 tasker.StartSearch(x, y, output);
+                tasker.PrintStatistics(&std::cout);
                 std::cout << "End of print\n";
                 continue;
             }

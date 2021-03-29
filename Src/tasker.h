@@ -15,8 +15,7 @@ struct Stats
     std::string desription;
     double total_time = 0;
     // Total length delta
-    float length_delta = 0;
-    size_t number_of_agents = 0;
+    bool path_found = true;
 };
 
 #define LOG_ERRORS_ONLY 0
