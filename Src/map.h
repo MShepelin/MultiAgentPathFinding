@@ -17,7 +17,7 @@ public:
     bool PrepareMap(std::ifstream& map_file);
 
     // Checks if the [i, j] pair is traversable, considering that [i, j] is on grid
-    bool IsCellTraversable(int i, int j) const;
+    virtual bool IsCellTraversable(int i, int j) const;
 
     bool IsCellOnGrid(int i, int j) const;
 

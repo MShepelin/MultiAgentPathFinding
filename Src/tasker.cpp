@@ -49,7 +49,7 @@ void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
 {
     assert(scenary_ID < scenaries_.GetNum());
 
-    solver_.SetConfiguration(&map_, config_);
+    solver_.ResetConfiguration(&map_, config_);
 
     AgentTask<GridCell> task = scenaries_.GetScenary(scenary_ID);
 
@@ -141,8 +141,8 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         raw_paths_.clear();
 
         // Setup the solver
-        solver_.SetConfiguration(&map_, config_);
-        check.SetConfiguration(&map_, config_);
+        solver_.ResetConfiguration(&map_, config_);
+        check.ResetConfiguration(&map_, config_);
 
         // Add tasks
         for (AgentTask<GridCell> task : tasks)

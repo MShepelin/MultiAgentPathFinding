@@ -19,7 +19,7 @@ protected:
     const Config* config_ = nullptr;
 
 public:
-    virtual void SetConfiguration(const Map* map, const Config& config) override;
+    virtual void ResetConfiguration(const Map* map, const Config& config) override;
 
     virtual int AddAgent(AgentTask<GridCell> task) override;
 

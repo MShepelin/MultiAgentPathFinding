@@ -50,7 +50,7 @@ add_library(pathplanningbase ${HEADERS} ${SOURCES})
 
 endif()
 
-if (MAPF)
+#if (MAPF)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -65,7 +65,7 @@ install(TARGETS ${PROJECT_NAME}_MAPF
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-else()
+#else()
 
 add_executable(${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
 add_library(PPLIB ${HEADERS_PP} ${SOURCES_PP})
@@ -78,4 +78,4 @@ install(TARGETS ${PROJECT_NAME}
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-endif()
+#endif()

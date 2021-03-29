@@ -42,7 +42,7 @@ bool Mission::createLog()
 
 void Mission::startSearch()
 {
-    search.SetConfiguration(&map, config);
+    search.ResetConfiguration(&map, config);
     search.Plan(map.GetTask());
     search.BuildPathTo(map.GetTask().goal);
     search.BuildCompactPath();

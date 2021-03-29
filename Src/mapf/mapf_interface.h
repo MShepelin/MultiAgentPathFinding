@@ -12,7 +12,7 @@ class MAPFSolverInterface
 public:
     // Set up environment used by this solver.
     // Previous search results must be reset.
-    virtual void SetConfiguration(const Map* map, const Config& config) = 0;
+    virtual void ResetConfiguration(const Map* map, const Config& config) = 0;
 
     virtual int AddAgent(AgentTask<CellType> task) = 0;
 

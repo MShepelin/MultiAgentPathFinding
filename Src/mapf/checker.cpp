@@ -1,7 +1,7 @@
 #include "checker.h"
 #include "astar3d.h"
 
-void Checker::SetConfiguration(const Map* map, const Config& config)
+void Checker::ResetConfiguration(const Map* map, const Config& config)
 {
     // Set map
     map_ = map;

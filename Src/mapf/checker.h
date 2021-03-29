@@ -14,7 +14,7 @@ protected:
     EnvironmentOptions options_;
 
 public:
-    void SetConfiguration(const Map* map, const Config& config);
+    void ResetConfiguration(const Map* map, const Config& config);
 
     bool CheckNaive(const std::unordered_set<SpaceTimeCell>* reservation, std::ostream* log_stream); 
 };

@@ -45,7 +45,7 @@ public:
 
     void SetDepth(FTYPE new_depth);
 
-    virtual void SetConfiguration(const Map* map, const Config& config) override;
+    virtual void ResetConfiguration(const Map* map, const Config& config) override;
 
     virtual int AddAgent(AgentTask<SpaceTimeCell> task) override;
 

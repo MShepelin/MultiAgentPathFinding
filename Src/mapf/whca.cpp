@@ -11,15 +11,15 @@ WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
 }
 
 // TODO change the name to reset configuration
-void WHCA::SetConfiguration(const Map* map, const Config& config)
+void WHCA::ResetConfiguration(const Map* map, const Config& config)
 {
     assert(map);
     tasks_.clear();
     paths_.clear();
     agents_.Clear();
 
-    space_solver_.SetConfiguration(map, config);
-    space_time_solver_.SetConfiguration(map, config);
+    space_solver_.ResetConfiguration(map, config);
+    space_time_solver_.ResetConfiguration(map, config);
 
     map_ = map;
     config_ = &config;

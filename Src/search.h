@@ -54,7 +54,7 @@ protected:
     virtual FTYPE GetMoveCost(CellType from, CellType to) const = 0;
 
 public:
-    void SetConfiguration(const Map* map, const Config& config);
+    void ResetConfiguration(const Map* map, const Config& config);
 
     const Node<CellType>* Plan(AgentTask<CellType> task, FTYPE depth = -1);
     
@@ -74,7 +74,7 @@ public:
 // --------------------------- //
 
 template<typename CellType>
-void SingleSearch<CellType>::SetConfiguration(const Map* map, const Config& config)
+void SingleSearch<CellType>::ResetConfiguration(const Map* map, const Config& config)
 {
     // Set map
     map_ = map;
