@@ -45,7 +45,7 @@ int Tasker::GetScenariesNum() const
     return scenaries_.GetNum();
 }
 
-void Tasker:: StartSearch(size_t scenary_ID, std::ostream* log_stream)
+void Tasker::StartSearch(size_t scenary_ID, std::ostream* log_stream)
 {
     assert(scenary_ID < scenaries_.GetNum());
 
@@ -115,7 +115,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         }
         scenary_ID = last_scenary_ID;
     }
-    
+
     for (; scenary_ID <= last_scenary_ID; ++scenary_ID)
     {
         // Log progress
@@ -138,6 +138,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         // Set up a problem's conditions
         tasks.push_back(scenaries_.GetScenary(scenary_ID));
         agent_IDs.clear();
+        raw_paths_.clear();
 
         // Setup the solver
         solver_.SetConfiguration(&map_, config_);
@@ -159,10 +160,17 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                 }
             };
 
-            agent_IDs.emplace_back(solver_.AddAgent(task3d));
+            int agent_ID = solver_.AddAgent(task3d);
+            agent_IDs.emplace_back(agent_ID);
+            raw_paths_.insert({ agent_ID, {} });
 
-            if (task3d.start.t > 0)
+            if (task3d.start.t == 0)
             {
+                if (options_.log_level >= LOG_RAW_PATHS)
+                {
+                    raw_paths_[agent_ID].push_back(task3d.start);
+                }
+
                 locs.push_back(task.start);
             }
             else
@@ -254,6 +262,18 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                     PrintPath(locs, log_stream);
                 }
             }
+            else if (options_.log_level >= LOG_RAW_PATHS)
+            {
+                for (int ID : agent_IDs)
+                {
+                    auto plan = solver_.GetPlan(ID).lppath;
+                    if (!plan || plan->size() < 2) continue;
+                    for (size_t node_index = plan->size() - 1; node_index > 0; node_index--)
+                    {
+                        raw_paths_.at(ID).push_back(plan->at(node_index - 1).cell);
+                    }
+                }
+            }
 
             solver_.MoveTime(move_steps);
             start_time += move_steps;
@@ -262,6 +282,21 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             {
                 if (options_.print_markers) *log_stream << "TOO LONG\n";
                 break;
+            }
+        }
+
+        // Print raw paths if needed
+        if (options_.log_level >= LOG_RAW_PATHS)
+        {
+            for (int ID : agent_IDs)
+            {
+                *log_stream << "Agent " << ID;
+                for (SpaceTimeCell cell : raw_paths_.at(ID))
+                {
+                    *log_stream << " " << cell.i << " " << cell.j << " " << cell.t;
+                }
+
+                *log_stream << "\n";
             }
         }
 

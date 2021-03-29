@@ -21,8 +21,9 @@ struct Stats
 
 #define LOG_ERRORS_ONLY 0
 #define LOG_WARNINGS 1
-#define LOG_PRINT_PATHS 2
-#define LOG_PRINT_FRAMES 3
+#define LOG_RAW_PATHS 2
+#define LOG_PRINT_PATHS 3
+#define LOG_PRINT_FRAMES 4
 
 struct TaskerOptions
 {
@@ -45,13 +46,10 @@ protected:
     Config config_;
     ScenariesCollection scenaries_;
     TaskerOptions options_;
-
     WHCA solver_;
 
     std::vector<Stats> stats_;
-
-    void PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const;
-    void PrintPath(std::vector<GridCell>& locs, std::ostream* log_stream) const;
+    std::unordered_map<int, std::vector<SpaceTimeCell>> raw_paths_;
 
 public:
     void SetOptions(TaskerOptions options);
@@ -60,17 +58,16 @@ public:
     bool PrepareConfig(const char* file_name);
     bool PrepareScenaries(const char* file_name);
 
-    int GetScenariesNum() const;
-
     void StartSearch(size_t scenary_ID, std::ostream* log_stream);
-
     void StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::ostream* log_stream);
 
+    void PrintMap(std::vector<GridCell>& locs, std::ostream* log_stream) const;
+    void PrintPath(std::vector<GridCell>& locs, std::ostream* log_stream) const;
     void PrintStatistics(std::ostream* log_stream) const;
 
     void ClearStatistics();
 
     const Map* GetMap() const;
-
+    int GetScenariesNum() const;
     WHCA* GetSolver();
 };

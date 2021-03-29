@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
 
     tasker.GetSolver()->SetDepth(10);
-    tasker.SetOptions({ false, true, false, false, LOG_PRINT_FRAMES });
+    tasker.SetOptions({ false, true, false, false, LOG_RAW_PATHS });
 
     std::cout << "Print file path or print or just cout\n";
 
@@ -74,8 +74,10 @@ int main(int argc, char *argv[])
 
     if (!output) return 0;
 
-    // Write map height
+    // Write initial map
     *output << tasker.GetMap()->GetHeight() << "\n";
+    std::vector<GridCell> start_locs;
+    tasker.PrintMap(start_locs, output);
 
     std::cout << "Print \"1 x\" to solve scenario x\n";
     std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";
