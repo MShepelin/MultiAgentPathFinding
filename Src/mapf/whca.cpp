@@ -59,6 +59,7 @@ void WHCA::RemoveAgent(int agent_ID)
 int WHCA::number_of_swaps = 10;
 void WHCA::RandomReorder(std::vector<int>& vec)
 {
+    // TODO no static
     assert(vec.size());
     for (int i = 0; i < number_of_swaps; ++i)
     {

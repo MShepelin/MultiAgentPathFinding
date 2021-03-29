@@ -193,6 +193,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             if (!solver_.Plan())
             {
                 if (options_.print_markers) *log_stream << "Plan failed\n";
+                stats_.back().path_found = false;
                 return;
             }
 
