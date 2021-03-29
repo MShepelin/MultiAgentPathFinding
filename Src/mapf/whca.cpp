@@ -7,6 +7,7 @@ WHCA::WHCA() : space_time_solver_(&space_solver_, &reservation_, &diagonals_)
     depth_ = 16;
     extra_time_ = 0;
     on_goal_ = 0;
+    number_of_swaps_ = 10;
     random_order = true;
 }
 
@@ -56,12 +57,10 @@ void WHCA::RemoveAgent(int agent_ID)
     agents_.RemoveID(agent_ID);
 }
 
-int WHCA::number_of_swaps = 10;
 void WHCA::RandomReorder(std::vector<int>& vec)
 {
-    // TODO no static
     assert(vec.size());
-    for (int i = 0; i < number_of_swaps; ++i)
+    for (int i = 0; i < number_of_swaps_; ++i)
     {
         std::swap(vec[rand() % vec.size()], vec[rand() % vec.size()]);
     }

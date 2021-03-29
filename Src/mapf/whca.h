@@ -35,13 +35,13 @@ protected:
     TTYPE extra_time_;
     // The number of agents on their goals in 2d in the last time unit
     int on_goal_;
-    
-protected:
-    static int number_of_swaps;
-    static void RandomReorder(std::vector<int>& vec);
+
+    int number_of_swaps_;
 
 public:
     WHCA();
+
+    void RandomReorder(std::vector<int>& vec);
 
     void SetDepth(FTYPE new_depth);
 
