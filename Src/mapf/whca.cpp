@@ -219,3 +219,13 @@ const std::unordered_set<SpaceTimeCell>* WHCA::GetResTable() const
 {
     return &reservation_;
 }
+
+void WHCA::SetRadius(float new_radius)
+{
+    space_time_solver_.SetRadius(new_radius);
+}
+
+float WHCA::GetRadius() const
+{
+    return space_time_solver_.GetRadius();
+}

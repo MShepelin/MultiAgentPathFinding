@@ -30,6 +30,7 @@ protected:
     bool IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const;
 
 public:
+    float GetRadius() const;
     void SetRadius(float new_radius);
 
     virtual bool NodeReachedCell(NodeType* node, SpaceTimeCell cell, FTYPE depth) const override;

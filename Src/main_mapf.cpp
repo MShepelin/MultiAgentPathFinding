@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     tasker.GetSolver()->SetDepth(10);
     tasker.SetOptions({ false, true, false, false, LOG_RAW_PATHS });
 
-    std::cout << "Print file path or print or just cout\n";
+    std::cout << "\nPrint file path or just print \"cout\"\n";
 
     bool try_to_read;
     std::string name;
@@ -74,16 +74,15 @@ int main(int argc, char *argv[])
 
     if (!output) return 0;
 
-    // Write initial map
-    *output << tasker.GetMap()->GetHeight() << "\n";
-    std::vector<GridCell> start_locs;
-    tasker.PrintMap(start_locs, output);
-
-    std::cout << "Print \"1 x\" to solve scenario x\n";
+    std::cout << "\nPrint \"1 x\" to solve scenario x\n";
     std::cout << "Print \"2 x, y\" to solve scenarios x-y\n";
+    std::cout << "Print \"rad x\" to change agents radiuses in relation to a cell size (values from 0 to 0.5)\n";
     std::cout << "Print \"depth x\" to set new depth of cooperation\n";
+    std::cout << "Print \"cons\" to print task conditions in the output stream: height, width, agent radius and the grid itself\n";
+    std::cout << "\n";
 
     int x, y;
+    float rad;
     std::string command;
     while (std::cin >> command)
     {
@@ -95,8 +94,8 @@ int main(int argc, char *argv[])
             {
                 tasker.StartSearch(x, x, output);
                 std::cout << "End of print\n";
-                continue;
             }
+            continue;
         }
         else if (command == "2")
         {
@@ -105,8 +104,8 @@ int main(int argc, char *argv[])
                 tasker.StartSearch(x, y, output);
                 tasker.PrintStatistics(&std::cout);
                 std::cout << "End of print\n";
-                continue;
             }
+            continue;
         }
         else if (command == "depth")
         {
@@ -114,15 +113,45 @@ int main(int argc, char *argv[])
             {
                 tasker.GetSolver()->SetDepth(x);
                 std::cout << "OK, new depth\n";
-                continue;
             }
             else
             {
                 std::cout << "Wrong input\n";
             }
+            continue;
+        }
+        else if (command == "rad")
+        {
+            if (std::cin >> rad && rad >= 0 && rad <= 0.5)
+            {
+                tasker.GetSolver()->SetRadius(rad);
+                std::cout << "OK, new agent radius\n";
+            }
+            else
+            {
+                std::cout << "Wrong input\n";
+            }
+            continue;
+        }
+        else if (command == "cons")
+        {
+            std::cout << tasker.GetMap()->GetHeight() << " " <<
+                tasker.GetMap()->GetWidth() << " " <<
+                tasker.GetSolver()->GetRadius() << "\n";
+
+            *output << tasker.GetMap()->GetHeight() << " " <<
+                tasker.GetMap()->GetWidth() << " " <<
+                tasker.GetSolver()->GetRadius() << "\n";
+            std::vector<GridCell> start_locs; // empty vector
+            tasker.PrintMap(start_locs, output);
+
+            std::cout << "Map print finished\n";
+            continue;
         }
 
         std::cout << "Wrong command\n";
+
+        // TODO skip input untill next line
     }
 
     return 0;

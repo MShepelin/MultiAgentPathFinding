@@ -43,6 +43,8 @@ public:
 
     void RandomReorder(std::vector<int>& vec);
 
+    void SetRadius(float new_radius);
+    float GetRadius() const;
     void SetDepth(FTYPE new_depth);
 
     virtual void ResetConfiguration(const Map* map, const Config& config) override;

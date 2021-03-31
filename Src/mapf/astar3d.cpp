@@ -72,17 +72,16 @@ FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
 
     // Check if someone moves through the same point of the cell
     Move move = SpaceTimeSearch::GetMove(from, to);
-    const TTYPE t = from.t + 1;
     switch (move)
     {
     case UpLeft:
-        if (diagonals_->find({ from.i - 1, from.j, t }) != diagonals_->end()) return -1;
+        if (diagonals_->find({ from.i - 1, from.j, to.t }) != diagonals_->end()) return -1;
     case UpRight:
-        if (diagonals_->find({ from.i - 1, from.j + 1, t }) != diagonals_->end()) return -1;
+        if (diagonals_->find({ from.i - 1, from.j + 1, to.t }) != diagonals_->end()) return -1;
     case DownLeft:
-        if (diagonals_->find({ from.i, from.j, t }) != diagonals_->end()) return -1;
+        if (diagonals_->find({ from.i, from.j, to.t }) != diagonals_->end()) return -1;
     case DownRight:
-        if (diagonals_->find({ from.i, from.j + 1, t }) != diagonals_->end()) return -1;
+        if (diagonals_->find({ from.i, from.j + 1, to.t }) != diagonals_->end()) return -1;
     }
 
     // Count untraversable cells on the diagonal path.
@@ -184,20 +183,19 @@ void SpaceTimeSearch::WritePath() const
 
         reservation_->insert(new_cell);
 
-        const TTYPE t = new_cell.t + 1;
         switch (new_cell.move)
         {
         case UpLeft:
-            diagonals_->insert({ new_cell.i - 1, new_cell.j, t });
+            diagonals_->insert({ new_cell.i, new_cell.j + 1, new_cell.t });
             break;
         case UpRight:
-            diagonals_->insert({ new_cell.i - 1, new_cell.j + 1, t });
+            diagonals_->insert({ new_cell.i, new_cell.j, new_cell.t });
             break;
         case DownLeft:
-            diagonals_->insert({ new_cell.i, new_cell.j, t });
+            diagonals_->insert({ new_cell.i + 1, new_cell.j + 1, new_cell.t });
             break;
         case DownRight:
-            diagonals_->insert({ new_cell.i, new_cell.j + 1, t });
+            diagonals_->insert({ new_cell.i + 1, new_cell.j, new_cell.t });
             break;
         }
     }
@@ -299,9 +297,14 @@ bool SpaceTimeSearch::IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell t
         auto iterator = reservation_->find({ to.i + perp_delta_i, to.j + perp_delta_j, to.t });
         if (iterator != reservation_->end() && iterator->move == up_move) return true;
 
-        auto iterator = reservation_->find({ to.i - perp_delta_i, to.j - perp_delta_j, to.t });
+        iterator = reservation_->find({ to.i - perp_delta_i, to.j - perp_delta_j, to.t });
         if (iterator != reservation_->end() && iterator->move == down_move) return true;
     }
 
     return false;
+}
+
+float SpaceTimeSearch::GetRadius() const
+{
+    return radius_;
 }

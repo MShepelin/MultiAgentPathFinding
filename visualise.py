@@ -29,8 +29,8 @@ GREY = (128, 128, 128)
 
 
 class Map:
-    def __init__(self, map_image):
-        self.rows_ = len(map_image)
+    def __init__(self, map_image, max_size):
+        self.rows_ = max_size
         self.obstacles_ = []
         for i in range(len(map_image)):
             for j in range(len(map_image[i])):
@@ -126,22 +126,25 @@ class Agent:
         pygame.draw.circle(win, self.color_, (self.x_ + self.gap_ // 2, self.y_ + self.gap_ // 2), RAD * self.gap_)
 
 
-def main(win, width):
+def main(win, width, filename):
     data = []
     agent_data = []
     rows = 1
+    columns = 1
     speed_mode = 5
 
-    with open("animation.txt") as f:
-        rows = int(f.readline())
+    with open(filename) as f:
+        columns, rows, RAD = list(map(float, f.readline().split()))
+        rows = int(rows)
+        coluns = int(columns)
 
         for i in range(rows):
             data.append(f.readline())
 
         agent_data = f.readlines()
 
-    agents = [Agent(agent_data[i], width // rows) for i in range(len(agent_data))]
-    environment = Map(data)
+    agents = [Agent(agent_data[i], width // max(rows, columns)) for i in range(len(agent_data))]
+    environment = Map(data, max(rows, columns))
 
     run = True
     time = 0
@@ -196,4 +199,5 @@ def main(win, width):
     pygame.quit()
 
 
-main(WIN, WIDTH)
+filename = input()
+main(WIN, WIDTH, filename)
