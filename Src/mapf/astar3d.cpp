@@ -61,9 +61,14 @@ FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
     if (iterator != reservation_->end() && iterator->move == conflict_move) return -1;
 
     // Check if the current step goes through a diagonal
-    if (!((to.i - from.i) && (to.j - from.j))) return cost;
+    if (!((to.i - from.i) && (to.j - from.j)))
+    {
+        if (IsNondiagonalCollision(from, to)) return -1;
+        return cost;
+    }
 
     if (!options_.allowdiagonal) return -1;
+    if (IsDiagonalCollision(from, to)) return -1;
 
     // Check if someone moves through the same point of the cell
     Move move = SpaceTimeSearch::GetMove(from, to);
@@ -130,6 +135,7 @@ SpaceTimeSearch::SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unorder
     heuristic_ = heuristic;
     reservation_ = reservation;
     diagonals_ = diagonals;
+    radius_ = 0.5;
 }
 
 const Node<SpaceTimeCell>* SpaceTimeSearch::CellIsReached(SpaceTimeCell cell) const
@@ -219,4 +225,83 @@ Move SpaceTimeSearch::GetMove(SpaceTimeCell from, SpaceTimeCell to)
     }
 
     return static_cast<Move>(move);
+}
+
+void SpaceTimeSearch::SetRadius(float new_radius)
+{
+    if (new_radius < 0 || new_radius > 0.5) return;
+    radius_ = new_radius;
+}
+
+bool SpaceTimeSearch::IsDiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const
+{
+    Move reverse_move = SpaceTimeSearch::GetMove(to, from);
+    Move left_move = SpaceTimeSearch::GetMove(to, { from.i, to.j });
+    Move down_move = SpaceTimeSearch::GetMove(to, { to.i, from.j });
+
+    // Parallel collision
+    if (radius_ > sqrt(2) / 4)
+    {
+        int delta_j = to.j - from.j;
+        auto iterator = reservation_->find({ from.i, from.j - delta_j, to.t });
+        if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
+
+        int delta_i = to.i - from.i;
+        iterator = reservation_->find({ from.i - delta_i, from.j, to.t });
+        if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
+    }
+
+    // Close diagonal move
+    if (radius_ > 0.1)
+    {
+        auto iterator = reservation_->find({ from.i, to.j, to.t });
+        if (iterator != reservation_->end() && iterator->move == left_move) return true;
+
+        iterator = reservation_->find({ from.i, from.j, to.t });
+        if (iterator != reservation_->end() && (
+            iterator->move == down_move || iterator->move == left_move)) return true;
+
+        iterator = reservation_->find({ to.i, from.j, to.t });
+        if (iterator != reservation_->end() && iterator->move == down_move) return true;
+    }
+
+    return false;
+}
+
+bool SpaceTimeSearch::IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const
+{
+    int perp_delta_i = 1 - abs(to.i - from.i);
+    int perp_delta_j = 1 - abs(to.j - from.j);
+
+    // Close diagonal move
+    if (options_.allowdiagonal && radius_ > 0.1)
+    {
+        Move up_left_move = SpaceTimeSearch::GetMove(to, { from.i + perp_delta_i, from.j + perp_delta_j });
+        Move down_left_move = SpaceTimeSearch::GetMove(to, { from.i - perp_delta_i, from.j - perp_delta_j });
+
+        auto iterator = reservation_->find({ from.i, from.j, to.t });
+        if (iterator != reservation_->end() && (
+            iterator->move == up_left_move || iterator->move == down_left_move)) return true;
+
+        iterator = reservation_->find({ from.i + perp_delta_i, from.j + perp_delta_j, to.t });
+        if (iterator != reservation_->end() && iterator->move == up_left_move) return true;
+
+        iterator = reservation_->find({ from.i - perp_delta_i, from.j - perp_delta_j, to.t });
+        if (iterator != reservation_->end() && iterator->move == down_left_move) return true;
+    }
+
+    // Close nondiagonal move
+    if (radius_ > 0.25)
+    {
+        Move up_move = SpaceTimeSearch::GetMove(to, { to.i + perp_delta_i, to.j + perp_delta_j });
+        Move down_move = SpaceTimeSearch::GetMove(to, { to.i - perp_delta_i, to.j - perp_delta_j });
+
+        auto iterator = reservation_->find({ to.i + perp_delta_i, to.j + perp_delta_j, to.t });
+        if (iterator != reservation_->end() && iterator->move == up_move) return true;
+
+        auto iterator = reservation_->find({ to.i - perp_delta_i, to.j - perp_delta_j, to.t });
+        if (iterator != reservation_->end() && iterator->move == down_move) return true;
+    }
+
+    return false;
 }
