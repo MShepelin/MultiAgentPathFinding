@@ -4,6 +4,8 @@
 #include "search.h"
 #include <unordered_set>
 
+#define MAX_RAD 0.425
+
 class SpaceTimeSearch : public SingleSearch<SpaceTimeCell>
 {
 public:
@@ -28,6 +30,8 @@ protected:
     bool IsDiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const;
     // Checks possible collisions if from->to is nondiagonal move
     bool IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const;
+    // Checks possible collisions if agents waits
+    bool IsWaitCollision(SpaceTimeCell from) const;
 
 public:
     float GetRadius() const;

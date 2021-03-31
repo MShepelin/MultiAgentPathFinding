@@ -85,8 +85,5 @@ bool Checker::CheckNaive(
         // 1.2 2.2
     }
 
-    if (result) *log_stream << "NO ";
-    *log_stream << "CONFLICTS\n";
-
     return result;
 }

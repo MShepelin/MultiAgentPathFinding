@@ -63,26 +63,21 @@ FTYPE SpaceTimeSearch::GetMoveCost(SpaceTimeCell from, SpaceTimeCell to) const
     // Check if the current step goes through a diagonal
     if (!((to.i - from.i) && (to.j - from.j)))
     {
-        if (IsNondiagonalCollision(from, to)) return -1;
+        if (to.i == from.i && from.j == to.j)
+        {
+            if (IsWaitCollision(from)) return -1;
+        }
+        else
+        {
+            if (IsNondiagonalCollision(from, to)) return -1;
+        }
+
         return cost;
     }
 
     if (!options_.allowdiagonal) return -1;
-    if (IsDiagonalCollision(from, to)) return -1;
 
-    // Check if someone moves through the same point of the cell
-    Move move = SpaceTimeSearch::GetMove(from, to);
-    switch (move)
-    {
-    case UpLeft:
-        if (diagonals_->find({ from.i - 1, from.j, to.t }) != diagonals_->end()) return -1;
-    case UpRight:
-        if (diagonals_->find({ from.i - 1, from.j + 1, to.t }) != diagonals_->end()) return -1;
-    case DownLeft:
-        if (diagonals_->find({ from.i, from.j, to.t }) != diagonals_->end()) return -1;
-    case DownRight:
-        if (diagonals_->find({ from.i, from.j + 1, to.t }) != diagonals_->end()) return -1;
-    }
+    if (IsDiagonalCollision(from, to)) return -1;
 
     // Count untraversable cells on the diagonal path.
     char count = (char)!map_->IsCellTraversable(from.i, to.j) + (char)!map_->IsCellTraversable(to.i, from.j);
@@ -134,7 +129,7 @@ SpaceTimeSearch::SpaceTimeSearch(SingleSearch<GridCell>* heuristic, std::unorder
     heuristic_ = heuristic;
     reservation_ = reservation;
     diagonals_ = diagonals;
-    radius_ = 0.5;
+    radius_ = MAX_RAD;
 }
 
 const Node<SpaceTimeCell>* SpaceTimeSearch::CellIsReached(SpaceTimeCell cell) const
@@ -182,22 +177,6 @@ void SpaceTimeSearch::WritePath() const
         }
 
         reservation_->insert(new_cell);
-
-        switch (new_cell.move)
-        {
-        case UpLeft:
-            diagonals_->insert({ new_cell.i, new_cell.j + 1, new_cell.t });
-            break;
-        case UpRight:
-            diagonals_->insert({ new_cell.i, new_cell.j, new_cell.t });
-            break;
-        case DownLeft:
-            diagonals_->insert({ new_cell.i + 1, new_cell.j + 1, new_cell.t });
-            break;
-        case DownRight:
-            diagonals_->insert({ new_cell.i + 1, new_cell.j, new_cell.t });
-            break;
-        }
     }
 }
 
@@ -227,8 +206,38 @@ Move SpaceTimeSearch::GetMove(SpaceTimeCell from, SpaceTimeCell to)
 
 void SpaceTimeSearch::SetRadius(float new_radius)
 {
-    if (new_radius < 0 || new_radius > 0.5) return;
+    if (new_radius < 0 || new_radius > MAX_RAD) return;
     radius_ = new_radius;
+}
+
+bool SpaceTimeSearch::IsWaitCollision(SpaceTimeCell from) const
+{
+    // Parallel collision
+    if (radius_ > sqrt(2) / 4)
+    {
+        Move down_left_move = SpaceTimeSearch::GetMove({ from.i, from.j + 1 }, { from.i + 1, from.j });
+        Move down_right_move = SpaceTimeSearch::GetMove({ from.i, from.j - 1 }, { from.i + 1, from.j });
+        Move up_left_move = SpaceTimeSearch::GetMove({ from.i, from.j + 1 }, { from.i - 1, from.j });
+        Move up_right_move = SpaceTimeSearch::GetMove({ from.i, from.j - 1 }, { from.i - 1, from.j });
+
+        auto iterator = reservation_->find({ from.i, from.j + 1, from.t + 1});
+        if (iterator != reservation_->end() && (
+            iterator->move == down_right_move || iterator->move == up_right_move)) return true;
+
+        iterator = reservation_->find({ from.i - 1, from.j, from.t + 1 });
+        if (iterator != reservation_->end() && (
+            iterator->move == up_left_move || iterator->move == up_right_move)) return true;
+
+        iterator = reservation_->find({ from.i + 1, from.j, from.t + 1 });
+        if (iterator != reservation_->end() && (
+            iterator->move == down_right_move || iterator->move == down_left_move)) return true;
+
+        iterator = reservation_->find({ from.i, from.j + 1, from.t + 1 });
+        if (iterator != reservation_->end() && (
+            iterator->move == down_right_move || iterator->move == up_right_move)) return true;
+    }
+
+    return false;
 }
 
 bool SpaceTimeSearch::IsDiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) const
@@ -237,16 +246,33 @@ bool SpaceTimeSearch::IsDiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) 
     Move left_move = SpaceTimeSearch::GetMove(to, { from.i, to.j });
     Move down_move = SpaceTimeSearch::GetMove(to, { to.i, from.j });
 
+    int delta_j = to.j - from.j;
+    int delta_i = to.i - from.i;
+
+    // additional diagonal check
+    SpaceTimeCell vdiag1 = { from.i, from.j + delta_j, to.t };
+    SpaceTimeCell vdiag2 = { from.i + delta_i, from.j, to.t };
+
+    auto iterator1 = reservation_->find(vdiag1);
+    if (iterator1 != reservation_->end() && iterator1->move == GetMove(vdiag2, vdiag1)) return true;
+
+    auto iterator2 = reservation_->find(vdiag2);
+    if (iterator2 != reservation_->end() && iterator2->move == GetMove(vdiag1, vdiag2)) return true;
+
     // Parallel collision
     if (radius_ > sqrt(2) / 4)
     {
-        int delta_j = to.j - from.j;
         auto iterator = reservation_->find({ from.i, from.j - delta_j, to.t });
         if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
 
-        int delta_i = to.i - from.i;
         iterator = reservation_->find({ from.i - delta_i, from.j, to.t });
         if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
+
+        iterator = reservation_->find({ from.i + delta_i, from.j, to.t });
+        if (iterator != reservation_->end() && (iterator->move == Wait || iterator->move == reverse_move)) return true;
+
+        iterator = reservation_->find({ from.i, from.j + delta_j, to.t });
+        if (iterator != reservation_->end() && (iterator->move == Wait || iterator->move == reverse_move)) return true;
     }
 
     // Close diagonal move

@@ -70,6 +70,34 @@ bool Map::PrepareMap(std::ifstream& map_file)
     return true;
 }
 
+bool Map::PrepareMap(std::vector<std::vector<int>>& map_info, int height, int width)
+{
+    if (map_info.size() < height) return false;
+    for (auto v : map_info)
+    {
+        if (v.size() < width) return false;
+    }
+
+    ClearGrid();
+    grid_ = new int*[height];
+    height_ = height;
+    width_ = width;
+
+    int grid_value;
+    int grid_cell;
+    for (int row = 0; row < height; ++row)
+    {
+        grid_[row] = new int[width];
+        for (int column = 0; column < width; ++column)
+        {
+            grid_[row][column] = map_info.at(row).at(column);
+        }
+    }
+
+    return true;
+}
+
+
 bool Map::IsCellTraversable(int i, int j) const
 {
     assert(IsCellOnGrid(i, j));

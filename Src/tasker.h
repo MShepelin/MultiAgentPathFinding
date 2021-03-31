@@ -16,6 +16,7 @@ struct Stats
     double total_time = 0;
     // Total length delta
     bool path_found = true;
+    bool check = true;
 };
 
 #define LOG_ERRORS_ONLY 0
@@ -69,4 +70,5 @@ public:
     const Map* GetMap() const;
     int GetScenariesNum() const;
     WHCA* GetSolver();
+    const std::vector<Stats>* GetStatistics() const;
 };

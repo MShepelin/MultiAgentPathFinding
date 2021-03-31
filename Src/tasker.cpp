@@ -165,11 +165,6 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
             if (task3d.start.t == 0)
             {
-                if (options_.log_level >= LOG_RAW_PATHS)
-                {
-                    raw_paths_[agent_ID].push_back(task3d.start);
-                }
-
                 locs.push_back(task.start);
             }
             else
@@ -189,18 +184,30 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
         while (goals_reached < agent_IDs.size())
         {
+            bool plan_result = solver_.Plan();
+
+            // Gather stats
+            stats_.back().path_found = plan_result;
+            for (int ID : agent_IDs)
+            {
+                SearchResult<SpaceTimeCell> result = solver_.GetPlan(ID);
+                stats_.back().total_time += result.time;
+            }
+
             // Plan
-            if (!solver_.Plan())
+            if (!plan_result)
             {
                 if (options_.print_markers) *log_stream << "Plan failed\n";
-                stats_.back().path_found = false;
                 return;
             }
 
             // Check
             if (options_.check_solution)
             {
-                check.CheckNaive(solver_.GetResTable(), log_stream);
+                if (stats_.back().check)
+                {
+                    stats_.back().check = check.CheckNaive(solver_.GetResTable(), log_stream);
+                }
             }
 
             goals_reached = solver_.NumOfGoalsReached();
@@ -266,11 +273,16 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
             {
                 for (int ID : agent_IDs)
                 {
+                    int skip_first = (raw_paths_.at(ID).size() >= 1) ? 1 : 0;
+
                     auto plan = solver_.GetPlan(ID).lppath;
-                    if (!plan || plan->size() < 2) continue;
-                    for (int i = 1; i <= move_steps; ++i)
+                    if (!plan || plan->size() < 1 + skip_first) continue;
+
+                    int cell_start_time = plan->at(plan->size() - 1 - skip_first).cell.t;
+
+                    for (int cell_time = cell_start_time; cell_time <= move_steps; ++cell_time)
                     {
-                        int cell_index = plan->size() - 1 - i;
+                        int cell_index = plan->size() - 1 - (cell_time - cell_start_time);
                         raw_paths_.at(ID).push_back(plan->at(cell_index).cell);
                         raw_paths_.at(ID).back().t += start_time - 1;
                     }
@@ -300,14 +312,6 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
                 *log_stream << "\n";
             }
-        }
-
-        // Gather stats
-        for (int agent_index = 0; agent_index < scenary_ID - first_scenary_ID + 1; ++agent_index)
-        {
-            SearchResult<SpaceTimeCell> result = solver_.GetPlan(agent_IDs[agent_index]);
-            if (!result.pathfound) stats_.back().path_found = false;
-            stats_.back().total_time += result.time;
         }
     }
 }
@@ -403,3 +407,9 @@ void Tasker::SetOptions(TaskerOptions options)
 {
     options_ = options;
 }
+
+const std::vector<Stats>* Tasker::GetStatistics() const
+{
+    return &stats_;
+}
+

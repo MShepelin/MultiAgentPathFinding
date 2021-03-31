@@ -39,8 +39,14 @@ TEST(WHCATest, MazeMap)
     std::ostringstream output;
     tasker.GetSolver()->SetDepth(20);
     tasker.SetOptions({ true, false, true, false, LOG_ERRORS_ONLY });
-    tasker.StartSearch(0, 30, &std::cout);
+    tasker.StartSearch(0, 10, &std::cout);
+    for (Stats stats : *tasker.GetStatistics())
+    {
+        EXPECT_TRUE(stats.path_found);
+        EXPECT_TRUE(stats.check);
+    }
 }
+
 
 int main(int argc, char* argv[])
 {

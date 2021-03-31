@@ -86,17 +86,25 @@ bool WHCA::Plan()
     {
         AgentTask<SpaceTimeCell> task = tasks_.at(agent_ID);
 
+        results_[agent_ID] = SearchResult<SpaceTimeCell>();
+        SearchResult<SpaceTimeCell>& result = results_[agent_ID];
+
         // Check if we need to build a path on this depth
         if (task.start.t > depth_ && depth_ != -1)
         {
             // TODO Mark that path was built but it's out of boundaries
-            results_[agent_ID] = SearchResult<SpaceTimeCell>();
+            result.pathfound = true;
+            continue;
         }
 
         // Plan in 2d to set heuristic values and check if the path exists at all
         GridCell start = { task.start.i, task.start.j };
         GridCell goal = { task.goal.i, task.goal.j };
-        if (nullptr == space_solver_.Plan({ goal, start }))
+
+        auto result_ptr = space_solver_.Plan({ goal, start });
+        result.time += space_solver_.GetResult().time;
+
+        if (nullptr == result_ptr)
         {
             reservation_.clear();
             diagonals_.clear();
@@ -114,6 +122,8 @@ bool WHCA::Plan()
             node = space_time_solver_.Plan(task, depth_ - task.start.t);
         }
 
+        result.time += space_time_solver_.GetResult().time;
+
         // Check for success
         if (nullptr == node)
         {
@@ -127,11 +137,14 @@ bool WHCA::Plan()
         space_time_solver_.WritePath();
 
         // Copy the found result
-        results_[agent_ID] = space_time_solver_.GetResult();
-        SearchResult<SpaceTimeCell>& result = results_[agent_ID];
+        SearchResult<SpaceTimeCell> space_time_res = space_time_solver_.GetResult();
+        result.pathfound = true;
+        result.nodescreated = space_time_res.nodescreated;
+        result.numberofsteps = space_time_res.numberofsteps;
+        result.pathlength = space_time_res.pathlength;
 
         // Move the found path from the solver to paths_
-        paths_[agent_ID] = std::move(*result.lppath);
+        paths_[agent_ID] = std::move(*space_time_res.lppath);
         // First node must be in the end
         std::reverse(paths_[agent_ID].begin(), paths_[agent_ID].end());
         // Make sure that result struct points to correct vectors

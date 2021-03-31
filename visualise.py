@@ -4,6 +4,7 @@ import pygame
 import datetime
 
 WIDTH = 640
+PRINT_ID = True
 RAD = 0.3
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("MAPF Visualisation")
@@ -35,7 +36,7 @@ class Map:
         for i in range(len(map_image)):
             for j in range(len(map_image[i])):
                 if map_image[i][j] == '@':
-                    self.obstacles_.append((i, j))
+                    self.obstacles_.append((j, i))
 
     def draw_obstacles(self, win, width):
         gap = width // self.rows_
@@ -72,12 +73,12 @@ class Agent:
         parsed_locations = list(map(int, parse[2:]))
         for i in range(0, len(parsed_locations), 3):
             self.path_.append(
-                (parsed_locations[i] * cell_width,
-                 parsed_locations[i + 1] * cell_width,
+                (parsed_locations[i + 1] * cell_width,
+                 parsed_locations[i] * cell_width, 
                  parsed_locations[i + 2]))
 
-        color_delta = int(parse[1])
-        self.color_ = agent_colors[color_delta % len(agent_colors)]
+        self.ID_ = int(parse[1])
+        self.color_ = agent_colors[self.ID_ % len(agent_colors)]
 
         assert len(self.path_) >= 2
         self.x_ = self.path_[0][0]
@@ -125,8 +126,15 @@ class Agent:
 
         pygame.draw.circle(win, self.color_, (self.x_ + self.gap_ // 2, self.y_ + self.gap_ // 2), RAD * self.gap_)
 
+        if PRINT_ID:
+            font = pygame.font.SysFont("Tahoma", 12)
+            text = font.render(str(self.ID_), False, (10, 180, 10))
+            win.blit(text, (self.x_, self.y_))
+
 
 def main(win, width, filename):
+    global RAD, PRINT_ID
+
     data = []
     agent_data = []
     rows = 1
@@ -175,6 +183,9 @@ def main(win, width, filename):
 
                 if event.key == pygame.K_DOWN and speed_mode > 1:
                     speed_mode -= 1
+
+                if event.key == pygame.K_i:
+                    PRINT_ID = not PRINT_ID
 
         environment.draw(win, width)
 

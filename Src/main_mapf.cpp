@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
         }
         else if (command == "rad")
         {
-            if (std::cin >> rad && rad >= 0 && rad <= 0.5)
+            if (std::cin >> rad && rad >= 0 && rad <= MAX_RAD)
             {
                 tasker.GetSolver()->SetRadius(rad);
                 std::cout << "OK, new agent radius\n";
