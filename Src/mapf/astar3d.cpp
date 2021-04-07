@@ -220,21 +220,10 @@ bool SpaceTimeSearch::IsWaitCollision(SpaceTimeCell from) const
         Move up_left_move = SpaceTimeSearch::GetMove({ from.i, from.j + 1 }, { from.i - 1, from.j });
         Move up_right_move = SpaceTimeSearch::GetMove({ from.i, from.j - 1 }, { from.i - 1, from.j });
 
-        auto iterator = reservation_->find({ from.i, from.j + 1, from.t + 1});
-        if (iterator != reservation_->end() && (
-            iterator->move == down_right_move || iterator->move == up_right_move)) return true;
-
-        iterator = reservation_->find({ from.i - 1, from.j, from.t + 1 });
-        if (iterator != reservation_->end() && (
-            iterator->move == up_left_move || iterator->move == up_right_move)) return true;
-
-        iterator = reservation_->find({ from.i + 1, from.j, from.t + 1 });
-        if (iterator != reservation_->end() && (
-            iterator->move == down_right_move || iterator->move == down_left_move)) return true;
-
-        iterator = reservation_->find({ from.i, from.j + 1, from.t + 1 });
-        if (iterator != reservation_->end() && (
-            iterator->move == down_right_move || iterator->move == up_right_move)) return true;
+        if (IsStored({ from.i, from.j + 1, from.t + 1 }, down_right_move, up_right_move)) return true;
+        if (IsStored({ from.i - 1, from.j, from.t + 1 }, up_left_move, up_right_move)) return true;
+        if (IsStored({ from.i + 1, from.j, from.t + 1 }, down_right_move, down_left_move)) return true;
+        if (IsStored({ from.i, from.j - 1, from.t + 1 }, down_left_move, up_left_move)) return true;
     }
 
     return false;
@@ -253,40 +242,25 @@ bool SpaceTimeSearch::IsDiagonalCollision(SpaceTimeCell from, SpaceTimeCell to) 
     SpaceTimeCell vdiag1 = { from.i, from.j + delta_j, to.t };
     SpaceTimeCell vdiag2 = { from.i + delta_i, from.j, to.t };
 
-    auto iterator1 = reservation_->find(vdiag1);
-    if (iterator1 != reservation_->end() && iterator1->move == GetMove(vdiag2, vdiag1)) return true;
-
-    auto iterator2 = reservation_->find(vdiag2);
-    if (iterator2 != reservation_->end() && iterator2->move == GetMove(vdiag1, vdiag2)) return true;
+    if (IsStored(vdiag1, GetMove(vdiag2, vdiag1))) return true;
+    if (IsStored(vdiag2, GetMove(vdiag1, vdiag2))) return true;
 
     // Parallel collision
     if (radius_ > sqrt(2) / 4)
     {
-        auto iterator = reservation_->find({ from.i, from.j - delta_j, to.t });
-        if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
+        if (IsStored({ from.i, from.j - delta_j, to.t }, reverse_move)) return true;
+        if (IsStored({ from.i - delta_i, from.j, to.t }, reverse_move)) return true;
 
-        iterator = reservation_->find({ from.i - delta_i, from.j, to.t });
-        if (iterator != reservation_->end() && iterator->move == reverse_move) return true;
-
-        iterator = reservation_->find({ from.i + delta_i, from.j, to.t });
-        if (iterator != reservation_->end() && (iterator->move == Wait || iterator->move == reverse_move)) return true;
-
-        iterator = reservation_->find({ from.i, from.j + delta_j, to.t });
-        if (iterator != reservation_->end() && (iterator->move == Wait || iterator->move == reverse_move)) return true;
+        if (IsStored({ from.i + delta_i, from.j, to.t }, Wait, reverse_move)) return true;
+        if (IsStored({ from.i, from.j + delta_j, to.t }, Wait, reverse_move)) return true;
     }
 
     // Close diagonal move
     if (radius_ > 0.1)
     {
-        auto iterator = reservation_->find({ from.i, to.j, to.t });
-        if (iterator != reservation_->end() && iterator->move == left_move) return true;
-
-        iterator = reservation_->find({ from.i, from.j, to.t });
-        if (iterator != reservation_->end() && (
-            iterator->move == down_move || iterator->move == left_move)) return true;
-
-        iterator = reservation_->find({ to.i, from.j, to.t });
-        if (iterator != reservation_->end() && iterator->move == down_move) return true;
+        if (IsStored({ from.i, to.j, to.t }, left_move)) return true;
+        if (IsStored({ to.i, from.j, to.t }, down_move)) return true;
+        if (IsStored({ from.i, from.j, to.t }, down_move, left_move)) return true;
     }
 
     return false;
@@ -303,15 +277,9 @@ bool SpaceTimeSearch::IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell t
         Move up_left_move = SpaceTimeSearch::GetMove(to, { from.i + perp_delta_i, from.j + perp_delta_j });
         Move down_left_move = SpaceTimeSearch::GetMove(to, { from.i - perp_delta_i, from.j - perp_delta_j });
 
-        auto iterator = reservation_->find({ from.i, from.j, to.t });
-        if (iterator != reservation_->end() && (
-            iterator->move == up_left_move || iterator->move == down_left_move)) return true;
-
-        iterator = reservation_->find({ from.i + perp_delta_i, from.j + perp_delta_j, to.t });
-        if (iterator != reservation_->end() && iterator->move == up_left_move) return true;
-
-        iterator = reservation_->find({ from.i - perp_delta_i, from.j - perp_delta_j, to.t });
-        if (iterator != reservation_->end() && iterator->move == down_left_move) return true;
+        if (IsStored({ from.i, from.j, to.t }, up_left_move, down_left_move)) return true;
+        if (IsStored({ from.i + perp_delta_i, from.j + perp_delta_j, to.t }, up_left_move)) return true;
+        if (IsStored({ from.i - perp_delta_i, from.j - perp_delta_j, to.t }, down_left_move)) return true;
     }
 
     // Close nondiagonal move
@@ -320,11 +288,8 @@ bool SpaceTimeSearch::IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell t
         Move up_move = SpaceTimeSearch::GetMove(to, { to.i + perp_delta_i, to.j + perp_delta_j });
         Move down_move = SpaceTimeSearch::GetMove(to, { to.i - perp_delta_i, to.j - perp_delta_j });
 
-        auto iterator = reservation_->find({ to.i + perp_delta_i, to.j + perp_delta_j, to.t });
-        if (iterator != reservation_->end() && iterator->move == up_move) return true;
-
-        iterator = reservation_->find({ to.i - perp_delta_i, to.j - perp_delta_j, to.t });
-        if (iterator != reservation_->end() && iterator->move == down_move) return true;
+        if (IsStored({ to.i + perp_delta_i, to.j + perp_delta_j, to.t }, up_move)) return true;
+        if (IsStored({ to.i - perp_delta_i, to.j - perp_delta_j, to.t }, down_move)) return true;
     }
 
     return false;
@@ -333,4 +298,18 @@ bool SpaceTimeSearch::IsNondiagonalCollision(SpaceTimeCell from, SpaceTimeCell t
 float SpaceTimeSearch::GetRadius() const
 {
     return radius_;
+}
+
+bool SpaceTimeSearch::IsStored(SpaceTimeCell cell, Move move) const
+{
+    auto iterator = reservation_->find(cell);
+    if (iterator != reservation_->end() && iterator->move == move) return true;
+    return false;
+}
+
+bool SpaceTimeSearch::IsStored(SpaceTimeCell cell, Move move, Move another_move) const
+{
+    auto iterator = reservation_->find(cell);
+    if (iterator != reservation_->end() && (iterator->move == move || iterator->move == another_move)) return true;
+    return false;
 }

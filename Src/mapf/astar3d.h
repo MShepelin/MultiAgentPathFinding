@@ -18,6 +18,9 @@ protected:
     float radius_;
 
 protected:
+    inline bool IsStored(SpaceTimeCell cell, Move move) const;
+    inline bool IsStored(SpaceTimeCell cell, Move move, Move another_move) const;
+
     virtual void SetHeuristic(NodeType& node_to_edit) override;
 
     virtual void ExpandNode(NodeType* node_to_expand) override;
