@@ -72,17 +72,35 @@ bool Checker::CheckNaive(
             find_target->move == SpaceTimeSearch::GetMove(swapping_parent, swapping_target) &&
             reservation->find(swapping_parent) != reservation->end())
         {
-            *log_stream << "The move of cell (" <<
-                target.i << ", " << target.j << ", " << target.t <<
+            *log_stream << "The move of cell (" << target.i << ", " << target.j << ", " << target.t <<
                 ") is incorrect: swapping conflict\n";
             result = false;
             continue;
         }
 
-        // TODO
-        // check diagonal collisions:
-        // 2.1 1.1
-        // 1.2 2.2
+        if ((parent.i - target.i) && (parent.j - target.j))
+        {
+            SpaceTimeCell antidiag1 = { target.i, parent.j, target.t };
+            SpaceTimeCell antidiag2 = { parent.i, target.j, target.t };
+
+            find_target = reservation->find(antidiag1);
+            if (find_target != reservation->end() && find_target->move == SpaceTimeSearch::GetMove(antidiag2, antidiag1))
+            {
+                *log_stream << "The move of cell (" << target.i << ", " << target.j << ", " << target.t <<
+                    ") is incorrect: diagonal collision with (" << antidiag1.i << ", " << antidiag1.j << ", " << antidiag1.t << ")\n";
+                result = false;
+                continue;
+            }
+
+            find_target = reservation->find(antidiag2);
+            if (find_target != reservation->end() && find_target->move == SpaceTimeSearch::GetMove(antidiag1, antidiag2))
+            {
+                *log_stream << "The move of cell (" << target.i << ", " << target.j << ", " << target.t <<
+                    ") is incorrect: diagonal collision with (" << antidiag2.i << ", " << antidiag2.j << ", " << antidiag2.t << ")\n";
+                result = false;
+                continue;
+            }
+        }
     }
 
     return result;
