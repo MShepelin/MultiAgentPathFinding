@@ -2,7 +2,7 @@
 
 Need to find collision-free paths for multiple agents? This library can help you!
 
-![animation](Images\animation.gif)
+![animation](Images/animation.gif)
 
 This library contains implementations of single-agent and multi-agent pathfinding solvers for 2D grid map with different environment settings. In particular, we use A* and WHCA*, which are more suitable for practical application. This project has a lot of flexibility in mind, so the best way to start using it is to build a console application and experiment with different options.
 
@@ -37,7 +37,7 @@ DIR=../../TestData/MAPFtests
 
 You are going to see an output like this:
 
-![base](Images\base.png)
+![base](Images/base.png)
 
 The next instructions will show how to plan paths and change options of the algorithm.
 
