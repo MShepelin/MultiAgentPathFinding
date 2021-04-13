@@ -13,6 +13,7 @@
 #include "agents.h"
 #include "nodes_heap.h"
 #include "gl_const.h"
+#include <algorithm>
 
 // ----------------------- //
 // SingleSearch definition //

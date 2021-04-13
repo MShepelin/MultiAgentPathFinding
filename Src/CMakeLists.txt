@@ -50,32 +50,32 @@ add_library(pathplanningbase ${HEADERS} ${SOURCES})
 
 endif()
 
-#if (MAPF)
+if (MAPF)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable("${PROJECT_NAME}_MAPF" ${HEADERS_MAPF} ${SOURCES_MAPF} main_mapf.cpp)
+add_executable(MultiAgent${PROJECT_NAME} ${HEADERS_MAPF} ${SOURCES_MAPF} main_mapf.cpp)
 add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
 
-install(TARGETS ${PROJECT_NAME}_MAPF
+install(TARGETS MultiAgent${PROJECT_NAME}
         CONFIGURATIONS Debug
         DESTINATION Bin/Debug)
 
-install(TARGETS ${PROJECT_NAME}_MAPF
+install(TARGETS MultiAgent${PROJECT_NAME}
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-#else()
+else()
 
-add_executable(${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
+add_executable(Pathfinding${PROJECT_NAME} ${HEADERS_PP} ${SOURCES_PP} main.cpp)
 add_library(PPLIB ${HEADERS_PP} ${SOURCES_PP})
 
-install(TARGETS ${PROJECT_NAME} 
+install(TARGETS SingleAgent${PROJECT_NAME} 
         CONFIGURATIONS Debug
         DESTINATION Bin/Debug)
 
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS SingleAgent${PROJECT_NAME}
         CONFIGURATIONS Release
         DESTINATION Bin/Release)
 
-#endif()
+endif()

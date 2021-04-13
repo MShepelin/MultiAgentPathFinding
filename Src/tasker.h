@@ -19,11 +19,10 @@ struct Stats
     bool check = true;
 };
 
-#define LOG_ERRORS_ONLY 0
-#define LOG_WARNINGS 1
-#define LOG_RAW_PATHS 2
-#define LOG_PRINT_PATHS 3
-#define LOG_PRINT_FRAMES 4
+#define NO_PLAN_LOG 0
+#define LOG_RAW_PATHS 1
+#define LOG_PATHS_FRAMES 2
+#define LOG_FULL_FRAMES 3
 
 struct TaskerOptions
 {

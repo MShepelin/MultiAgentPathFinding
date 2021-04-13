@@ -1,61 +1,80 @@
-# MultiAgentPathFinding
+# Multi-Agent Pathfinding
 
-The aim of the MultiAgentPathFinding repository is to create realizations of different path planning algorithms with flexible environment options, such as metric type and possible directions of movement. The project is made in the second year of HSE Faculty of Computer Science.
+Need to find collision-free paths for multiple agents? This library can help you!
 
-### Build on Linux and Mac
+![animation](C:\Users\shepe\CProjects\MultiAgentPathFinding\animation.gif)
 
-You can choose "Debug" or "Release" build.
+This library contains implementations of single-agent and multi-agent pathfinding solvers for 2D grid map with different environment settings. In particular, we use A* and WHCA*, which are more suitable for practical application. This project has a lot of flexibility in mind, so the best way to start using it is to build a console application and experiment with different options.
+
+### Quick Start
+
+At first, let's build our console app.
 
 ```bash
 cd MultiAgentPathFinding/Build/Release
-cmake ../../ -DCMAKE_BUILD_TYPE="Release"
+cmake ../../ -DCMAKE_BUILD_TYPE="Release" -DMAPF=ON -DTESTS=OFF
 make
 make install
 ```
 
-To run use:
+To build on **Windows** you choose another generator for CMake. To do this simply add `-G` flag: 
 
 ```bash
-cd ../../Bin/{Debug|Release}/
-Dmitriy_Shepelin_ASearch ../../Examples/example.xml
-```
-
-### Build on Windows
-
-PATH must contain cmake and migw32-make.
-
-```bash
-cd MultiAgentPathFinding/Build/Release
-cmake ../../ -DCMAKE_BUILD_TYPE="Release" -G "MinGW Makefiles"
+cd MultiAgentPathFinding/Build/Debug
+cmake ../../ -DCMAKE_BUILD_TYPE="Debug" -G "MinGW Makefiles" -DMAPF=ON -DTESTS=OFF
 mingw32-make
 mingw32-make install
 ```
 
-"Release" can be changed to "Debug".
+As you can see, you can also use Debug configuration. 
 
-To run use:
+To run the app use command arguments: map name, configuration file, file with scenarios.
 
 ```bash
-cd ../../Bin/{Debug|Release}/
-Dmitriy_Shepelin_ASearch.exe ../../Examples/example.xml
+DIR=../../TestData/MAPFtests
+./MAPFSolver ${DIR}/Berlin_1_256.map ${DIR}/BaseConfig.xml ${DIR}/Berlin_1_256-even-1.scen
 ```
+
+You are going to see an output like this:
+
+![2021-04-13_09-37-57](C:\Users\shepe\YandexDisk\Скриншоты\2021-04-13_09-37-57.png)
+
+The next instructions will show how to plan paths and change options of the algorithm.
+
+### Visualization
+
+You can look at found paths using **visualise.py**. To do this, start an application with a file path entered, set any options you need. 
+
+* Type "cons" to write conditions of the problem in the file (for example, the size of a map).
+* Get a solution to one task using the format described in the printed instructions.
+* Exit the program and run **visualise.py** to print the path of the file and enjoy an animation.
+
+Check the example bellow:
+
+![2021-04-13_15-28-34](C:\Users\shepe\YandexDisk\Скриншоты\2021-04-13_15-28-34.png)
 
 ### Input and output
 
-A path is constructed on a 2D plane with traversable and non-traversable cells. Each task is given as an XML file. The format is shown in *Examples/example.xml*. This file is expected to have these fields:
+This section describes the formats of files used in this project. 3 different files describe the structure of the map (traversable and nonreversible cells), configuration for algorithm with a list of possible moves, scenarios for agents (their start and goal locations). To find an example of these files you can go to *TestData/MAPFtests* and look at *maze-32-32-2.map*, *BaseConfig.xml* and *maze-32-32-2-even-1.scen*. These files with map and scenarios were borrowed from **movingai.com**, so that the IO format can be compatible with benchmarks presented there. If you need details on this format, visit [this link](https://movingai.com/benchmarks/formats.html).
 
-- *map* describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations. Positions start in the left upper corner with coordinates (0, 0).
-- *algorithm* describes options of path planning:
-  - *searchtype* can be "dijkstra" or "astar" to use Dijkstra or A* algorithm respectively;
-  - *metrictype* describes heuristic to use (if A* is chosen):
-    - diagonal — diagonal metric;
-    - manhattan — Manhattan distance;
-    - euclidean — Euclidean distance;
-    - chebyshev — Chebyshev distance;
-  - *hweight* is a multiplicator for heuristic;
-  - *allowdiagonal* is true or false and allows the algorithm to consider paths through diagonals;
-  - *cutcorners* is true or false and allows to use diagonals which intersect with one non-traversable cell on the way.
-  - allowsqueeze is true or false and allows to use diagonal if it intersects two two non-traversable cells.
+The main field in a config file is *algorithm*, which describes options of a low-level path planning:
+
+- *searchtype* can be "dijkstra" or "astar" to use Dijkstra or A* algorithm respectively;
+- *metrictype* describes heuristic to use (if A* is chosen):
+  - diagonal — diagonal metric
+  - manhattan — Manhattan distance
+  - euclidean — Euclidean distance
+  - chebyshev — Chebyshev distance
+- *hweight* is a multiplicator for heuristic
+- *allowdiagonal* is true or false and allows the algorithm to consider paths through diagonals
+- *cutcorners* is true or false and allows to use diagonals which intersect with one non-traversable cell on the way
+- allowsqueeze is true or false and allows to use diagonal if it intersects two two non-traversable cells
+
+### Single-Agent Pathfinding
+
+As a part of this project we also implemented an A* algorithm, which can be used for single-agent pathfinding problems. To use it you can build the same project with the flag MAPF set OFF. A path is still constructed on a 2D plane with traversable and non-traversable cells. However, each task is given as a separate XML file. The format is shown in *Examples/example.xml*.
+
+This is like a config file for a MAPF problem, but is has additional fields such as *map*, which describes the geometry of the plane and obstacles on it. You can choose size of the cell grid, locations of obstacles, start and finish locations. Positions start in the left upper corner with coordinates (0, 0).
 
 The output of the program is the same file with the "_log" suffix. It will show information about the search in the *log* field.
 
@@ -65,8 +84,12 @@ The output of the program is the same file with the "_log" suffix. It will show 
 - *length* is the same but without multiplicator.
 - *nodescreated* is the number of cells which the algorithm considered and created nodes for.
 - *numberofsteps* is the number of nodes which the algorithm worked with (expanded and examined) in the path planning loop.
--  *path* draws a path from start to finish if it was found *.
+-  *path* draws a path from start to finish if it was found.
 - *lplevel* and *hplevel* describe the path and short and long versions respectively.
+
+### Documentation
+
+To learn more about this library and the details of the presented code base you can visit wiki.
 
 ### Mentors
 

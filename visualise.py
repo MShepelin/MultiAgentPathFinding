@@ -3,6 +3,8 @@
 import pygame
 import datetime
 
+filename = input("The name of a file with pathfinding log: ")
+
 WIDTH = 640
 PRINT_ID = True
 RAD = 0.3
@@ -141,15 +143,34 @@ def main(win, width, filename):
     columns = 1
     speed_mode = 5
 
-    with open(filename) as f:
-        columns, rows, RAD = list(map(float, f.readline().split()))
-        rows = int(rows)
-        coluns = int(columns)
+    try:
+        with open(filename) as f:
+            map_data = f.readline().split()
+            if len(map_data) != 3:
+                print("Wrong format, 3 values are needed")
+                return
 
-        for i in range(rows):
-            data.append(f.readline())
+            try:
+                columns = int(map_data[0])
+                rows = int(map_data[1])
+                RAD = float(map_data[2])
+            except ArithmeticError as error:
+                print("Wrong values, needed integer (columns), integer (rows) and float (agent radius)")
+                return 
 
-        agent_data = f.readlines()
+            try:
+                for i in range(rows):
+                    data.append(f.readline())
+
+                agent_data = f.readlines()
+                
+            except:
+                print("Incorrect map, not enough lines to read")
+                return
+            
+    except IOError as error:
+        print("Couldn't open or read file (%s)." % error)
+        return
 
     agents = [Agent(agent_data[i], width // max(rows, columns)) for i in range(len(agent_data))]
     environment = Map(data, max(rows, columns))
@@ -209,6 +230,4 @@ def main(win, width, filename):
 
     pygame.quit()
 
-
-filename = input()
 main(WIN, WIDTH, filename)

@@ -1,6 +1,5 @@
 #include <cassert>
 #include "tasker.h"
-#include "mapf/ma_star.h"
 #include <iostream>
 #include <fstream>
 
@@ -31,11 +30,11 @@ int main(int argc, char *argv[])
     
     if (!tasker.PrepareScenaries(argv[3]))
     {
-        std::cout << "Wrong file with scenaries!\n";
+        std::cout << "Wrong file with scenarios!\n";
         return 1;
     }
 
-    std::cout << "Scenaries file: " << argv[3] << "\n";
+    std::cout << "Scenarios file: " << argv[3] << "\n";
 
     if (!tasker.GetScenariesNum())
     {

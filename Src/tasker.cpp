@@ -177,7 +177,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         int start_time = 1;
 
         // Print start map
-        if (options_.log_level >= LOG_PRINT_FRAMES)
+        if (options_.log_level == LOG_PATHS_FRAMES)
         {
             PrintMap(locs, log_stream);
         }
@@ -214,7 +214,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
 
             int target_time = (goals_reached == agent_IDs.size()) ? solver_.GetDepth() : move_steps;
 
-            if (options_.log_level >= LOG_PRINT_FRAMES)
+            if (options_.log_level == LOG_FULL_FRAMES)
             {
                 // Print each time unit except for the first
                 for (int i = 1; i <= target_time; ++i)
@@ -251,7 +251,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                     PrintMap(locs, log_stream);
                 }
             }
-            else if (options_.log_level >= LOG_PRINT_PATHS)
+            else if (options_.log_level == LOG_PATHS_FRAMES)
             {
                 // Print each path
                 for (int ID : agent_IDs)
@@ -269,7 +269,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
                     PrintPath(locs, log_stream);
                 }
             }
-            else if (options_.log_level >= LOG_RAW_PATHS)
+            else if (options_.log_level == LOG_RAW_PATHS)
             {
                 for (int ID : agent_IDs)
                 {
@@ -300,7 +300,7 @@ void Tasker::StartSearch(size_t first_scenary_ID, size_t last_scenary_ID, std::o
         }
 
         // Print raw paths if needed
-        if (options_.log_level >= LOG_RAW_PATHS)
+        if (options_.log_level == LOG_RAW_PATHS)
         {
             for (int ID : agent_IDs)
             {
