@@ -2,7 +2,7 @@
 
 Need to find collision-free paths for multiple agents? This library can help you!
 
-![animation](C:\Users\shepe\CProjects\MultiAgentPathFinding\animation.gif)
+![animation](Images\animation.gif)
 
 This library contains implementations of single-agent and multi-agent pathfinding solvers for 2D grid map with different environment settings. In particular, we use A* and WHCA*, which are more suitable for practical application. This project has a lot of flexibility in mind, so the best way to start using it is to build a console application and experiment with different options.
 
@@ -37,7 +37,7 @@ DIR=../../TestData/MAPFtests
 
 You are going to see an output like this:
 
-![2021-04-13_09-37-57](C:\Users\shepe\YandexDisk\Скриншоты\2021-04-13_09-37-57.png)
+![base](Images\base.png)
 
 The next instructions will show how to plan paths and change options of the algorithm.
 
@@ -51,7 +51,7 @@ You can look at found paths using **visualise.py**. To do this, start an applica
 
 Check the example bellow:
 
-![2021-04-13_15-28-34](C:\Users\shepe\YandexDisk\Скриншоты\2021-04-13_15-28-34.png)
+![execution_example](Images/execution_example.png)
 
 ### Input and output
 
