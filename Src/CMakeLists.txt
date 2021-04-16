@@ -55,11 +55,22 @@ if (MAPF)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(MultiAgent${PROJECT_NAME} ${HEADERS_MAPF} ${SOURCES_MAPF} main_mapf.cpp)
+
+add_executable(MultiAgent${PROJECT_NAME}Stats ${HEADERS_MAPF} ${SOURCES_MAPF} gather_stats.cpp)
+
 add_library(MAPFLIB ${HEADERS_MAPF} ${SOURCES_MAPF})
+
+install(TARGETS MultiAgent${PROJECT_NAME}Stats
+        CONFIGURATIONS Debug
+        DESTINATION Bin/Debug)
 
 install(TARGETS MultiAgent${PROJECT_NAME}
         CONFIGURATIONS Debug
         DESTINATION Bin/Debug)
+
+install(TARGETS MultiAgent${PROJECT_NAME}Stats
+        CONFIGURATIONS Release
+        DESTINATION Bin/Release)
 
 install(TARGETS MultiAgent${PROJECT_NAME}
         CONFIGURATIONS Release

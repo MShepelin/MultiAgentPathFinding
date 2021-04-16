@@ -36,7 +36,7 @@ protected:
     AgentTask<CellType> task_;
     const Map* map_ = nullptr;
     double heuristic_weight_ = 0;
- 
+
 protected:
     virtual void SetHeuristic(NodeType& node_to_edit) = 0;
 
